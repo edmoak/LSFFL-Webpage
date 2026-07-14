@@ -1,211 +1,1219 @@
-/* =========================================
-   LSFFL MASTER THEME
+/* =========================================================
+   LSFFL WEBSITE THEME
+   Version 2.0
    Lamad Squad Fantasy Football League
-   ========================================= */
+========================================================= */
+
+
+/* =========================================================
+   1. COLOR SYSTEM
+========================================================= */
 
 :root {
+  --lsffl-navy-dark: #04111f;
   --lsffl-navy: #071a2f;
-  --lsffl-navy-light: #0f2d4d;
+  --lsffl-navy-light: #123755;
+
+  --lsffl-gold-dark: #8f6b2f;
   --lsffl-gold: #c6a15b;
-  --lsffl-steel: #9aa6b2;
+  --lsffl-gold-light: #e2c88c;
+
+  --lsffl-ivory: #f7f3e8;
   --lsffl-white: #ffffff;
-  --lsffl-light: #eef2f5;
-  --lsffl-dark: #101820;
+  --lsffl-light: #edf1f4;
+
+  --lsffl-steel: #9aa6b2;
+  --lsffl-charcoal: #101820;
+
+  --page-width: 1180px;
+
+  --shadow-small:
+    0 8px 20px rgba(4, 17, 31, 0.12);
+
+  --shadow-large:
+    0 18px 45px rgba(4, 17, 31, 0.18);
 }
+
+
+/* =========================================================
+   2. GLOBAL RESET
+========================================================= */
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  background: var(--lsffl-light);
-  color: var(--lsffl-dark);
-  font-family: Arial, Helvetica, sans-serif;
-  line-height: 1.6;
-}
-
-header {
-  padding: 48px 20px 36px;
-  text-align: center;
-  color: var(--lsffl-white);
   background:
-    linear-gradient(rgba(7, 26, 47, 0.93), rgba(7, 26, 47, 0.93)),
-    linear-gradient(135deg, #0f2d4d, #071a2f);
-  border-bottom: 4px solid var(--lsffl-gold);
+    linear-gradient(
+      rgba(237, 241, 244, 0.96),
+      rgba(237, 241, 244, 0.96)
+    ),
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 24px,
+      rgba(7, 26, 47, 0.025) 24px,
+      rgba(7, 26, 47, 0.025) 25px
+    );
+
+  color: var(--lsffl-charcoal);
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  line-height: 1.65;
 }
 
-header h1 {
-  margin: 0;
-  font-size: clamp(2rem, 5vw, 4rem);
-  line-height: 1.05;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+img {
+  max-width: 100%;
 }
 
-header p {
-  margin: 14px 0 0;
-  color: var(--lsffl-gold);
-  font-size: 1rem;
-  font-weight: bold;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+a {
+  color: inherit;
 }
 
-nav {
+
+/* =========================================================
+   3. WEBSITE HEADER
+========================================================= */
+
+.site-header {
+  position: relative;
+
+  min-height: 430px;
+
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
-  background: var(--lsffl-dark);
-  border-bottom: 1px solid rgba(198, 161, 91, 0.55);
+
+  padding: 40px 24px;
+
+  overflow: hidden;
+
+  background-color: var(--lsffl-navy);
+
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(4, 17, 31, 0.92) 0%,
+      rgba(4, 17, 31, 0.68) 42%,
+      rgba(4, 17, 31, 0.45) 70%,
+      rgba(4, 17, 31, 0.72) 100%
+    ),
+    url("../images/backgrounds/home-header-v1.png");
+
+  background-position:
+    center,
+    center;
+
+  background-repeat:
+    no-repeat,
+    no-repeat;
+
+  background-size:
+    cover,
+    cover;
+
+  border-bottom:
+    5px solid var(--lsffl-gold);
+
+  box-shadow:
+    inset 0 -30px 50px rgba(4, 17, 31, 0.35);
 }
 
-nav a {
-  display: block;
-  padding: 16px 18px;
-  color: var(--lsffl-white);
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: bold;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  transition: background 0.2s ease, color 0.2s ease;
-}
+.site-header::before {
+  content: "";
 
-nav a:hover {
-  background: var(--lsffl-gold);
-  color: var(--lsffl-navy);
-}
+  position: absolute;
+  inset: 0;
 
-main {
-  width: min(1100px, calc(100% - 32px));
-  margin: 40px auto;
-  padding: 32px;
-  background: var(--lsffl-white);
-  border-top: 5px solid var(--lsffl-gold);
-  box-shadow: 0 12px 30px rgba(7, 26, 47, 0.12);
-}
+  pointer-events: none;
 
-main h2 {
-  margin-top: 0;
-  color: var(--lsffl-navy);
-  font-size: 2rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-footer {
-  padding: 24px 16px;
-  text-align: center;
-  color: var(--lsffl-steel);
-  background: var(--lsffl-navy);
-  border-top: 3px solid var(--lsffl-gold);
-}
-
-footer p {
-  margin: 0;
-}
-
-@media (max-width: 700px) {
-  nav {
-    display: block;
-  }
-
-  nav a {
-    text-align: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  main {
-    margin: 24px auto;
-    padding: 22px;
-  }
-}
-.hero-card {
-  padding: 36px;
-  text-align: center;
   background:
-    linear-gradient(rgba(7, 26, 47, 0.94), rgba(7, 26, 47, 0.94)),
-    linear-gradient(135deg, var(--lsffl-navy-light), var(--lsffl-navy));
-  color: var(--lsffl-white);
-  border: 1px solid rgba(198, 161, 91, 0.45);
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.04),
+      transparent 22%,
+      transparent 75%,
+      rgba(4, 17, 31, 0.45)
+    );
 }
 
-.eyebrow {
-  margin: 0 0 8px;
-  color: var(--lsffl-gold);
-  font-size: 0.85rem;
-  font-weight: bold;
-  letter-spacing: 0.18em;
+.header-overlay {
+  position: relative;
+  z-index: 1;
+
+  width: min(var(--page-width), 100%);
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(170px, 270px)
+    minmax(0, 1fr);
+
+  align-items: center;
+
+  gap: 42px;
+
+  padding:
+    26px 38px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(4, 17, 31, 0.82),
+      rgba(7, 26, 47, 0.54),
+      rgba(7, 26, 47, 0.18)
+    );
+
+  border:
+    1px solid rgba(226, 200, 140, 0.42);
+
+  box-shadow:
+    0 24px 55px rgba(0, 0, 0, 0.28);
+
+  backdrop-filter:
+    blur(2px);
+}
+
+.league-logo {
+  display: block;
+
+  width: 100%;
+
+  filter:
+    drop-shadow(
+      0 14px 15px rgba(0, 0, 0, 0.5)
+    );
+}
+
+.header-title {
+  color: var(--lsffl-white);
+}
+
+.header-kicker {
+  margin: 0 0 10px;
+
+  color: var(--lsffl-gold-light);
+
+  font-size: 0.86rem;
+  font-weight: 700;
+
+  letter-spacing: 0.2em;
+
   text-transform: uppercase;
 }
 
-.hero-card h2 {
-  margin-bottom: 16px;
+.header-title h1 {
+  margin: 0;
+
   color: var(--lsffl-white);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(3rem, 7vw, 6.8rem);
+
+  line-height: 0.92;
+
+  letter-spacing: 0.03em;
+
+  text-transform: uppercase;
+
+  text-shadow:
+    0 4px 0 rgba(0, 0, 0, 0.26),
+    0 10px 22px rgba(0, 0, 0, 0.45);
 }
 
-.hero-text {
-  max-width: 760px;
-  margin: 0 auto;
-  font-size: 1.08rem;
+.header-subtitle {
+  margin: 14px 0 0;
+
+  color: var(--lsffl-ivory);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(1.15rem, 2.4vw, 2rem);
+
+  letter-spacing: 0.16em;
+
+  text-transform: uppercase;
 }
 
-.hero-tagline {
+.header-tagline {
+  display: inline-block;
+
   margin: 22px 0 0;
-  color: var(--lsffl-gold);
-  font-weight: bold;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+
+  padding-top: 12px;
+
+  color: var(--lsffl-gold-light);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(1rem, 1.8vw, 1.3rem);
+
+  font-style: italic;
+
+  border-top:
+    1px solid rgba(226, 200, 140, 0.58);
 }
+
+
+/* =========================================================
+   4. MAIN NAVIGATION
+========================================================= */
+
+.main-navigation {
+  position: relative;
+  z-index: 10;
+
+  background:
+    linear-gradient(
+      180deg,
+      #132434,
+      #08131e
+    );
+
+  border-bottom:
+    2px solid var(--lsffl-gold-dark);
+
+  box-shadow:
+    0 8px 20px rgba(4, 17, 31, 0.2);
+}
+
+.navigation-inner {
+  width:
+    min(var(--page-width), 100%);
+
+  margin:
+    0 auto;
+
+  display:
+    flex;
+
+  flex-wrap:
+    wrap;
+
+  justify-content:
+    center;
+}
+
+.navigation-inner a {
+  position:
+    relative;
+
+  display:
+    block;
+
+  padding:
+    18px 20px;
+
+  color:
+    var(--lsffl-white);
+
+  text-decoration:
+    none;
+
+  font-size:
+    0.82rem;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    0.08em;
+
+  text-transform:
+    uppercase;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.navigation-inner a::after {
+  content:
+    "";
+
+  position:
+    absolute;
+
+  left:
+    20px;
+
+  right:
+    20px;
+
+  bottom:
+    9px;
+
+  height:
+    2px;
+
+  background:
+    var(--lsffl-gold);
+
+  transform:
+    scaleX(0);
+
+  transition:
+    transform 0.2s ease;
+}
+
+.navigation-inner a:hover,
+.navigation-inner a.active {
+  color:
+    var(--lsffl-gold-light);
+
+  background:
+    rgba(255, 255, 255, 0.04);
+}
+
+.navigation-inner a:hover::after,
+.navigation-inner a.active::after {
+  transform:
+    scaleX(1);
+}
+
+
+/* =========================================================
+   5. PAGE LAYOUT
+========================================================= */
+
+.page-content {
+  width:
+    min(var(--page-width), calc(100% - 32px));
+
+  margin:
+    44px auto 60px;
+}
+
+
+/* =========================================================
+   6. STORY SECTION
+========================================================= */
+
+.story-section {
+  position:
+    relative;
+
+  padding:
+    52px;
+
+  overflow:
+    hidden;
+
+  background:
+    linear-gradient(
+      120deg,
+      rgba(7, 26, 47, 0.97),
+      rgba(18, 55, 85, 0.95)
+    );
+
+  color:
+    var(--lsffl-white);
+
+  border:
+    1px solid rgba(198, 161, 91, 0.55);
+
+  border-top:
+    6px solid var(--lsffl-gold);
+
+  box-shadow:
+    var(--shadow-large);
+}
+
+.story-section::after {
+  content:
+    "AS-39";
+
+  position:
+    absolute;
+
+  right:
+    30px;
+
+  bottom:
+    -44px;
+
+  color:
+    rgba(255, 255, 255, 0.035);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(7rem, 18vw, 14rem);
+
+  font-weight:
+    700;
+
+  line-height:
+    1;
+}
+
+.section-kicker {
+  position:
+    relative;
+
+  z-index:
+    1;
+
+  margin:
+    0 0 8px;
+
+  color:
+    var(--lsffl-gold-light);
+
+  font-size:
+    0.82rem;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    0.2em;
+
+  text-transform:
+    uppercase;
+}
+
+.story-section h2,
+.champion-section h2 {
+  position:
+    relative;
+
+  z-index:
+    1;
+
+  margin:
+    0 0 18px;
+
+  color:
+    var(--lsffl-white);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(2rem, 4vw, 3.3rem);
+
+  line-height:
+    1.1;
+
+  text-transform:
+    uppercase;
+}
+
+.story-section p {
+  position:
+    relative;
+
+  z-index:
+    1;
+
+  max-width:
+    850px;
+}
+
+.story-lead {
+  color:
+    var(--lsffl-ivory);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    1.24rem;
+}
+
+
+/* =========================================================
+   7. BUTTONS
+========================================================= */
+
+.primary-button,
+.secondary-button {
+  position:
+    relative;
+
+  z-index:
+    1;
+
+  display:
+    inline-block;
+
+  margin-top:
+    16px;
+
+  padding:
+    13px 21px;
+
+  text-decoration:
+    none;
+
+  font-size:
+    0.82rem;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    0.08em;
+
+  text-transform:
+    uppercase;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.primary-button {
+  color:
+    var(--lsffl-navy-dark);
+
+  background:
+    linear-gradient(
+      180deg,
+      var(--lsffl-gold-light),
+      var(--lsffl-gold)
+    );
+
+  border:
+    1px solid #efd49a;
+}
+
+.secondary-button {
+  color:
+    var(--lsffl-gold-light);
+
+  background:
+    transparent;
+
+  border:
+    1px solid var(--lsffl-gold);
+}
+
+.primary-button:hover,
+.secondary-button:hover {
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 9px 18px rgba(0, 0, 0, 0.2);
+}
+
+.secondary-button:hover {
+  color:
+    var(--lsffl-navy-dark);
+
+  background:
+    var(--lsffl-gold);
+}
+
+
+/* =========================================================
+   8. FEATURE CARDS
+========================================================= */
 
 .feature-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
-  margin-top: 28px;
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap:
+    24px;
+
+  margin-top:
+    30px;
 }
 
 .feature-card {
-  padding: 24px;
-  background: var(--lsfffl-white);
-  border-top: 4px solid var(--lsffl-gold);
-  box-shadow: 0 8px 22px rgba(7, 26, 47, 0.1);
+  position:
+    relative;
+
+  padding:
+    30px;
+
+  overflow:
+    hidden;
+
+  background:
+    var(--lsffl-white);
+
+  border:
+    1px solid rgba(7, 26, 47, 0.12);
+
+  border-top:
+    5px solid var(--lsffl-gold);
+
+  box-shadow:
+    var(--shadow-small);
+
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.feature-card:hover {
+  transform:
+    translateY(-5px);
+
+  box-shadow:
+    var(--shadow-large);
+}
+
+.feature-icon {
+  position:
+    absolute;
+
+  top:
+    18px;
+
+  right:
+    20px;
+
+  color:
+    rgba(7, 26, 47, 0.07);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    4.7rem;
+
+  font-weight:
+    700;
+
+  line-height:
+    1;
+}
+
+.feature-label {
+  margin:
+    0 0 5px;
+
+  color:
+    var(--lsffl-gold-dark);
+
+  font-size:
+    0.75rem;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    0.18em;
+
+  text-transform:
+    uppercase;
 }
 
 .feature-card h3 {
-  margin-top: 0;
-  color: var(--lsffl-navy);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  position:
+    relative;
+
+  margin:
+    0 0 12px;
+
+  color:
+    var(--lsffl-navy);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    1.55rem;
+
+  text-transform:
+    uppercase;
 }
 
-@media (max-width: 800px) {
+.feature-card p {
+  position:
+    relative;
+}
+
+.feature-card a {
+  position:
+    relative;
+
+  display:
+    inline-block;
+
+  margin-top:
+    6px;
+
+  color:
+    var(--lsffl-navy);
+
+  font-size:
+    0.8rem;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    0.06em;
+
+  text-decoration:
+    none;
+
+  text-transform:
+    uppercase;
+
+  border-bottom:
+    2px solid var(--lsffl-gold);
+}
+
+
+/* =========================================================
+   9. CHAMPION SECTION
+========================================================= */
+
+.champion-section {
+  margin-top:
+    30px;
+
+  padding:
+    38px;
+
+  color:
+    var(--lsffl-white);
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--lsffl-navy-dark),
+      var(--lsffl-navy-light)
+    );
+
+  border:
+    1px solid rgba(198, 161, 91, 0.55);
+
+  box-shadow:
+    var(--shadow-large);
+}
+
+.champion-heading {
+  display:
+    flex;
+
+  align-items:
+    flex-start;
+
+  justify-content:
+    space-between;
+
+  gap:
+    20px;
+
+  padding-bottom:
+    20px;
+
+  border-bottom:
+    1px solid rgba(198, 161, 91, 0.35);
+}
+
+.champion-heading h2 {
+  margin-bottom:
+    0;
+}
+
+.champion-year {
+  margin:
+    0;
+
+  color:
+    var(--lsffl-gold-light);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(3rem, 7vw, 5.7rem);
+
+  font-weight:
+    700;
+
+  line-height:
+    0.9;
+}
+
+.champion-content {
+  display:
+    grid;
+
+  grid-template-columns:
+    160px minmax(0, 1fr);
+
+  align-items:
+    center;
+
+  gap:
+    30px;
+
+  padding-top:
+    30px;
+}
+
+.champion-badge {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  width:
+    150px;
+
+  height:
+    150px;
+
+  margin:
+    auto;
+
+  color:
+    var(--lsffl-navy-dark);
+
+  background:
+    radial-gradient(
+      circle,
+      var(--lsffl-gold-light),
+      var(--lsffl-gold)
+    );
+
+  border:
+    8px double var(--lsffl-navy-dark);
+
+  border-radius:
+    50%;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    1rem;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    0.08em;
+
+  text-align:
+    center;
+
+  text-transform:
+    uppercase;
+
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.champion-details h3 {
+  margin:
+    0 0 10px;
+
+  color:
+    var(--lsffl-gold-light);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(1.8rem, 4vw, 3rem);
+
+  text-transform:
+    uppercase;
+}
+
+.champion-details p {
+  max-width:
+    780px;
+}
+
+
+/* =========================================================
+   10. FOOTER
+========================================================= */
+
+.site-footer {
+  padding:
+    38px 20px;
+
+  color:
+    var(--lsffl-steel);
+
+  background:
+    linear-gradient(
+      180deg,
+      var(--lsffl-navy),
+      var(--lsffl-navy-dark)
+    );
+
+  border-top:
+    4px solid var(--lsffl-gold);
+}
+
+.footer-inner {
+  width:
+    min(var(--page-width), 100%);
+
+  margin:
+    0 auto;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  gap:
+    22px;
+
+  text-align:
+    left;
+}
+
+.footer-logo {
+  width:
+    92px;
+
+  filter:
+    drop-shadow(
+      0 7px 8px rgba(0, 0, 0, 0.38)
+    );
+}
+
+.footer-inner p {
+  margin:
+    2px 0;
+}
+
+.footer-title {
+  color:
+    var(--lsffl-white);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    1.14rem;
+
+  font-weight:
+    700;
+
+  text-transform:
+    uppercase;
+}
+
+
+/* =========================================================
+   11. TABLET LAYOUT
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .site-header {
+    min-height:
+      390px;
+  }
+
+  .header-overlay {
+    grid-template-columns:
+      180px minmax(0, 1fr);
+
+    gap:
+      25px;
+
+    padding:
+      25px;
+  }
+
   .feature-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns:
+      1fr;
   }
 
-  .hero-card {
-    padding: 28px 20px;
+}
+
+
+/* =========================================================
+   12. MOBILE LAYOUT
+========================================================= */
+
+@media (max-width: 680px) {
+
+  .site-header {
+    min-height:
+      auto;
+
+    padding:
+      28px 16px;
+
+    background-position:
+      center;
   }
-}
-/* =========================================
-   LSFFL Header
-   ========================================= */
 
-/* =========================================
-   LSFFL Header Image
-========================================= */
+  .header-overlay {
+    display:
+      block;
 
-.site-header {
-    margin: 0;
-    padding: 0;
-    background: #071a2f;
-    border-bottom: 4px solid #c6a15b;
-}
+    padding:
+      24px 18px;
 
-.site-header-image {
-    display: block;
-    width: 100%;
-    height: auto;
+    text-align:
+      center;
+
+    background:
+      rgba(4, 17, 31, 0.76);
+  }
+
+  .league-logo {
+    width:
+      170px;
+
+    margin:
+      0 auto 20px;
+  }
+
+  .header-title h1 {
+    font-size:
+      clamp(2.7rem, 15vw, 4.4rem);
+  }
+
+  .header-subtitle {
+    font-size:
+      1rem;
+
+    letter-spacing:
+      0.08em;
+  }
+
+  .navigation-inner {
+    display:
+      block;
+  }
+
+  .navigation-inner a {
+    padding:
+      14px 18px;
+
+    text-align:
+      center;
+
+    border-bottom:
+      1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .navigation-inner a::after {
+    display:
+      none;
+  }
+
+  .page-content {
+    width:
+      min(100% - 20px, var(--page-width));
+
+    margin-top:
+      24px;
+  }
+
+  .story-section {
+    padding:
+      30px 22px;
+  }
+
+  .champion-section {
+    padding:
+      28px 22px;
+  }
+
+  .champion-heading {
+    display:
+      block;
+  }
+
+  .champion-year {
+    margin-top:
+      18px;
+
+    font-size:
+      3.8rem;
+  }
+
+  .champion-content {
+    grid-template-columns:
+      1fr;
+
+    text-align:
+      center;
+  }
+
+  .champion-details p {
+    text-align:
+      left;
+  }
+
+  .footer-inner {
+    display:
+      block;
+
+    text-align:
+      center;
+  }
+
+  .footer-logo {
+    margin-bottom:
+      14px;
+  }
+
 }
