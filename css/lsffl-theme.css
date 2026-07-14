@@ -1,12 +1,6 @@
 /* =========================================================
    LSFFL WEBSITE THEME
-   Version 2.0
-   Lamad Squad Fantasy Football League
-========================================================= */
-
-
-/* =========================================================
-   1. COLOR SYSTEM
+   Version 2.1
 ========================================================= */
 
 :root {
@@ -21,7 +15,6 @@
   --lsffl-ivory: #f7f3e8;
   --lsffl-white: #ffffff;
   --lsffl-light: #edf1f4;
-
   --lsffl-steel: #9aa6b2;
   --lsffl-charcoal: #101820;
 
@@ -34,9 +27,8 @@
     0 18px 45px rgba(4, 17, 31, 0.18);
 }
 
-
 /* =========================================================
-   2. GLOBAL RESET
+   GLOBAL
 ========================================================= */
 
 * {
@@ -49,26 +41,11 @@ html {
 
 body {
   margin: 0;
-  background:
-    linear-gradient(
-      rgba(237, 241, 244, 0.96),
-      rgba(237, 241, 244, 0.96)
-    ),
-    repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 24px,
-      rgba(7, 26, 47, 0.025) 24px,
-      rgba(7, 26, 47, 0.025) 25px
-    );
 
+  background: var(--lsffl-light);
   color: var(--lsffl-charcoal);
 
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-
+  font-family: Arial, Helvetica, sans-serif;
   line-height: 1.65;
 }
 
@@ -80,212 +57,36 @@ a {
   color: inherit;
 }
 
-
 /* =========================================================
-   3. WEBSITE HEADER
+   HEADER ARTWORK
 ========================================================= */
 
 .site-header {
-  position: relative;
-
-  min-height: 430px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 40px 24px;
+  margin: 0;
+  padding: 0;
 
   overflow: hidden;
 
-  background-color: var(--lsffl-navy);
-
-  background-image:
-    linear-gradient(
-      90deg,
-      rgba(4, 17, 31, 0.92) 0%,
-      rgba(4, 17, 31, 0.68) 42%,
-      rgba(4, 17, 31, 0.45) 70%,
-      rgba(4, 17, 31, 0.72) 100%
-    ),
-    url("../images/backgrounds/home-header-v1.png");
-
-  background-position:
-    center,
-    center;
-
-  background-repeat:
-    no-repeat,
-    no-repeat;
-
-  background-size:
-    cover,
-    cover;
+  background: var(--lsffl-navy-dark);
 
   border-bottom:
-    5px solid var(--lsffl-gold);
-
-  box-shadow:
-    inset 0 -30px 50px rgba(4, 17, 31, 0.35);
+    4px solid var(--lsffl-gold);
 }
 
-.site-header::before {
-  content: "";
-
-  position: absolute;
-  inset: 0;
-
-  pointer-events: none;
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.04),
-      transparent 22%,
-      transparent 75%,
-      rgba(4, 17, 31, 0.45)
-    );
-}
-
-.header-overlay {
-  position: relative;
-  z-index: 1;
-
-  width: min(var(--page-width), 100%);
-
-  display: grid;
-
-  grid-template-columns:
-    minmax(170px, 270px)
-    minmax(0, 1fr);
-
-  align-items: center;
-
-  gap: 42px;
-
-  padding:
-    26px 38px;
-
-  background:
-    linear-gradient(
-      90deg,
-      rgba(4, 17, 31, 0.82),
-      rgba(7, 26, 47, 0.54),
-      rgba(7, 26, 47, 0.18)
-    );
-
-  border:
-    1px solid rgba(226, 200, 140, 0.42);
-
-  box-shadow:
-    0 24px 55px rgba(0, 0, 0, 0.28);
-
-  backdrop-filter:
-    blur(2px);
-}
-
-.league-logo {
+.site-header-image {
   display: block;
 
   width: 100%;
+  height: auto;
 
-  filter:
-    drop-shadow(
-      0 14px 15px rgba(0, 0, 0, 0.5)
-    );
-}
-
-.header-title {
-  color: var(--lsffl-white);
-}
-
-.header-kicker {
-  margin: 0 0 10px;
-
-  color: var(--lsffl-gold-light);
-
-  font-size: 0.86rem;
-  font-weight: 700;
-
-  letter-spacing: 0.2em;
-
-  text-transform: uppercase;
-}
-
-.header-title h1 {
   margin: 0;
-
-  color: var(--lsffl-white);
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size:
-    clamp(3rem, 7vw, 6.8rem);
-
-  line-height: 0.92;
-
-  letter-spacing: 0.03em;
-
-  text-transform: uppercase;
-
-  text-shadow:
-    0 4px 0 rgba(0, 0, 0, 0.26),
-    0 10px 22px rgba(0, 0, 0, 0.45);
 }
-
-.header-subtitle {
-  margin: 14px 0 0;
-
-  color: var(--lsffl-ivory);
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size:
-    clamp(1.15rem, 2.4vw, 2rem);
-
-  letter-spacing: 0.16em;
-
-  text-transform: uppercase;
-}
-
-.header-tagline {
-  display: inline-block;
-
-  margin: 22px 0 0;
-
-  padding-top: 12px;
-
-  color: var(--lsffl-gold-light);
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size:
-    clamp(1rem, 1.8vw, 1.3rem);
-
-  font-style: italic;
-
-  border-top:
-    1px solid rgba(226, 200, 140, 0.58);
-}
-
 
 /* =========================================================
-   4. MAIN NAVIGATION
+   NAVIGATION
 ========================================================= */
 
 .main-navigation {
-  position: relative;
-  z-index: 10;
-
   background:
     linear-gradient(
       180deg,
@@ -301,49 +102,30 @@ a {
 }
 
 .navigation-inner {
-  width:
-    min(var(--page-width), 100%);
+  width: min(var(--page-width), 100%);
+  margin: 0 auto;
 
-  margin:
-    0 auto;
-
-  display:
-    flex;
-
-  flex-wrap:
-    wrap;
-
-  justify-content:
-    center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .navigation-inner a {
-  position:
-    relative;
+  position: relative;
 
-  display:
-    block;
+  display: block;
 
-  padding:
-    18px 20px;
+  padding: 18px 20px;
 
-  color:
-    var(--lsffl-white);
+  color: var(--lsffl-white);
 
-  text-decoration:
-    none;
+  text-decoration: none;
 
-  font-size:
-    0.82rem;
+  font-size: 0.82rem;
+  font-weight: 700;
 
-  font-weight:
-    700;
-
-  letter-spacing:
-    0.08em;
-
-  text-transform:
-    uppercase;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 
   transition:
     background 0.2s ease,
@@ -351,38 +133,26 @@ a {
 }
 
 .navigation-inner a::after {
-  content:
-    "";
+  content: "";
 
-  position:
-    absolute;
+  position: absolute;
 
-  left:
-    20px;
+  left: 20px;
+  right: 20px;
+  bottom: 9px;
 
-  right:
-    20px;
+  height: 2px;
 
-  bottom:
-    9px;
+  background: var(--lsffl-gold);
 
-  height:
-    2px;
+  transform: scaleX(0);
 
-  background:
-    var(--lsffl-gold);
-
-  transform:
-    scaleX(0);
-
-  transition:
-    transform 0.2s ease;
+  transition: transform 0.2s ease;
 }
 
 .navigation-inner a:hover,
 .navigation-inner a.active {
-  color:
-    var(--lsffl-gold-light);
+  color: var(--lsffl-gold-light);
 
   background:
     rgba(255, 255, 255, 0.04);
@@ -390,13 +160,11 @@ a {
 
 .navigation-inner a:hover::after,
 .navigation-inner a.active::after {
-  transform:
-    scaleX(1);
+  transform: scaleX(1);
 }
 
-
 /* =========================================================
-   5. PAGE LAYOUT
+   PAGE LAYOUT
 ========================================================= */
 
 .page-content {
@@ -407,30 +175,25 @@ a {
     44px auto 60px;
 }
 
-
 /* =========================================================
-   6. STORY SECTION
+   STORY SECTION
 ========================================================= */
 
 .story-section {
-  position:
-    relative;
+  position: relative;
 
-  padding:
-    52px;
+  padding: 48px;
 
-  overflow:
-    hidden;
+  overflow: hidden;
+
+  color: var(--lsffl-white);
 
   background:
     linear-gradient(
       120deg,
-      rgba(7, 26, 47, 0.97),
-      rgba(18, 55, 85, 0.95)
+      var(--lsffl-navy),
+      var(--lsffl-navy-light)
     );
-
-  color:
-    var(--lsffl-white);
 
   border:
     1px solid rgba(198, 161, 91, 0.55);
@@ -443,17 +206,12 @@ a {
 }
 
 .story-section::after {
-  content:
-    "AS-39";
+  content: "AS-39";
 
-  position:
-    absolute;
+  position: absolute;
 
-  right:
-    30px;
-
-  bottom:
-    -44px;
+  right: 28px;
+  bottom: -42px;
 
   color:
     rgba(255, 255, 255, 0.035);
@@ -466,52 +224,34 @@ a {
   font-size:
     clamp(7rem, 18vw, 14rem);
 
-  font-weight:
-    700;
-
-  line-height:
-    1;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .section-kicker {
-  position:
-    relative;
+  position: relative;
+  z-index: 1;
 
-  z-index:
-    1;
+  margin: 0 0 8px;
 
-  margin:
-    0 0 8px;
+  color: var(--lsffl-gold-light);
 
-  color:
-    var(--lsffl-gold-light);
+  font-size: 0.82rem;
+  font-weight: 700;
 
-  font-size:
-    0.82rem;
-
-  font-weight:
-    700;
-
-  letter-spacing:
-    0.2em;
-
-  text-transform:
-    uppercase;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
 }
 
-.story-section h2,
-.champion-section h2 {
-  position:
-    relative;
+.story-section h1 {
+  position: relative;
+  z-index: 1;
 
-  z-index:
-    1;
+  max-width: 900px;
 
-  margin:
-    0 0 18px;
+  margin: 0 0 22px;
 
-  color:
-    var(--lsffl-white);
+  color: var(--lsffl-white);
 
   font-family:
     Georgia,
@@ -519,75 +259,53 @@ a {
     serif;
 
   font-size:
-    clamp(2rem, 4vw, 3.3rem);
+    clamp(2rem, 4vw, 3.2rem);
 
-  line-height:
-    1.1;
-
-  text-transform:
-    uppercase;
+  line-height: 1.12;
+  text-transform: uppercase;
 }
 
 .story-section p {
-  position:
-    relative;
+  position: relative;
+  z-index: 1;
 
-  z-index:
-    1;
+  max-width: 850px;
 
-  max-width:
-    850px;
+  font-size: 1rem;
 }
 
 .story-lead {
-  color:
-    var(--lsffl-ivory);
+  color: var(--lsffl-ivory);
 
   font-family:
     Georgia,
     "Times New Roman",
     serif;
 
-  font-size:
-    1.24rem;
+  font-size: 1.2rem !important;
 }
 
-
 /* =========================================================
-   7. BUTTONS
+   BUTTONS
 ========================================================= */
 
 .primary-button,
 .secondary-button {
-  position:
-    relative;
+  position: relative;
+  z-index: 1;
 
-  z-index:
-    1;
+  display: inline-block;
 
-  display:
-    inline-block;
+  margin-top: 16px;
+  padding: 13px 21px;
 
-  margin-top:
-    16px;
+  text-decoration: none;
 
-  padding:
-    13px 21px;
+  font-size: 0.82rem;
+  font-weight: 700;
 
-  text-decoration:
-    none;
-
-  font-size:
-    0.82rem;
-
-  font-weight:
-    700;
-
-  letter-spacing:
-    0.08em;
-
-  text-transform:
-    uppercase;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 
   transition:
     transform 0.2s ease,
@@ -596,8 +314,7 @@ a {
 }
 
 .primary-button {
-  color:
-    var(--lsffl-navy-dark);
+  color: var(--lsffl-navy-dark);
 
   background:
     linear-gradient(
@@ -611,11 +328,9 @@ a {
 }
 
 .secondary-button {
-  color:
-    var(--lsffl-gold-light);
+  color: var(--lsffl-gold-light);
 
-  background:
-    transparent;
+  background: transparent;
 
   border:
     1px solid var(--lsffl-gold);
@@ -623,52 +338,36 @@ a {
 
 .primary-button:hover,
 .secondary-button:hover {
-  transform:
-    translateY(-2px);
+  transform: translateY(-2px);
 
   box-shadow:
     0 9px 18px rgba(0, 0, 0, 0.2);
 }
 
 .secondary-button:hover {
-  color:
-    var(--lsffl-navy-dark);
-
-  background:
-    var(--lsffl-gold);
+  color: var(--lsffl-navy-dark);
+  background: var(--lsffl-gold);
 }
 
-
 /* =========================================================
-   8. FEATURE CARDS
+   FEATURE CARDS
 ========================================================= */
 
 .feature-grid {
-  display:
-    grid;
+  display: grid;
 
   grid-template-columns:
     repeat(3, minmax(0, 1fr));
 
-  gap:
-    24px;
+  gap: 24px;
 
-  margin-top:
-    30px;
+  margin-top: 30px;
 }
 
 .feature-card {
-  position:
-    relative;
+  padding: 30px;
 
-  padding:
-    30px;
-
-  overflow:
-    hidden;
-
-  background:
-    var(--lsffl-white);
+  background: var(--lsffl-white);
 
   border:
     1px solid rgba(7, 26, 47, 0.12);
@@ -685,134 +384,66 @@ a {
 }
 
 .feature-card:hover {
-  transform:
-    translateY(-5px);
+  transform: translateY(-5px);
 
   box-shadow:
     var(--shadow-large);
 }
 
-.feature-icon {
-  position:
-    absolute;
-
-  top:
-    18px;
-
-  right:
-    20px;
-
-  color:
-    rgba(7, 26, 47, 0.07);
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size:
-    4.7rem;
-
-  font-weight:
-    700;
-
-  line-height:
-    1;
-}
-
 .feature-label {
-  margin:
-    0 0 5px;
+  margin: 0 0 5px;
 
-  color:
-    var(--lsffl-gold-dark);
+  color: var(--lsffl-gold-dark);
 
-  font-size:
-    0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
 
-  font-weight:
-    700;
-
-  letter-spacing:
-    0.18em;
-
-  text-transform:
-    uppercase;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
-.feature-card h3 {
-  position:
-    relative;
+.feature-card h2 {
+  margin: 0 0 12px;
 
-  margin:
-    0 0 12px;
-
-  color:
-    var(--lsffl-navy);
+  color: var(--lsffl-navy);
 
   font-family:
     Georgia,
     "Times New Roman",
     serif;
 
-  font-size:
-    1.55rem;
-
-  text-transform:
-    uppercase;
-}
-
-.feature-card p {
-  position:
-    relative;
+  font-size: 1.5rem;
+  text-transform: uppercase;
 }
 
 .feature-card a {
-  position:
-    relative;
+  display: inline-block;
 
-  display:
-    inline-block;
+  margin-top: 6px;
 
-  margin-top:
-    6px;
+  color: var(--lsffl-navy);
 
-  color:
-    var(--lsffl-navy);
+  font-size: 0.8rem;
+  font-weight: 700;
 
-  font-size:
-    0.8rem;
+  letter-spacing: 0.06em;
 
-  font-weight:
-    700;
-
-  letter-spacing:
-    0.06em;
-
-  text-decoration:
-    none;
-
-  text-transform:
-    uppercase;
+  text-decoration: none;
+  text-transform: uppercase;
 
   border-bottom:
     2px solid var(--lsffl-gold);
 }
 
-
 /* =========================================================
-   9. CHAMPION SECTION
+   CHAMPION SECTION
 ========================================================= */
 
 .champion-section {
-  margin-top:
-    30px;
+  margin-top: 30px;
+  padding: 38px;
 
-  padding:
-    38px;
-
-  color:
-    var(--lsffl-white);
+  color: var(--lsffl-white);
 
   background:
     linear-gradient(
@@ -829,36 +460,39 @@ a {
 }
 
 .champion-heading {
-  display:
-    flex;
+  display: flex;
 
-  align-items:
-    flex-start;
+  align-items: flex-start;
+  justify-content: space-between;
 
-  justify-content:
-    space-between;
+  gap: 20px;
 
-  gap:
-    20px;
-
-  padding-bottom:
-    20px;
+  padding-bottom: 20px;
 
   border-bottom:
     1px solid rgba(198, 161, 91, 0.35);
 }
 
 .champion-heading h2 {
-  margin-bottom:
-    0;
+  margin: 0;
+
+  color: var(--lsffl-white);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(2rem, 4vw, 3rem);
+
+  text-transform: uppercase;
 }
 
 .champion-year {
-  margin:
-    0;
+  margin: 0;
 
-  color:
-    var(--lsffl-gold-light);
+  color: var(--lsffl-gold-light);
 
   font-family:
     Georgia,
@@ -868,51 +502,35 @@ a {
   font-size:
     clamp(3rem, 7vw, 5.7rem);
 
-  font-weight:
-    700;
-
-  line-height:
-    0.9;
+  font-weight: 700;
+  line-height: 0.9;
 }
 
 .champion-content {
-  display:
-    grid;
+  display: grid;
 
   grid-template-columns:
     160px minmax(0, 1fr);
 
-  align-items:
-    center;
+  align-items: center;
 
-  gap:
-    30px;
+  gap: 30px;
 
-  padding-top:
-    30px;
+  padding-top: 30px;
 }
 
 .champion-badge {
-  display:
-    flex;
+  display: flex;
 
-  align-items:
-    center;
+  align-items: center;
+  justify-content: center;
 
-  justify-content:
-    center;
+  width: 150px;
+  height: 150px;
 
-  width:
-    150px;
+  margin: auto;
 
-  height:
-    150px;
-
-  margin:
-    auto;
-
-  color:
-    var(--lsffl-navy-dark);
+  color: var(--lsffl-navy-dark);
 
   background:
     radial-gradient(
@@ -924,39 +542,29 @@ a {
   border:
     8px double var(--lsffl-navy-dark);
 
-  border-radius:
-    50%;
+  border-radius: 50%;
 
   font-family:
     Georgia,
     "Times New Roman",
     serif;
 
-  font-size:
-    1rem;
+  font-size: 1rem;
+  font-weight: 700;
 
-  font-weight:
-    700;
+  letter-spacing: 0.08em;
 
-  letter-spacing:
-    0.08em;
-
-  text-align:
-    center;
-
-  text-transform:
-    uppercase;
+  text-align: center;
+  text-transform: uppercase;
 
   box-shadow:
     0 12px 30px rgba(0, 0, 0, 0.35);
 }
 
 .champion-details h3 {
-  margin:
-    0 0 10px;
+  margin: 0 0 10px;
 
-  color:
-    var(--lsffl-gold-light);
+  color: var(--lsffl-gold-light);
 
   font-family:
     Georgia,
@@ -966,26 +574,23 @@ a {
   font-size:
     clamp(1.8rem, 4vw, 3rem);
 
-  text-transform:
-    uppercase;
+  text-transform: uppercase;
 }
 
 .champion-details p {
-  max-width:
-    780px;
+  max-width: 780px;
 }
 
-
 /* =========================================================
-   10. FOOTER
+   FOOTER
 ========================================================= */
 
 .site-footer {
-  padding:
-    38px 20px;
+  padding: 38px 20px;
 
-  color:
-    var(--lsffl-steel);
+  color: var(--lsffl-steel);
+
+  text-align: center;
 
   background:
     linear-gradient(
@@ -998,222 +603,92 @@ a {
     4px solid var(--lsffl-gold);
 }
 
-.footer-inner {
-  width:
-    min(var(--page-width), 100%);
-
-  margin:
-    0 auto;
-
-  display:
-    flex;
-
-  align-items:
-    center;
-
-  justify-content:
-    center;
-
-  gap:
-    22px;
-
-  text-align:
-    left;
-}
-
-.footer-logo {
-  width:
-    92px;
-
-  filter:
-    drop-shadow(
-      0 7px 8px rgba(0, 0, 0, 0.38)
-    );
-}
-
-.footer-inner p {
-  margin:
-    2px 0;
+.site-footer p {
+  margin: 3px 0;
 }
 
 .footer-title {
-  color:
-    var(--lsffl-white);
+  color: var(--lsffl-white);
 
   font-family:
     Georgia,
     "Times New Roman",
     serif;
 
-  font-size:
-    1.14rem;
+  font-size: 1.14rem;
+  font-weight: 700;
 
-  font-weight:
-    700;
-
-  text-transform:
-    uppercase;
+  text-transform: uppercase;
 }
 
-
 /* =========================================================
-   11. TABLET LAYOUT
+   TABLET
 ========================================================= */
 
 @media (max-width: 900px) {
 
-  .site-header {
-    min-height:
-      390px;
-  }
-
-  .header-overlay {
-    grid-template-columns:
-      180px minmax(0, 1fr);
-
-    gap:
-      25px;
-
-    padding:
-      25px;
-  }
-
   .feature-grid {
-    grid-template-columns:
-      1fr;
+    grid-template-columns: 1fr;
   }
 
 }
 
-
 /* =========================================================
-   12. MOBILE LAYOUT
+   MOBILE
 ========================================================= */
 
 @media (max-width: 680px) {
 
-  .site-header {
-    min-height:
-      auto;
-
-    padding:
-      28px 16px;
-
-    background-position:
-      center;
-  }
-
-  .header-overlay {
-    display:
-      block;
-
-    padding:
-      24px 18px;
-
-    text-align:
-      center;
-
-    background:
-      rgba(4, 17, 31, 0.76);
-  }
-
-  .league-logo {
-    width:
-      170px;
-
-    margin:
-      0 auto 20px;
-  }
-
-  .header-title h1 {
-    font-size:
-      clamp(2.7rem, 15vw, 4.4rem);
-  }
-
-  .header-subtitle {
-    font-size:
-      1rem;
-
-    letter-spacing:
-      0.08em;
-  }
-
   .navigation-inner {
-    display:
-      block;
+    display: block;
   }
 
   .navigation-inner a {
-    padding:
-      14px 18px;
+    padding: 14px 18px;
 
-    text-align:
-      center;
+    text-align: center;
 
     border-bottom:
       1px solid rgba(255, 255, 255, 0.07);
   }
 
   .navigation-inner a::after {
-    display:
-      none;
+    display: none;
   }
 
   .page-content {
     width:
       min(100% - 20px, var(--page-width));
 
-    margin-top:
-      24px;
+    margin-top: 24px;
   }
 
   .story-section {
-    padding:
-      30px 22px;
+    padding: 30px 22px;
   }
 
   .champion-section {
-    padding:
-      28px 22px;
+    padding: 28px 22px;
   }
 
   .champion-heading {
-    display:
-      block;
+    display: block;
   }
 
   .champion-year {
-    margin-top:
-      18px;
+    margin-top: 18px;
 
-    font-size:
-      3.8rem;
+    font-size: 3.8rem;
   }
 
   .champion-content {
-    grid-template-columns:
-      1fr;
+    grid-template-columns: 1fr;
 
-    text-align:
-      center;
+    text-align: center;
   }
 
   .champion-details p {
-    text-align:
-      left;
-  }
-
-  .footer-inner {
-    display:
-      block;
-
-    text-align:
-      center;
-  }
-
-  .footer-logo {
-    margin-bottom:
-      14px;
+    text-align: left;
   }
 
 }
