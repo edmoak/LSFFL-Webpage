@@ -1,6 +1,6 @@
 /* =========================================================
    LSFFL WEBSITE THEME
-   Version 2.1
+   Version 2.2
 ========================================================= */
 
 :root {
@@ -20,11 +20,8 @@
 
   --page-width: 1180px;
 
-  --shadow-small:
-    0 8px 20px rgba(4, 17, 31, 0.12);
-
-  --shadow-large:
-    0 18px 45px rgba(4, 17, 31, 0.18);
+  --shadow-small: 0 8px 20px rgba(4, 17, 31, 0.12);
+  --shadow-large: 0 18px 45px rgba(4, 17, 31, 0.18);
 }
 
 /* =========================================================
@@ -41,10 +38,8 @@ html {
 
 body {
   margin: 0;
-
   background: var(--lsffl-light);
   color: var(--lsffl-charcoal);
-
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.65;
 }
@@ -62,51 +57,18 @@ a {
 ========================================================= */
 
 .site-header {
-  margin: 0;
-  padding: 0;
-
-  overflow: hidden;
-
-  background: var(--lsffl-navy-dark);
-
-  border-bottom:
-    4px solid var(--lsffl-gold);
-}
-
-.site-header-image {
-  display: block;
-
-  /* =========================================================
-   HEADER ARTWORK
-========================================================= */
-
-.site-header {
   width: 100%;
-  height: clamp(220px, 28vw, 420px);
-
+  height: 300px;
   margin: 0;
   padding: 0;
 
-  overflow: hidden;
-
-  background: var(--lsffl-navy-dark);
+  background-color: var(--lsffl-navy-dark);
+  background-image: url("../images/backgrounds/home-header-v2.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
 
   border-bottom: 4px solid var(--lsffl-gold);
-}
-
-.site-header-image {
-  display: block;
-
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-  object-position: center;
-
-  margin: 0;
-}
-
-  margin: 0;
 }
 
 /* =========================================================
@@ -114,24 +76,14 @@ a {
 ========================================================= */
 
 .main-navigation {
-  background:
-    linear-gradient(
-      180deg,
-      #132434,
-      #08131e
-    );
-
-  border-bottom:
-    2px solid var(--lsffl-gold-dark);
-
-  box-shadow:
-    0 8px 20px rgba(4, 17, 31, 0.2);
+  background: linear-gradient(180deg, #132434, #08131e);
+  border-bottom: 2px solid var(--lsffl-gold-dark);
+  box-shadow: 0 8px 20px rgba(4, 17, 31, 0.2);
 }
 
 .navigation-inner {
   width: min(var(--page-width), 100%);
   margin: 0 auto;
-
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -139,50 +91,33 @@ a {
 
 .navigation-inner a {
   position: relative;
-
   display: block;
-
   padding: 18px 20px;
-
   color: var(--lsffl-white);
-
   text-decoration: none;
-
   font-size: 0.82rem;
   font-weight: 700;
-
   letter-spacing: 0.08em;
   text-transform: uppercase;
-
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .navigation-inner a::after {
   content: "";
-
   position: absolute;
-
   left: 20px;
   right: 20px;
   bottom: 9px;
-
   height: 2px;
-
   background: var(--lsffl-gold);
-
   transform: scaleX(0);
-
   transition: transform 0.2s ease;
 }
 
 .navigation-inner a:hover,
 .navigation-inner a.active {
   color: var(--lsffl-gold-light);
-
-  background:
-    rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .navigation-inner a:hover::after,
@@ -195,11 +130,8 @@ a {
 ========================================================= */
 
 .page-content {
-  width:
-    min(var(--page-width), calc(100% - 32px));
-
-  margin:
-    44px auto 60px;
+  width: min(var(--page-width), calc(100% - 32px));
+  margin: 44px auto 60px;
 }
 
 /* =========================================================
@@ -208,49 +140,23 @@ a {
 
 .story-section {
   position: relative;
-
   padding: 48px;
-
   overflow: hidden;
-
   color: var(--lsffl-white);
-
-  background:
-    linear-gradient(
-      120deg,
-      var(--lsffl-navy),
-      var(--lsffl-navy-light)
-    );
-
-  border:
-    1px solid rgba(198, 161, 91, 0.55);
-
-  border-top:
-    6px solid var(--lsffl-gold);
-
-  box-shadow:
-    var(--shadow-large);
+  background: linear-gradient(120deg, var(--lsffl-navy), var(--lsffl-navy-light));
+  border: 1px solid rgba(198, 161, 91, 0.55);
+  border-top: 6px solid var(--lsffl-gold);
+  box-shadow: var(--shadow-large);
 }
 
 .story-section::after {
   content: "AS-39";
-
   position: absolute;
-
   right: 28px;
   bottom: -42px;
-
-  color:
-    rgba(255, 255, 255, 0.035);
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size:
-    clamp(7rem, 18vw, 14rem);
-
+  color: rgba(255, 255, 255, 0.035);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(7rem, 18vw, 14rem);
   font-weight: 700;
   line-height: 1;
 }
@@ -258,14 +164,10 @@ a {
 .section-kicker {
   position: relative;
   z-index: 1;
-
   margin: 0 0 8px;
-
   color: var(--lsffl-gold-light);
-
   font-size: 0.82rem;
   font-weight: 700;
-
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
@@ -273,21 +175,11 @@ a {
 .story-section h1 {
   position: relative;
   z-index: 1;
-
   max-width: 900px;
-
   margin: 0 0 22px;
-
   color: var(--lsffl-white);
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size:
-    clamp(2rem, 4vw, 3.2rem);
-
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
   line-height: 1.12;
   text-transform: uppercase;
 }
@@ -295,20 +187,13 @@ a {
 .story-section p {
   position: relative;
   z-index: 1;
-
   max-width: 850px;
-
   font-size: 1rem;
 }
 
 .story-lead {
   color: var(--lsffl-ivory);
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 1.2rem !important;
 }
 
@@ -320,55 +205,33 @@ a {
 .secondary-button {
   position: relative;
   z-index: 1;
-
   display: inline-block;
-
   margin-top: 16px;
   padding: 13px 21px;
-
   text-decoration: none;
-
   font-size: 0.82rem;
   font-weight: 700;
-
   letter-spacing: 0.08em;
   text-transform: uppercase;
-
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    background 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .primary-button {
   color: var(--lsffl-navy-dark);
-
-  background:
-    linear-gradient(
-      180deg,
-      var(--lsffl-gold-light),
-      var(--lsffl-gold)
-    );
-
-  border:
-    1px solid #efd49a;
+  background: linear-gradient(180deg, var(--lsffl-gold-light), var(--lsffl-gold));
+  border: 1px solid #efd49a;
 }
 
 .secondary-button {
   color: var(--lsffl-gold-light);
-
   background: transparent;
-
-  border:
-    1px solid var(--lsffl-gold);
+  border: 1px solid var(--lsffl-gold);
 }
 
 .primary-button:hover,
 .secondary-button:hover {
   transform: translateY(-2px);
-
-  box-shadow:
-    0 9px 18px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 9px 18px rgba(0, 0, 0, 0.2);
 }
 
 .secondary-button:hover {
@@ -382,84 +245,52 @@ a {
 
 .feature-grid {
   display: grid;
-
-  grid-template-columns:
-    repeat(3, minmax(0, 1fr));
-
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
-
   margin-top: 30px;
 }
 
 .feature-card {
   padding: 30px;
-
   background: var(--lsffl-white);
-
-  border:
-    1px solid rgba(7, 26, 47, 0.12);
-
-  border-top:
-    5px solid var(--lsffl-gold);
-
-  box-shadow:
-    var(--shadow-small);
-
-  transition:
-    transform 0.22s ease,
-    box-shadow 0.22s ease;
+  border: 1px solid rgba(7, 26, 47, 0.12);
+  border-top: 5px solid var(--lsffl-gold);
+  box-shadow: var(--shadow-small);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 
 .feature-card:hover {
   transform: translateY(-5px);
-
-  box-shadow:
-    var(--shadow-large);
+  box-shadow: var(--shadow-large);
 }
 
 .feature-label {
   margin: 0 0 5px;
-
   color: var(--lsffl-gold-dark);
-
   font-size: 0.75rem;
   font-weight: 700;
-
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
 .feature-card h2 {
   margin: 0 0 12px;
-
   color: var(--lsffl-navy);
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 1.5rem;
   text-transform: uppercase;
 }
 
 .feature-card a {
   display: inline-block;
-
   margin-top: 6px;
-
   color: var(--lsffl-navy);
-
   font-size: 0.8rem;
   font-weight: 700;
-
   letter-spacing: 0.06em;
-
   text-decoration: none;
   text-transform: uppercase;
-
-  border-bottom:
-    2px solid var(--lsffl-gold);
+  border-bottom: 2px solid var(--lsffl-gold);
 }
 
 /* =========================================================
@@ -469,138 +300,71 @@ a {
 .champion-section {
   margin-top: 30px;
   padding: 38px;
-
   color: var(--lsffl-white);
-
-  background:
-    linear-gradient(
-      135deg,
-      var(--lsffl-navy-dark),
-      var(--lsffl-navy-light)
-    );
-
-  border:
-    1px solid rgba(198, 161, 91, 0.55);
-
-  box-shadow:
-    var(--shadow-large);
+  background: linear-gradient(135deg, var(--lsffl-navy-dark), var(--lsffl-navy-light));
+  border: 1px solid rgba(198, 161, 91, 0.55);
+  box-shadow: var(--shadow-large);
 }
 
 .champion-heading {
   display: flex;
-
   align-items: flex-start;
   justify-content: space-between;
-
   gap: 20px;
-
   padding-bottom: 20px;
-
-  border-bottom:
-    1px solid rgba(198, 161, 91, 0.35);
+  border-bottom: 1px solid rgba(198, 161, 91, 0.35);
 }
 
 .champion-heading h2 {
   margin: 0;
-
   color: var(--lsffl-white);
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size:
-    clamp(2rem, 4vw, 3rem);
-
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 4vw, 3rem);
   text-transform: uppercase;
 }
 
 .champion-year {
   margin: 0;
-
   color: var(--lsffl-gold-light);
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size:
-    clamp(3rem, 7vw, 5.7rem);
-
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(3rem, 7vw, 5.7rem);
   font-weight: 700;
   line-height: 0.9;
 }
 
 .champion-content {
   display: grid;
-
-  grid-template-columns:
-    160px minmax(0, 1fr);
-
+  grid-template-columns: 160px minmax(0, 1fr);
   align-items: center;
-
   gap: 30px;
-
   padding-top: 30px;
 }
 
 .champion-badge {
   display: flex;
-
   align-items: center;
   justify-content: center;
-
   width: 150px;
   height: 150px;
-
   margin: auto;
-
   color: var(--lsffl-navy-dark);
-
-  background:
-    radial-gradient(
-      circle,
-      var(--lsffl-gold-light),
-      var(--lsffl-gold)
-    );
-
-  border:
-    8px double var(--lsffl-navy-dark);
-
+  background: radial-gradient(circle, var(--lsffl-gold-light), var(--lsffl-gold));
+  border: 8px double var(--lsffl-navy-dark);
   border-radius: 50%;
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 1rem;
   font-weight: 700;
-
   letter-spacing: 0.08em;
-
   text-align: center;
   text-transform: uppercase;
-
-  box-shadow:
-    0 12px 30px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
 }
 
 .champion-details h3 {
   margin: 0 0 10px;
-
   color: var(--lsffl-gold-light);
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size:
-    clamp(1.8rem, 4vw, 3rem);
-
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
   text-transform: uppercase;
 }
 
@@ -614,20 +378,10 @@ a {
 
 .site-footer {
   padding: 38px 20px;
-
   color: var(--lsffl-steel);
-
   text-align: center;
-
-  background:
-    linear-gradient(
-      180deg,
-      var(--lsffl-navy),
-      var(--lsffl-navy-dark)
-    );
-
-  border-top:
-    4px solid var(--lsffl-gold);
+  background: linear-gradient(180deg, var(--lsffl-navy), var(--lsffl-navy-dark));
+  border-top: 4px solid var(--lsffl-gold);
 }
 
 .site-footer p {
@@ -636,15 +390,9 @@ a {
 
 .footer-title {
   color: var(--lsffl-white);
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 1.14rem;
   font-weight: 700;
-
   text-transform: uppercase;
 }
 
@@ -653,11 +401,13 @@ a {
 ========================================================= */
 
 @media (max-width: 900px) {
+  .site-header {
+    height: 220px;
+  }
 
   .feature-grid {
     grid-template-columns: 1fr;
   }
-
 }
 
 /* =========================================================
@@ -665,6 +415,9 @@ a {
 ========================================================= */
 
 @media (max-width: 680px) {
+  .site-header {
+    height: 170px;
+  }
 
   .navigation-inner {
     display: block;
@@ -672,11 +425,8 @@ a {
 
   .navigation-inner a {
     padding: 14px 18px;
-
     text-align: center;
-
-    border-bottom:
-      1px solid rgba(255, 255, 255, 0.07);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   }
 
   .navigation-inner a::after {
@@ -684,9 +434,7 @@ a {
   }
 
   .page-content {
-    width:
-      min(100% - 20px, var(--page-width));
-
+    width: min(100% - 20px, var(--page-width));
     margin-top: 24px;
   }
 
@@ -704,18 +452,15 @@ a {
 
   .champion-year {
     margin-top: 18px;
-
     font-size: 3.8rem;
   }
 
   .champion-content {
     grid-template-columns: 1fr;
-
     text-align: center;
   }
 
   .champion-details p {
     text-align: left;
   }
-
 }
