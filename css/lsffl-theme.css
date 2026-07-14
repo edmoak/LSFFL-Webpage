@@ -193,39 +193,19 @@ footer p {
    LSFFL Header
    ========================================= */
 
+/* =========================================
+   LSFFL Header Image
+========================================= */
+
 .site-header {
-    background: linear-gradient(135deg, #071a2f 0%, #0f2d4d 100%);
-    color: white;
-    text-align: center;
-    padding: 60px 20px;
-    border-bottom: 5px solid #c6a15b;
-}
-
-.header-kicker {
-    color: #c6a15b;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    font-size: 0.85rem;
     margin: 0;
+    padding: 0;
+    background: #071a2f;
+    border-bottom: 4px solid #c6a15b;
 }
 
-.site-header h1 {
-    margin: 12px 0 0 0;
-    font-size: 4rem;
-    text-transform: uppercase;
-    letter-spacing: 4px;
-}
-
-.header-league-name {
-    margin: 10px 0;
-    font-size: 1.5rem;
-    color: #d7d7d7;
-    letter-spacing: 2px;
-}
-
-.header-tagline {
-    margin-top: 25px;
-    color: #c6a15b;
-    font-style: italic;
-    font-size: 1.15rem;
+.site-header-image {
+    display: block;
+    width: 100%;
+    height: auto;
 }
