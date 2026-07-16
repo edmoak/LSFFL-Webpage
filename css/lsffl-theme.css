@@ -63,11 +63,11 @@ a {
   margin: 0;
   padding: 0;
 
-  background-color: var(--lsffl-navy);
+  background-color: var(--lsffl-navy-dark);
   background-image: url("../images/backgrounds/home-header-v2.png");
   background-repeat: no-repeat;
-  background-position: center 60%;
-  background-size: cover;
+  background-position: center center;
+  background-size: 100% 100%;
 
   border-bottom: 4px solid var(--lsffl-gold);
 }
