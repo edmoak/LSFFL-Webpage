@@ -67,7 +67,8 @@ a {
   background-image: url("../images/backgrounds/home-header-v2.png");
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: 100% 100%;
+  background-size: cover;
+  background-position: center center;
 
   border-bottom: 4px solid var(--lsffl-gold);
 }
