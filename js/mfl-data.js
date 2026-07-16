@@ -13,14 +13,14 @@ const MFL_LEAGUE_URL = "data/league.json";
 ========================================================= */
 
 async function fetchMflLeagueData() {
-  const response = await fetch(`${MFL_LEAGUE_URL}&_=${Date.now()}`, {
+  const response = await fetch(`${MFL_LEAGUE_URL}?_=${Date.now()}`, {
     method: "GET",
     cache: "no-store"
   });
 
   if (!response.ok) {
     throw new Error(
-      `MFL request failed with status ${response.status}`
+      `Local MFL data request failed with status ${response.status}`
     );
   }
 
