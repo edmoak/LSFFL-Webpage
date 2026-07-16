@@ -768,3 +768,234 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* =========================================================
+   ULTRA-COMPACT HOMEPAGE OVERRIDES
+   Banner size intentionally unchanged
+========================================================= */
+
+.page-content {
+  margin: 14px auto 28px;
+}
+
+.homepage-feature-layout {
+  gap: 8px;
+}
+
+.homepage-primary-links {
+  gap: 6px;
+}
+
+.champion-section {
+  padding: 12px;
+}
+
+.champion-heading {
+  gap: 10px;
+  padding-bottom: 8px;
+}
+
+.champion-heading h1 {
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+}
+
+.champion-year {
+  font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+}
+
+.champion-content {
+  grid-template-columns: 70px minmax(0, 1fr);
+  gap: 10px;
+  padding-top: 10px;
+}
+
+.champion-badge {
+  width: 64px;
+  height: 64px;
+  border-width: 5px;
+  font-size: 0.65rem;
+}
+
+.champion-details h2 {
+  margin-bottom: 4px;
+  font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+}
+
+.champion-details p {
+  margin: 4px 0;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.primary-link-card {
+  gap: 6px;
+  padding: 10px 12px;
+}
+
+.primary-link-card h2 {
+  margin-bottom: 3px;
+  font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+}
+
+.primary-link-card p {
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.primary-link-card a {
+  padding: 6px 9px;
+  font-size: 0.65rem;
+}
+
+.section-kicker,
+.feature-label,
+.glance-label {
+  margin-bottom: 3px;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+}
+
+.league-glance,
+.live-franchises-section {
+  margin-top: 10px;
+  padding: 14px;
+}
+
+.section-heading {
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+}
+
+.section-heading h2 {
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+}
+
+.section-intro {
+  margin-top: 3px;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.glance-grid {
+  gap: 8px;
+}
+
+.glance-card {
+  min-height: 76px;
+  padding: 10px;
+}
+
+.glance-card-wide {
+  min-height: 72px;
+}
+
+.glance-number {
+  margin-bottom: 2px;
+  font-size: clamp(1.55rem, 2.8vw, 2.1rem);
+}
+
+.glance-card h3 {
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+.glance-card-wide h3 {
+  font-size: clamp(1rem, 1.7vw, 1.25rem);
+}
+
+.glance-card p {
+  margin: 3px 0 0;
+  font-size: 0.74rem;
+  line-height: 1.3;
+}
+
+.mfl-franchise-grid {
+  gap: 8px;
+}
+
+.mfl-franchise-logo-wrap {
+  min-height: 48px;
+  padding: 7px;
+}
+
+.mfl-franchise-logo {
+  max-height: 36px;
+}
+
+.mfl-franchise-info {
+  padding: 8px 10px;
+}
+
+.mfl-franchise-info h3 {
+  margin-bottom: 2px;
+  font-size: 0.82rem;
+}
+
+.mfl-franchise-owner {
+  margin-bottom: 2px;
+  font-size: 0.72rem;
+}
+
+.mfl-franchise-division {
+  font-size: 0.62rem;
+}
+
+.story-section {
+  margin-top: 10px;
+  padding: 16px;
+}
+
+.story-section h2 {
+  margin-bottom: 8px;
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+}
+
+.story-section p {
+  margin: 6px 0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.story-lead {
+  font-size: 0.92rem !important;
+}
+
+.primary-button,
+.secondary-button {
+  margin-top: 8px;
+  padding: 7px 10px;
+  font-size: 0.65rem;
+}
+
+.site-footer {
+  padding: 14px 12px;
+  font-size: 0.75rem;
+}
+
+.footer-title {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 1000px) {
+  .homepage-feature-layout {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 680px) {
+  .page-content {
+    margin-top: 10px;
+  }
+
+  .champion-section,
+  .league-glance,
+  .live-franchises-section,
+  .story-section {
+    padding: 12px;
+  }
+
+  .champion-content {
+    grid-template-columns: 1fr;
+  }
+}
