@@ -6,11 +6,7 @@
 
 const MFL_SEASON = "2026";
 const MFL_LEAGUE_ID = "46007";
-const MFL_HOST = "https://www48.myfantasyleague.com";
-
-const MFL_LEAGUE_URL =
-  `${MFL_HOST}/${MFL_SEASON}/export` +
-  `?TYPE=league&L=${MFL_LEAGUE_ID}&JSON=1`;
+const MFL_LEAGUE_URL = "data/league.json";
 
 /* =========================================================
    FETCH LEAGUE DATA
