@@ -999,3 +999,61 @@ a {
     grid-template-columns: 1fr;
   }
 }
+/* =========================================================
+   HORIZONTAL FRANCHISE CARDS
+========================================================= */
+
+.mfl-franchise-card {
+  display: grid;
+  grid-template-columns: 105px minmax(0, 1fr);
+  align-items: center;
+  min-height: 92px;
+}
+
+.mfl-franchise-logo-wrap {
+  min-height: 92px;
+  height: 100%;
+  padding: 10px;
+  border-right: 1px solid rgba(198, 161, 91, 0.35);
+  border-bottom: 0;
+}
+
+.mfl-franchise-logo {
+  width: 100%;
+  max-width: 90px;
+  max-height: 72px;
+}
+
+.mfl-franchise-info {
+  padding: 12px 14px;
+}
+
+.mfl-franchise-info h3 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+}
+
+.mfl-franchise-owner {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.mfl-franchise-division {
+  display: none;
+}
+
+@media (max-width: 520px) {
+  .mfl-franchise-card {
+    grid-template-columns: 90px minmax(0, 1fr);
+  }
+
+  .mfl-franchise-logo-wrap {
+    min-height: 82px;
+  }
+
+  .mfl-franchise-logo {
+    max-width: 76px;
+    max-height: 62px;
+  }
+}
