@@ -1,1 +1,79 @@
+name: Update MFL Data
 
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: "*/15 * * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-mfl-data
+  cancel-in-progress: true
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Create data folder
+        run: mkdir -p data
+
+      - name: Download league data from MFL
+        run: |
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --location \
+            --retry 3 \
+            --retry-delay 5 \
+            "https://www48.myfantasyleague.com/2026/export?TYPE=league&L=46007&JSON=1" \
+            --output data/league.json
+
+      - name: Verify downloaded JSON
+        run: |
+          jq empty data/league.json
+
+          FRANCHISE_COUNT=$(jq '.league.franchises.franchise | length' data/league.json)
+
+          echo "MFL franchise count: ${FRANCHISE_COUNT}"
+
+          if [ "${FRANCHISE_COUNT}" -lt 1 ]; then
+            echo "No franchises were found in the MFL response."
+            exit 1
+          fi
+
+      - name: Create sync information
+        run: |
+          jq -n \
+            --arg season "2026" \
+            --arg leagueId "46007" \
+            --arg updatedAt "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+            '{
+              season: $season,
+              leagueId: $leagueId,
+              updatedAt: $updatedAt,
+              source: "MyFantasyLeague"
+            }' \
+            > data/sync-status.json
+
+      - name: Commit updated data
+        run: |
+          git config user.name "LSFFL Data Bot"
+          git config user.email "actions@users.noreply.github.com"
+
+          git add data/league.json data/sync-status.json
+
+          if git diff --cached --quiet; then
+            echo "MFL data has not changed."
+            exit 0
+          fi
+
+          git commit -m "Update live MFL league data"
+          git push
