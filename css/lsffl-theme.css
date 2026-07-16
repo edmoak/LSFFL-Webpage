@@ -136,31 +136,8 @@ a {
 }
 
 /* =========================================================
-   STORY SECTION
+   SHARED SECTION STYLES
 ========================================================= */
-
-.story-section {
-  position: relative;
-  padding: 48px;
-  overflow: hidden;
-  color: var(--lsffl-white);
-  background: linear-gradient(120deg, var(--lsffl-navy), var(--lsffl-navy-light));
-  border: 1px solid rgba(198, 161, 91, 0.55);
-  border-top: 6px solid var(--lsffl-gold);
-  box-shadow: var(--shadow-large);
-}
-
-.story-section::after {
-  content: "AS-39";
-  position: absolute;
-  right: 28px;
-  bottom: -42px;
-  color: rgba(255, 255, 255, 0.035);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(7rem, 18vw, 14rem);
-  font-weight: 700;
-  line-height: 1;
-}
 
 .section-kicker {
   position: relative;
@@ -173,71 +150,198 @@ a {
   text-transform: uppercase;
 }
 
-.story-section h1 {
-  position: relative;
-  z-index: 1;
-  max-width: 900px;
-  margin: 0 0 22px;
+/* =========================================================
+   CHAMPION SECTION
+========================================================= */
+
+.champion-section {
+  padding: 38px;
+  color: var(--lsffl-white);
+  background: linear-gradient(
+    135deg,
+    var(--lsffl-navy-dark),
+    var(--lsffl-navy-light)
+  );
+  border: 1px solid rgba(198, 161, 91, 0.55);
+  box-shadow: var(--shadow-large);
+}
+
+.champion-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(198, 161, 91, 0.35);
+}
+
+.champion-heading h1 {
+  margin: 0;
   color: var(--lsffl-white);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  line-height: 1.12;
+  font-size: clamp(2rem, 4vw, 3rem);
   text-transform: uppercase;
 }
 
-.story-section p {
-  position: relative;
-  z-index: 1;
-  max-width: 850px;
-  font-size: 1rem;
+.champion-year {
+  margin: 0;
+  color: var(--lsffl-gold-light);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(3rem, 7vw, 5.7rem);
+  font-weight: 700;
+  line-height: 0.9;
 }
 
-.story-lead {
-  color: var(--lsffl-ivory);
+.champion-content {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  align-items: center;
+  gap: 30px;
+  padding-top: 30px;
+}
+
+.champion-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+  margin: auto;
+  color: var(--lsffl-navy-dark);
+  background: radial-gradient(
+    circle,
+    var(--lsffl-gold-light),
+    var(--lsffl-gold)
+  );
+  border: 8px double var(--lsffl-navy-dark);
+  border-radius: 50%;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.2rem !important;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.champion-details h2 {
+  margin: 0 0 10px;
+  color: var(--lsffl-gold-light);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  text-transform: uppercase;
+}
+
+.champion-details p {
+  max-width: 780px;
 }
 
 /* =========================================================
-   BUTTONS
+   LEAGUE AT A GLANCE
 ========================================================= */
 
-.primary-button,
-.secondary-button {
-  position: relative;
-  z-index: 1;
-  display: inline-block;
-  margin-top: 16px;
-  padding: 13px 21px;
-  text-decoration: none;
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+.league-glance {
+  margin-top: 30px;
+  padding: 40px;
+  background: var(--lsffl-white);
+  border-top: 5px solid var(--lsffl-gold);
+  box-shadow: var(--shadow-large);
+}
+
+.section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(7, 26, 47, 0.15);
+}
+
+.section-heading h2 {
+  margin: 0;
+  color: var(--lsffl-navy);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 4vw, 3rem);
   text-transform: uppercase;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
-.primary-button {
-  color: var(--lsffl-navy-dark);
-  background: linear-gradient(180deg, var(--lsffl-gold-light), var(--lsffl-gold));
-  border: 1px solid #efd49a;
+.dark-kicker {
+  color: var(--lsffl-gold-dark);
 }
 
-.secondary-button {
+.section-intro {
+  max-width: 520px;
+  margin: 0;
+  color: #4a5560;
+  text-align: right;
+}
+
+.glance-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.glance-card {
+  min-height: 190px;
+  padding: 26px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.98),
+      rgba(247, 243, 232, 0.92)
+    );
+  border: 1px solid rgba(7, 26, 47, 0.12);
+  border-top: 4px solid var(--lsffl-gold);
+  box-shadow: var(--shadow-small);
+}
+
+.glance-card-wide {
+  grid-column: span 2;
+  min-height: 160px;
+  background:
+    linear-gradient(
+      135deg,
+      var(--lsffl-navy),
+      var(--lsffl-navy-light)
+    );
+  color: var(--lsffl-white);
+}
+
+.glance-number {
+  margin: 0 0 6px;
+  color: var(--lsffl-navy);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.8rem, 5vw, 4.8rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.glance-label {
+  margin: 0 0 8px;
   color: var(--lsffl-gold-light);
-  background: transparent;
-  border: 1px solid var(--lsffl-gold);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
-.primary-button:hover,
-.secondary-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 9px 18px rgba(0, 0, 0, 0.2);
+.glance-card h3 {
+  margin: 0 0 10px;
+  color: var(--lsffl-navy);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.25rem;
+  text-transform: uppercase;
 }
 
-.secondary-button:hover {
-  color: var(--lsffl-navy-dark);
-  background: var(--lsffl-gold);
+.glance-card-wide h3 {
+  color: var(--lsffl-gold-light);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+}
+
+.glance-card p:last-child {
+  margin-bottom: 0;
 }
 
 /* =========================================================
@@ -295,82 +399,109 @@ a {
 }
 
 /* =========================================================
-   CHAMPION SECTION
+   STORY SECTION
 ========================================================= */
 
-.champion-section {
+.story-section {
+  position: relative;
   margin-top: 30px;
-  padding: 38px;
+  padding: 48px;
+  overflow: hidden;
   color: var(--lsffl-white);
-  background: linear-gradient(135deg, var(--lsffl-navy-dark), var(--lsffl-navy-light));
+  background: linear-gradient(
+    120deg,
+    var(--lsffl-navy),
+    var(--lsffl-navy-light)
+  );
   border: 1px solid rgba(198, 161, 91, 0.55);
+  border-top: 6px solid var(--lsffl-gold);
   box-shadow: var(--shadow-large);
 }
 
-.champion-heading {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 20px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(198, 161, 91, 0.35);
+.story-section::after {
+  content: "AS-39";
+  position: absolute;
+  right: 28px;
+  bottom: -42px;
+  color: rgba(255, 255, 255, 0.035);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(7rem, 18vw, 14rem);
+  font-weight: 700;
+  line-height: 1;
 }
 
-.champion-heading h2 {
-  margin: 0;
+.story-section h2 {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 0 22px;
   color: var(--lsffl-white);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.12;
   text-transform: uppercase;
 }
 
-.champion-year {
-  margin: 0;
-  color: var(--lsffl-gold-light);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(3rem, 7vw, 5.7rem);
-  font-weight: 700;
-  line-height: 0.9;
-}
-
-.champion-content {
-  display: grid;
-  grid-template-columns: 160px minmax(0, 1fr);
-  align-items: center;
-  gap: 30px;
-  padding-top: 30px;
-}
-
-.champion-badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 150px;
-  height: 150px;
-  margin: auto;
-  color: var(--lsffl-navy-dark);
-  background: radial-gradient(circle, var(--lsffl-gold-light), var(--lsffl-gold));
-  border: 8px double var(--lsffl-navy-dark);
-  border-radius: 50%;
-  font-family: Georgia, "Times New Roman", serif;
+.story-section p {
+  position: relative;
+  z-index: 1;
+  max-width: 850px;
   font-size: 1rem;
+}
+
+.story-lead {
+  color: var(--lsffl-ivory);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.2rem !important;
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.primary-button,
+.secondary-button {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  margin-top: 16px;
+  padding: 13px 21px;
+  text-decoration: none;
+  font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  text-align: center;
   text-transform: uppercase;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
-.champion-details h3 {
-  margin: 0 0 10px;
+.primary-button {
+  color: var(--lsffl-navy-dark);
+  background: linear-gradient(
+    180deg,
+    var(--lsffl-gold-light),
+    var(--lsffl-gold)
+  );
+  border: 1px solid #efd49a;
+}
+
+.secondary-button {
   color: var(--lsffl-gold-light);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(1.8rem, 4vw, 3rem);
-  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid var(--lsffl-gold);
 }
 
-.champion-details p {
-  max-width: 780px;
+.primary-button:hover,
+.secondary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 18px rgba(0, 0, 0, 0.2);
+}
+
+.secondary-button:hover {
+  color: var(--lsffl-navy-dark);
+  background: var(--lsffl-gold);
 }
 
 /* =========================================================
@@ -381,7 +512,11 @@ a {
   padding: 38px 20px;
   color: var(--lsffl-steel);
   text-align: center;
-  background: linear-gradient(180deg, var(--lsffl-navy), var(--lsffl-navy-dark));
+  background: linear-gradient(
+    180deg,
+    var(--lsffl-navy),
+    var(--lsffl-navy-dark)
+  );
   border-top: 4px solid var(--lsffl-gold);
 }
 
@@ -408,6 +543,19 @@ a {
 
   .feature-grid {
     grid-template-columns: 1fr;
+  }
+
+  .glance-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .section-heading {
+    display: block;
+  }
+
+  .section-intro {
+    margin-top: 12px;
+    text-align: left;
   }
 }
 
@@ -439,11 +587,9 @@ a {
     margin-top: 24px;
   }
 
+  .champion-section,
+  .league-glance,
   .story-section {
-    padding: 30px 22px;
-  }
-
-  .champion-section {
     padding: 28px 22px;
   }
 
@@ -463,5 +609,13 @@ a {
 
   .champion-details p {
     text-align: left;
+  }
+
+  .glance-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .glance-card-wide {
+    grid-column: span 1;
   }
 }
