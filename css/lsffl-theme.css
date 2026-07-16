@@ -63,7 +63,7 @@ a {
   margin: 0;
   padding: 0;
 
-  background-color: var(--lsffl-navy-dark);
+  background-color: var(--lsffl-navy);
   background-image: url("../images/backgrounds/home-header-v2.png");
   background-repeat: no-repeat;
   background-position: center 60%;
