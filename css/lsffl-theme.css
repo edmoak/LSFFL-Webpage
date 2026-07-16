@@ -745,34 +745,49 @@ a {
 
   .mfl-franchise-grid {
     grid-template-columns: 1fr;
-     /* =========================================================
+/* =========================================================
    HOMEPAGE FEATURE LAYOUT
 ========================================================= */
 
 .homepage-feature-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: stretch;
   gap: 28px;
+  width: 100%;
 }
 
+/* LEFT HALF: CHAMPION */
+
 .homepage-feature-layout .champion-section {
-  margin: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   height: 100%;
+  margin: 0;
 }
+
+.homepage-feature-layout .champion-content {
+  flex: 1;
+}
+
+/* RIGHT HALF: THREE STACKED LINKS */
 
 .homepage-primary-links {
   display: grid;
   grid-template-rows: repeat(3, minmax(0, 1fr));
   gap: 18px;
+  width: 100%;
+  height: 100%;
 }
 
 .primary-link-card {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: space-between;
-  gap: 28px;
+  gap: 18px;
 
+  min-width: 0;
   padding: 26px 28px;
 
   background: var(--lsffl-white);
@@ -791,22 +806,19 @@ a {
 }
 
 .primary-link-card h2 {
-  margin: 0 0 7px;
-
+  margin: 0 0 8px;
   color: var(--lsffl-navy);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(1.4rem, 2.2vw, 2rem);
+  font-size: clamp(1.35rem, 2vw, 1.9rem);
   text-transform: uppercase;
 }
 
 .primary-link-card p {
   margin-top: 0;
-  margin-bottom: 0;
 }
 
 .primary-link-card a {
-  flex: 0 0 auto;
-
+  align-self: flex-start;
   display: inline-block;
   padding: 11px 16px;
 
@@ -836,13 +848,12 @@ a {
   border-left-color: var(--lsffl-gold-light);
 }
 
-.draft-link-card h2 {
-  color: var(--lsffl-gold-light);
-}
-
+.draft-link-card h2,
 .draft-link-card .feature-label {
   color: var(--lsffl-gold-light);
 }
+
+/* STACK ONLY ON SMALLER SCREENS */
 
 @media (max-width: 1000px) {
   .homepage-feature-layout {
@@ -852,13 +863,6 @@ a {
 
 @media (max-width: 650px) {
   .primary-link-card {
-    display: block;
     padding: 24px 22px;
-  }
-
-  .primary-link-card a {
-    margin-top: 18px;
-  }
-}
   }
 }
