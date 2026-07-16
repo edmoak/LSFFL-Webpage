@@ -1,25 +1,21 @@
 /* =========================================================
    LSFFL WEBSITE THEME
-   Version 2.2
+   Clean Rebuild
 ========================================================= */
 
 :root {
   --lsffl-navy-dark: #04111f;
   --lsffl-navy: #071a2f;
   --lsffl-navy-light: #123755;
-
   --lsffl-gold-dark: #8f6b2f;
   --lsffl-gold: #c6a15b;
   --lsffl-gold-light: #e2c88c;
-
   --lsffl-ivory: #f7f3e8;
   --lsffl-white: #ffffff;
   --lsffl-light: #edf1f4;
   --lsffl-steel: #9aa6b2;
   --lsffl-charcoal: #101820;
-
   --page-width: 1400px;
-
   --shadow-small: 0 8px 20px rgba(4, 17, 31, 0.12);
   --shadow-large: 0 18px 45px rgba(4, 17, 31, 0.18);
 }
@@ -53,22 +49,19 @@ a {
 }
 
 /* =========================================================
-   HEADER ARTWORK
+   HEADER
 ========================================================= */
 
 .site-header {
   width: 100%;
   height: 400px;
-
   margin: 0;
   padding: 0;
-
   background-color: var(--lsffl-navy-dark);
   background-image: url("../images/backgrounds/home-header-v2.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center 55%;
-
   border-bottom: 4px solid var(--lsffl-gold);
 }
 
@@ -136,15 +129,430 @@ a {
 }
 
 /* =========================================================
+   SHARED SECTION STYLES
+========================================================= */
+
+.section-kicker {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 8px;
+  color: var(--lsffl-gold-light);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.dark-kicker {
+  color: var(--lsffl-gold-dark);
+}
+
+.section-heading {
+  display: block;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(7, 26, 47, 0.15);
+}
+
+.section-heading h2 {
+  margin: 0;
+  color: var(--lsffl-navy);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  text-transform: uppercase;
+}
+
+.section-intro {
+  max-width: 760px;
+  margin: 10px 0 0;
+  color: #4a5560;
+  text-align: left;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   HOMEPAGE FEATURE LAYOUT
+========================================================= */
+
+.homepage-feature-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 28px;
+  width: 100%;
+}
+
+.homepage-feature-layout .champion-section {
+  margin: 0;
+  height: 100%;
+}
+
+.homepage-primary-links {
+  display: grid;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  min-width: 0;
+}
+
+/* =========================================================
+   CHAMPION SECTION
+========================================================= */
+
+.champion-section {
+  display: flex;
+  flex-direction: column;
+  padding: 38px;
+  color: var(--lsffl-white);
+  background: linear-gradient(
+    135deg,
+    var(--lsffl-navy-dark),
+    var(--lsffl-navy-light)
+  );
+  border: 1px solid rgba(198, 161, 91, 0.55);
+  box-shadow: var(--shadow-large);
+}
+
+.champion-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(198, 161, 91, 0.35);
+}
+
+.champion-heading h1 {
+  margin: 0;
+  color: var(--lsffl-white);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  text-transform: uppercase;
+}
+
+.champion-year {
+  margin: 0;
+  color: var(--lsffl-gold-light);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(3rem, 7vw, 5.7rem);
+  font-weight: 700;
+  line-height: 0.9;
+}
+
+.champion-content {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  align-items: center;
+  gap: 30px;
+  flex: 1;
+  padding-top: 30px;
+}
+
+.champion-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+  margin: auto;
+  color: var(--lsffl-navy-dark);
+  background: radial-gradient(
+    circle,
+    var(--lsffl-gold-light),
+    var(--lsffl-gold)
+  );
+  border: 8px double var(--lsffl-navy-dark);
+  border-radius: 50%;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.champion-details h2 {
+  margin: 0 0 10px;
+  color: var(--lsffl-gold-light);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  text-transform: uppercase;
+}
+
+.champion-details p {
+  max-width: 780px;
+}
+
+/* =========================================================
+   PRIMARY LINK CARDS
+========================================================= */
+
+.primary-link-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  min-width: 0;
+  padding: 26px 28px;
+  background: var(--lsffl-white);
+  border: 1px solid rgba(7, 26, 47, 0.12);
+  border-left: 5px solid var(--lsffl-gold);
+  box-shadow: var(--shadow-small);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.primary-link-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-large);
+}
+
+.primary-link-card h2 {
+  margin: 0 0 8px;
+  color: var(--lsffl-navy);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.35rem, 2vw, 1.9rem);
+  text-transform: uppercase;
+}
+
+.primary-link-card p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.primary-link-card a {
+  align-self: flex-start;
+  display: inline-block;
+  padding: 11px 16px;
+  color: var(--lsffl-navy-dark);
+  background: linear-gradient(
+    180deg,
+    var(--lsffl-gold-light),
+    var(--lsffl-gold)
+  );
+  border: 1px solid var(--lsffl-gold-dark);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.draft-link-card {
+  color: var(--lsffl-white);
+  background: linear-gradient(
+    135deg,
+    var(--lsffl-navy-dark),
+    var(--lsffl-navy-light)
+  );
+  border-left-color: var(--lsffl-gold-light);
+}
+
+.draft-link-card h2,
+.draft-link-card .feature-label {
+  color: var(--lsffl-gold-light);
+}
+
+/* =========================================================
+   LEAGUE AT A GLANCE
+========================================================= */
+
+.league-glance {
+  margin-top: 30px;
+  padding: 40px;
+  background: var(--lsffl-white);
+  border-top: 5px solid var(--lsffl-gold);
+  box-shadow: var(--shadow-large);
+}
+
+.glance-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.glance-card {
+  min-height: 190px;
+  padding: 26px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(247, 243, 232, 0.92)
+  );
+  border: 1px solid rgba(7, 26, 47, 0.12);
+  border-top: 4px solid var(--lsffl-gold);
+  box-shadow: var(--shadow-small);
+}
+
+.glance-card-wide {
+  grid-column: span 2;
+  min-height: 160px;
+  color: var(--lsffl-white);
+  background: linear-gradient(
+    135deg,
+    var(--lsffl-navy),
+    var(--lsffl-navy-light)
+  );
+}
+
+.glance-number {
+  margin: 0 0 6px;
+  color: var(--lsffl-navy);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.8rem, 5vw, 4.8rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.glance-label {
+  margin: 0 0 8px;
+  color: var(--lsffl-gold-light);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.glance-card h3 {
+  margin: 0 0 10px;
+  color: var(--lsffl-navy);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.25rem;
+  text-transform: uppercase;
+}
+
+.glance-card-wide h3 {
+  color: var(--lsffl-gold-light);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+}
+
+.glance-card p:last-child {
+  margin-bottom: 0;
+}
+
+/* =========================================================
+   LIVE FRANCHISES
+========================================================= */
+
+.live-franchises-section {
+  margin-top: 30px;
+  padding: 40px;
+  background: var(--lsffl-white);
+  border-top: 5px solid var(--lsffl-gold);
+  box-shadow: var(--shadow-large);
+}
+
+.mfl-franchise-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.mfl-franchise-card {
+  overflow: hidden;
+  background: var(--lsffl-white);
+  border: 1px solid rgba(7, 26, 47, 0.12);
+  border-top: 4px solid var(--lsffl-gold);
+  box-shadow: var(--shadow-small);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mfl-franchise-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-large);
+}
+
+.mfl-franchise-logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  padding: 20px;
+  background: linear-gradient(
+    135deg,
+    var(--lsffl-navy-dark),
+    var(--lsffl-navy-light)
+  );
+  border-bottom: 1px solid rgba(198, 161, 91, 0.45);
+}
+
+.mfl-franchise-logo {
+  display: block;
+  width: 100%;
+  max-width: 220px;
+  max-height: 82px;
+  object-fit: contain;
+}
+
+.mfl-franchise-logo-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90px;
+  height: 90px;
+  color: var(--lsffl-navy-dark);
+  background: var(--lsffl-gold);
+  border-radius: 50%;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+}
+
+.mfl-franchise-info {
+  padding: 22px;
+}
+
+.mfl-franchise-info h3 {
+  margin: 0 0 7px;
+  color: var(--lsffl-navy);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+  text-transform: uppercase;
+}
+
+.mfl-franchise-owner {
+  margin: 0 0 6px;
+  color: var(--lsffl-charcoal);
+  font-weight: 700;
+}
+
+.mfl-franchise-division {
+  margin: 0;
+  color: var(--lsffl-gold-dark);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mfl-data-message {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 24px;
+  color: var(--lsffl-navy);
+  background: var(--lsffl-ivory);
+  border-left: 4px solid var(--lsffl-gold);
+}
+
+.mfl-data-error {
+  color: #8b1e1e;
+  border-left-color: #8b1e1e;
+}
+
+/* =========================================================
    STORY SECTION
 ========================================================= */
 
 .story-section {
   position: relative;
+  margin-top: 30px;
   padding: 48px;
   overflow: hidden;
   color: var(--lsffl-white);
-  background: linear-gradient(120deg, var(--lsffl-navy), var(--lsffl-navy-light));
+  background: linear-gradient(
+    120deg,
+    var(--lsffl-navy),
+    var(--lsffl-navy-light)
+  );
   border: 1px solid rgba(198, 161, 91, 0.55);
   border-top: 6px solid var(--lsffl-gold);
   box-shadow: var(--shadow-large);
@@ -162,18 +570,7 @@ a {
   line-height: 1;
 }
 
-.section-kicker {
-  position: relative;
-  z-index: 1;
-  margin: 0 0 8px;
-  color: var(--lsffl-gold-light);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-
-.story-section h1 {
+.story-section h2 {
   position: relative;
   z-index: 1;
   max-width: 900px;
@@ -219,7 +616,11 @@ a {
 
 .primary-button {
   color: var(--lsffl-navy-dark);
-  background: linear-gradient(180deg, var(--lsffl-gold-light), var(--lsffl-gold));
+  background: linear-gradient(
+    180deg,
+    var(--lsffl-gold-light),
+    var(--lsffl-gold)
+  );
   border: 1px solid #efd49a;
 }
 
@@ -241,139 +642,6 @@ a {
 }
 
 /* =========================================================
-   FEATURE CARDS
-========================================================= */
-
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
-  margin-top: 30px;
-}
-
-.feature-card {
-  padding: 30px;
-  background: var(--lsffl-white);
-  border: 1px solid rgba(7, 26, 47, 0.12);
-  border-top: 5px solid var(--lsffl-gold);
-  box-shadow: var(--shadow-small);
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
-}
-
-.feature-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-large);
-}
-
-.feature-label {
-  margin: 0 0 5px;
-  color: var(--lsffl-gold-dark);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-.feature-card h2 {
-  margin: 0 0 12px;
-  color: var(--lsffl-navy);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.5rem;
-  text-transform: uppercase;
-}
-
-.feature-card a {
-  display: inline-block;
-  margin-top: 6px;
-  color: var(--lsffl-navy);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-decoration: none;
-  text-transform: uppercase;
-  border-bottom: 2px solid var(--lsffl-gold);
-}
-
-/* =========================================================
-   CHAMPION SECTION
-========================================================= */
-
-.champion-section {
-  margin-top: 30px;
-  padding: 38px;
-  color: var(--lsffl-white);
-  background: linear-gradient(135deg, var(--lsffl-navy-dark), var(--lsffl-navy-light));
-  border: 1px solid rgba(198, 161, 91, 0.55);
-  box-shadow: var(--shadow-large);
-}
-
-.champion-heading {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 20px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(198, 161, 91, 0.35);
-}
-
-.champion-heading h2 {
-  margin: 0;
-  color: var(--lsffl-white);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2rem, 4vw, 3rem);
-  text-transform: uppercase;
-}
-
-.champion-year {
-  margin: 0;
-  color: var(--lsffl-gold-light);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(3rem, 7vw, 5.7rem);
-  font-weight: 700;
-  line-height: 0.9;
-}
-
-.champion-content {
-  display: grid;
-  grid-template-columns: 160px minmax(0, 1fr);
-  align-items: center;
-  gap: 30px;
-  padding-top: 30px;
-}
-
-.champion-badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 150px;
-  height: 150px;
-  margin: auto;
-  color: var(--lsffl-navy-dark);
-  background: radial-gradient(circle, var(--lsffl-gold-light), var(--lsffl-gold));
-  border: 8px double var(--lsffl-navy-dark);
-  border-radius: 50%;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-align: center;
-  text-transform: uppercase;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
-}
-
-.champion-details h3 {
-  margin: 0 0 10px;
-  color: var(--lsffl-gold-light);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(1.8rem, 4vw, 3rem);
-  text-transform: uppercase;
-}
-
-.champion-details p {
-  max-width: 780px;
-}
-
-/* =========================================================
    FOOTER
 ========================================================= */
 
@@ -381,7 +649,11 @@ a {
   padding: 38px 20px;
   color: var(--lsffl-steel);
   text-align: center;
-  background: linear-gradient(180deg, var(--lsffl-navy), var(--lsffl-navy-dark));
+  background: linear-gradient(
+    180deg,
+    var(--lsffl-navy),
+    var(--lsffl-navy-dark)
+  );
   border-top: 4px solid var(--lsffl-gold);
 }
 
@@ -398,22 +670,36 @@ a {
 }
 
 /* =========================================================
-   TABLET
+   RESPONSIVE
 ========================================================= */
+
+@media (max-width: 1100px) {
+  .mfl-franchise-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1000px) {
+  .homepage-feature-layout {
+    grid-template-columns: 1fr;
+  }
+}
 
 @media (max-width: 900px) {
   .site-header {
     height: 220px;
   }
 
-  .feature-grid {
-    grid-template-columns: 1fr;
+  .glance-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-/* =========================================================
-   MOBILE
-========================================================= */
+@media (max-width: 800px) {
+  .mfl-franchise-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
 
 @media (max-width: 680px) {
   .site-header {
@@ -439,11 +725,10 @@ a {
     margin-top: 24px;
   }
 
+  .champion-section,
+  .league-glance,
+  .live-franchises-section,
   .story-section {
-    padding: 30px 22px;
-  }
-
-  .champion-section {
     padding: 28px 22px;
   }
 
@@ -463,5 +748,23 @@ a {
 
   .champion-details p {
     text-align: left;
+  }
+
+  .glance-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .glance-card-wide {
+    grid-column: span 1;
+  }
+
+  .primary-link-card {
+    padding: 24px 22px;
+  }
+}
+
+@media (max-width: 520px) {
+  .mfl-franchise-grid {
+    grid-template-columns: 1fr;
   }
 }
