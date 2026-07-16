@@ -618,3 +618,132 @@ a {
     grid-column: span 1;
   }
 }
+/* =========================================================
+   LIVE FRANCHISES
+========================================================= */
+
+.live-franchises-section {
+  margin-top: 30px;
+  padding: 40px;
+  background: var(--lsffl-white);
+  border-top: 5px solid var(--lsffl-gold);
+  box-shadow: var(--shadow-large);
+}
+
+.mfl-franchise-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.mfl-franchise-card {
+  overflow: hidden;
+  background: var(--lsffl-white);
+  border: 1px solid rgba(7, 26, 47, 0.12);
+  border-top: 4px solid var(--lsffl-gold);
+  box-shadow: var(--shadow-small);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mfl-franchise-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-large);
+}
+
+.mfl-franchise-logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  padding: 20px;
+  background: linear-gradient(
+    135deg,
+    var(--lsffl-navy-dark),
+    var(--lsffl-navy-light)
+  );
+  border-bottom: 1px solid rgba(198, 161, 91, 0.45);
+}
+
+.mfl-franchise-logo {
+  display: block;
+  width: 100%;
+  max-width: 220px;
+  max-height: 82px;
+  object-fit: contain;
+}
+
+.mfl-franchise-logo-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90px;
+  height: 90px;
+  color: var(--lsffl-navy-dark);
+  background: var(--lsffl-gold);
+  border-radius: 50%;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+}
+
+.mfl-franchise-info {
+  padding: 22px;
+}
+
+.mfl-franchise-info h3 {
+  margin: 0 0 7px;
+  color: var(--lsffl-navy);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+  text-transform: uppercase;
+}
+
+.mfl-franchise-owner {
+  margin: 0 0 6px;
+  color: var(--lsffl-charcoal);
+  font-weight: 700;
+}
+
+.mfl-franchise-division {
+  margin: 0;
+  color: var(--lsffl-gold-dark);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mfl-data-message {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 24px;
+  color: var(--lsffl-navy);
+  background: var(--lsffl-ivory);
+  border-left: 4px solid var(--lsffl-gold);
+}
+
+.mfl-data-error {
+  color: #8b1e1e;
+  border-left-color: #8b1e1e;
+}
+
+@media (max-width: 1100px) {
+  .mfl-franchise-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .mfl-franchise-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .live-franchises-section {
+    padding: 28px 20px;
+  }
+
+  .mfl-franchise-grid {
+    grid-template-columns: 1fr;
+  }
+}
