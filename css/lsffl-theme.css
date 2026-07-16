@@ -136,8 +136,31 @@ a {
 }
 
 /* =========================================================
-   SHARED SECTION STYLES
+   STORY SECTION
 ========================================================= */
+
+.story-section {
+  position: relative;
+  padding: 48px;
+  overflow: hidden;
+  color: var(--lsffl-white);
+  background: linear-gradient(120deg, var(--lsffl-navy), var(--lsffl-navy-light));
+  border: 1px solid rgba(198, 161, 91, 0.55);
+  border-top: 6px solid var(--lsffl-gold);
+  box-shadow: var(--shadow-large);
+}
+
+.story-section::after {
+  content: "AS-39";
+  position: absolute;
+  right: 28px;
+  bottom: -42px;
+  color: rgba(255, 255, 255, 0.035);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(7rem, 18vw, 14rem);
+  font-weight: 700;
+  line-height: 1;
+}
 
 .section-kicker {
   position: relative;
@@ -150,197 +173,71 @@ a {
   text-transform: uppercase;
 }
 
-/* =========================================================
-   CHAMPION SECTION
-========================================================= */
-
-.champion-section {
-  padding: 38px;
-  color: var(--lsffl-white);
-  background: linear-gradient(
-    135deg,
-    var(--lsffl-navy-dark),
-    var(--lsffl-navy-light)
-  );
-  border: 1px solid rgba(198, 161, 91, 0.55);
-  box-shadow: var(--shadow-large);
-}
-
-.champion-heading {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 20px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(198, 161, 91, 0.35);
-}
-
-.champion-heading h1 {
-  margin: 0;
+.story-section h1 {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 0 22px;
   color: var(--lsffl-white);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.12;
   text-transform: uppercase;
 }
 
-.champion-year {
-  margin: 0;
-  color: var(--lsffl-gold-light);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(3rem, 7vw, 5.7rem);
-  font-weight: 700;
-  line-height: 0.9;
-}
-
-.champion-content {
-  display: grid;
-  grid-template-columns: 160px minmax(0, 1fr);
-  align-items: center;
-  gap: 30px;
-  padding-top: 30px;
-}
-
-.champion-badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 150px;
-  height: 150px;
-  margin: auto;
-  color: var(--lsffl-navy-dark);
-  background: radial-gradient(
-    circle,
-    var(--lsffl-gold-light),
-    var(--lsffl-gold)
-  );
-  border: 8px double var(--lsffl-navy-dark);
-  border-radius: 50%;
-  font-family: Georgia, "Times New Roman", serif;
+.story-section p {
+  position: relative;
+  z-index: 1;
+  max-width: 850px;
   font-size: 1rem;
+}
+
+.story-lead {
+  color: var(--lsffl-ivory);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.2rem !important;
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.primary-button,
+.secondary-button {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  margin-top: 16px;
+  padding: 13px 21px;
+  text-decoration: none;
+  font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  text-align: center;
   text-transform: uppercase;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
-.champion-details h2 {
-  margin: 0 0 10px;
+.primary-button {
+  color: var(--lsffl-navy-dark);
+  background: linear-gradient(180deg, var(--lsffl-gold-light), var(--lsffl-gold));
+  border: 1px solid #efd49a;
+}
+
+.secondary-button {
   color: var(--lsffl-gold-light);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(1.8rem, 4vw, 3rem);
-  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid var(--lsffl-gold);
 }
 
-.champion-details p {
-  max-width: 780px;
+.primary-button:hover,
+.secondary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 18px rgba(0, 0, 0, 0.2);
 }
 
-/* =========================================================
-   LEAGUE AT A GLANCE
-========================================================= */
-
-.league-glance {
-  margin-top: 30px;
-  padding: 40px;
-  background: var(--lsffl-white);
-  border-top: 5px solid var(--lsffl-gold);
-  box-shadow: var(--shadow-large);
-}
-
-.section-heading {
-  display: block;
-  margin-bottom: 28px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(7, 26, 47, 0.15);
-}
-
-.section-heading h2 {
-  margin: 0;
-  color: var(--lsffl-navy);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2rem, 4vw, 3rem);
-  text-transform: uppercase;
-}
-
-.dark-kicker {
-  color: var(--lsffl-gold-dark);
-}
-
-.section-intro {
-  max-width: 760px;
-  margin: 10px 0 0;
-  color: #4a5560;
-  text-align: left;
-  font-size: 1.05rem;
-  line-height: 1.6;
-}
-
-.glance-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 20px;
-}
-
-.glance-card {
-  min-height: 190px;
-  padding: 26px;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.98),
-      rgba(247, 243, 232, 0.92)
-    );
-  border: 1px solid rgba(7, 26, 47, 0.12);
-  border-top: 4px solid var(--lsffl-gold);
-  box-shadow: var(--shadow-small);
-}
-
-.glance-card-wide {
-  grid-column: span 2;
-  min-height: 160px;
-  background:
-    linear-gradient(
-      135deg,
-      var(--lsffl-navy),
-      var(--lsffl-navy-light)
-    );
-  color: var(--lsffl-white);
-}
-
-.glance-number {
-  margin: 0 0 6px;
-  color: var(--lsffl-navy);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2.8rem, 5vw, 4.8rem);
-  font-weight: 700;
-  line-height: 1;
-}
-
-.glance-label {
-  margin: 0 0 8px;
-  color: var(--lsffl-gold-light);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.glance-card h3 {
-  margin: 0 0 10px;
-  color: var(--lsffl-navy);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.25rem;
-  text-transform: uppercase;
-}
-
-.glance-card-wide h3 {
-  color: var(--lsffl-gold-light);
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
-}
-
-.glance-card p:last-child {
-  margin-bottom: 0;
+.secondary-button:hover {
+  color: var(--lsffl-navy-dark);
+  background: var(--lsffl-gold);
 }
 
 /* =========================================================
@@ -398,109 +295,82 @@ a {
 }
 
 /* =========================================================
-   STORY SECTION
+   CHAMPION SECTION
 ========================================================= */
 
-.story-section {
-  position: relative;
+.champion-section {
   margin-top: 30px;
-  padding: 48px;
-  overflow: hidden;
+  padding: 38px;
   color: var(--lsffl-white);
-  background: linear-gradient(
-    120deg,
-    var(--lsffl-navy),
-    var(--lsffl-navy-light)
-  );
+  background: linear-gradient(135deg, var(--lsffl-navy-dark), var(--lsffl-navy-light));
   border: 1px solid rgba(198, 161, 91, 0.55);
-  border-top: 6px solid var(--lsffl-gold);
   box-shadow: var(--shadow-large);
 }
 
-.story-section::after {
-  content: "AS-39";
-  position: absolute;
-  right: 28px;
-  bottom: -42px;
-  color: rgba(255, 255, 255, 0.035);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(7rem, 18vw, 14rem);
-  font-weight: 700;
-  line-height: 1;
+.champion-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(198, 161, 91, 0.35);
 }
 
-.story-section h2 {
-  position: relative;
-  z-index: 1;
-  max-width: 900px;
-  margin: 0 0 22px;
+.champion-heading h2 {
+  margin: 0;
   color: var(--lsffl-white);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  line-height: 1.12;
+  font-size: clamp(2rem, 4vw, 3rem);
   text-transform: uppercase;
 }
 
-.story-section p {
-  position: relative;
-  z-index: 1;
-  max-width: 850px;
-  font-size: 1rem;
-}
-
-.story-lead {
-  color: var(--lsffl-ivory);
+.champion-year {
+  margin: 0;
+  color: var(--lsffl-gold-light);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.2rem !important;
+  font-size: clamp(3rem, 7vw, 5.7rem);
+  font-weight: 700;
+  line-height: 0.9;
 }
 
-/* =========================================================
-   BUTTONS
-========================================================= */
+.champion-content {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  align-items: center;
+  gap: 30px;
+  padding-top: 30px;
+}
 
-.primary-button,
-.secondary-button {
-  position: relative;
-  z-index: 1;
-  display: inline-block;
-  margin-top: 16px;
-  padding: 13px 21px;
-  text-decoration: none;
-  font-size: 0.82rem;
+.champion-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+  margin: auto;
+  color: var(--lsffl-navy-dark);
+  background: radial-gradient(circle, var(--lsffl-gold-light), var(--lsffl-gold));
+  border: 8px double var(--lsffl-navy-dark);
+  border-radius: 50%;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.08em;
+  text-align: center;
   text-transform: uppercase;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    background 0.2s ease;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
 }
 
-.primary-button {
-  color: var(--lsffl-navy-dark);
-  background: linear-gradient(
-    180deg,
-    var(--lsffl-gold-light),
-    var(--lsffl-gold)
-  );
-  border: 1px solid #efd49a;
-}
-
-.secondary-button {
+.champion-details h3 {
+  margin: 0 0 10px;
   color: var(--lsffl-gold-light);
-  background: transparent;
-  border: 1px solid var(--lsffl-gold);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  text-transform: uppercase;
 }
 
-.primary-button:hover,
-.secondary-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 9px 18px rgba(0, 0, 0, 0.2);
-}
-
-.secondary-button:hover {
-  color: var(--lsffl-navy-dark);
-  background: var(--lsffl-gold);
+.champion-details p {
+  max-width: 780px;
 }
 
 /* =========================================================
@@ -511,11 +381,7 @@ a {
   padding: 38px 20px;
   color: var(--lsffl-steel);
   text-align: center;
-  background: linear-gradient(
-    180deg,
-    var(--lsffl-navy),
-    var(--lsffl-navy-dark)
-  );
+  background: linear-gradient(180deg, var(--lsffl-navy), var(--lsffl-navy-dark));
   border-top: 4px solid var(--lsffl-gold);
 }
 
@@ -542,19 +408,6 @@ a {
 
   .feature-grid {
     grid-template-columns: 1fr;
-  }
-
-  .glance-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .section-heading {
-    display: block;
-  }
-
-  .section-intro {
-    margin-top: 12px;
-    text-align: left;
   }
 }
 
@@ -586,9 +439,11 @@ a {
     margin-top: 24px;
   }
 
-  .champion-section,
-  .league-glance,
   .story-section {
+    padding: 30px 22px;
+  }
+
+  .champion-section {
     padding: 28px 22px;
   }
 
@@ -608,261 +463,5 @@ a {
 
   .champion-details p {
     text-align: left;
-  }
-
-  .glance-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .glance-card-wide {
-    grid-column: span 1;
-  }
-}
-/* =========================================================
-   LIVE FRANCHISES
-========================================================= */
-
-.live-franchises-section {
-  margin-top: 30px;
-  padding: 40px;
-  background: var(--lsffl-white);
-  border-top: 5px solid var(--lsffl-gold);
-  box-shadow: var(--shadow-large);
-}
-
-.mfl-franchise-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 22px;
-}
-
-.mfl-franchise-card {
-  overflow: hidden;
-  background: var(--lsffl-white);
-  border: 1px solid rgba(7, 26, 47, 0.12);
-  border-top: 4px solid var(--lsffl-gold);
-  box-shadow: var(--shadow-small);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.mfl-franchise-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-large);
-}
-
-.mfl-franchise-logo-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 120px;
-  padding: 20px;
-  background: linear-gradient(
-    135deg,
-    var(--lsffl-navy-dark),
-    var(--lsffl-navy-light)
-  );
-  border-bottom: 1px solid rgba(198, 161, 91, 0.45);
-}
-
-.mfl-franchise-logo {
-  display: block;
-  width: 100%;
-  max-width: 220px;
-  max-height: 82px;
-  object-fit: contain;
-}
-
-.mfl-franchise-logo-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 90px;
-  height: 90px;
-  color: var(--lsffl-navy-dark);
-  background: var(--lsffl-gold);
-  border-radius: 50%;
-  font-family: Georgia, "Times New Roman", serif;
-  font-weight: 700;
-}
-
-.mfl-franchise-info {
-  padding: 22px;
-}
-
-.mfl-franchise-info h3 {
-  margin: 0 0 7px;
-  color: var(--lsffl-navy);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.35rem;
-  text-transform: uppercase;
-}
-
-.mfl-franchise-owner {
-  margin: 0 0 6px;
-  color: var(--lsffl-charcoal);
-  font-weight: 700;
-}
-
-.mfl-franchise-division {
-  margin: 0;
-  color: var(--lsffl-gold-dark);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.mfl-data-message {
-  grid-column: 1 / -1;
-  margin: 0;
-  padding: 24px;
-  color: var(--lsffl-navy);
-  background: var(--lsffl-ivory);
-  border-left: 4px solid var(--lsffl-gold);
-}
-
-.mfl-data-error {
-  color: #8b1e1e;
-  border-left-color: #8b1e1e;
-}
-
-@media (max-width: 1100px) {
-  .mfl-franchise-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 800px) {
-  .mfl-franchise-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 520px) {
-  .live-franchises-section {
-    padding: 28px 20px;
-  }
-
-  .mfl-franchise-grid {
-    grid-template-columns: 1fr;
-/* =========================================================
-   HOMEPAGE FEATURE LAYOUT
-========================================================= */
-
-.homepage-feature-layout {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: stretch;
-  gap: 28px;
-  width: 100%;
-}
-
-/* LEFT HALF: CHAMPION */
-
-.homepage-feature-layout .champion-section {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-}
-
-.homepage-feature-layout .champion-content {
-  flex: 1;
-}
-
-/* RIGHT HALF: THREE STACKED LINKS */
-
-.homepage-primary-links {
-  display: grid;
-  grid-template-rows: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-  width: 100%;
-  height: 100%;
-}
-
-.primary-link-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 18px;
-
-  min-width: 0;
-  padding: 26px 28px;
-
-  background: var(--lsffl-white);
-  border: 1px solid rgba(7, 26, 47, 0.12);
-  border-left: 5px solid var(--lsffl-gold);
-  box-shadow: var(--shadow-small);
-
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.primary-link-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-large);
-}
-
-.primary-link-card h2 {
-  margin: 0 0 8px;
-  color: var(--lsffl-navy);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(1.35rem, 2vw, 1.9rem);
-  text-transform: uppercase;
-}
-
-.primary-link-card p {
-  margin-top: 0;
-}
-
-.primary-link-card a {
-  align-self: flex-start;
-  display: inline-block;
-  padding: 11px 16px;
-
-  color: var(--lsffl-navy-dark);
-  background: linear-gradient(
-    180deg,
-    var(--lsffl-gold-light),
-    var(--lsffl-gold)
-  );
-
-  border: 1px solid var(--lsffl-gold-dark);
-
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-decoration: none;
-  text-transform: uppercase;
-}
-
-.draft-link-card {
-  color: var(--lsffl-white);
-  background: linear-gradient(
-    135deg,
-    var(--lsffl-navy-dark),
-    var(--lsffl-navy-light)
-  );
-  border-left-color: var(--lsffl-gold-light);
-}
-
-.draft-link-card h2,
-.draft-link-card .feature-label {
-  color: var(--lsffl-gold-light);
-}
-
-/* STACK ONLY ON SMALLER SCREENS */
-
-@media (max-width: 1000px) {
-  .homepage-feature-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 650px) {
-  .primary-link-card {
-    padding: 24px 22px;
   }
 }
