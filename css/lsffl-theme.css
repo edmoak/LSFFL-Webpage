@@ -745,5 +745,120 @@ a {
 
   .mfl-franchise-grid {
     grid-template-columns: 1fr;
+     /* =========================================================
+   HOMEPAGE FEATURE LAYOUT
+========================================================= */
+
+.homepage-feature-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 28px;
+}
+
+.homepage-feature-layout .champion-section {
+  margin: 0;
+  height: 100%;
+}
+
+.homepage-primary-links {
+  display: grid;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.primary-link-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+
+  padding: 26px 28px;
+
+  background: var(--lsffl-white);
+  border: 1px solid rgba(7, 26, 47, 0.12);
+  border-left: 5px solid var(--lsffl-gold);
+  box-shadow: var(--shadow-small);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.primary-link-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-large);
+}
+
+.primary-link-card h2 {
+  margin: 0 0 7px;
+
+  color: var(--lsffl-navy);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.4rem, 2.2vw, 2rem);
+  text-transform: uppercase;
+}
+
+.primary-link-card p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.primary-link-card a {
+  flex: 0 0 auto;
+
+  display: inline-block;
+  padding: 11px 16px;
+
+  color: var(--lsffl-navy-dark);
+  background: linear-gradient(
+    180deg,
+    var(--lsffl-gold-light),
+    var(--lsffl-gold)
+  );
+
+  border: 1px solid var(--lsffl-gold-dark);
+
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.draft-link-card {
+  color: var(--lsffl-white);
+  background: linear-gradient(
+    135deg,
+    var(--lsffl-navy-dark),
+    var(--lsffl-navy-light)
+  );
+  border-left-color: var(--lsffl-gold-light);
+}
+
+.draft-link-card h2 {
+  color: var(--lsffl-gold-light);
+}
+
+.draft-link-card .feature-label {
+  color: var(--lsffl-gold-light);
+}
+
+@media (max-width: 1000px) {
+  .homepage-feature-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .primary-link-card {
+    display: block;
+    padding: 24px 22px;
+  }
+
+  .primary-link-card a {
+    margin-top: 18px;
+  }
+}
   }
 }
