@@ -1218,3 +1218,252 @@ a {
     height: 84%;
   }
 }
+/* =========================================================
+   DEFENDING CHAMPION IMAGE PANEL
+========================================================= */
+
+.champion-section.champion-image-panel {
+  position: relative;
+  display: block;
+  min-height: 360px;
+  padding: 0;
+  overflow: hidden;
+
+  color: var(--lsffl-white);
+
+  background-color: var(--lsffl-navy-dark);
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(4, 17, 31, 0.02) 0%,
+      rgba(4, 17, 31, 0.04) 42%,
+      rgba(4, 17, 31, 0.18) 58%,
+      rgba(4, 17, 31, 0.34) 100%
+    ),
+    url("../images/backgrounds/gomd-champ-ring.png");
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+
+  border: 1px solid rgba(198, 161, 91, 0.75);
+  box-shadow: var(--shadow-large);
+}
+
+.champion-image-panel .champion-overlay {
+  position: absolute;
+  z-index: 2;
+
+  top: 31%;
+  right: 4%;
+  bottom: 6%;
+  left: 46%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+
+  min-width: 0;
+}
+
+.champion-image-panel .champion-overlay h1 {
+  margin: 0;
+
+  color: var(--lsffl-white);
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.45rem, 2.35vw, 2.35rem);
+  font-weight: 700;
+  line-height: 1.05;
+  text-shadow:
+    0 2px 2px rgba(0, 0, 0, 0.8),
+    0 5px 14px rgba(0, 0, 0, 0.55);
+
+  text-transform: uppercase;
+}
+
+.champion-overlay-subtitle {
+  width: 100%;
+  margin: 5px 0 11px;
+  padding-bottom: 7px;
+
+  color: var(--lsffl-gold-light);
+
+  border-bottom: 1px solid rgba(226, 200, 140, 0.55);
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(0.82rem, 1.35vw, 1.1rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+
+  text-transform: uppercase;
+}
+
+.champion-result {
+  margin-bottom: 8px;
+}
+
+.champion-result p {
+  margin: 3px 0;
+  font-size: clamp(0.72rem, 1vw, 0.88rem);
+  line-height: 1.25;
+}
+
+.champion-result span {
+  display: block;
+
+  color: var(--lsffl-gold-light);
+
+  font-size: 0.68em;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+
+  text-transform: uppercase;
+}
+
+.champion-result strong {
+  color: var(--lsffl-white);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.06em;
+}
+
+.champion-result .championship-score {
+  margin-top: 5px;
+
+  color: var(--lsffl-gold-light);
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1rem, 1.55vw, 1.35rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.championship-season-button {
+  display: inline-block;
+
+  margin-top: 5px;
+  padding: 8px 12px;
+
+  color: var(--lsffl-gold-light);
+  background: rgba(4, 17, 31, 0.78);
+
+  border: 1px solid var(--lsffl-gold);
+
+  font-size: clamp(0.58rem, 0.8vw, 0.7rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+
+  text-decoration: none;
+  text-transform: uppercase;
+
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.championship-season-button:hover,
+.championship-season-button:focus-visible {
+  color: var(--lsffl-navy-dark);
+  background: var(--lsffl-gold-light);
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 9px 18px rgba(0, 0, 0, 0.38);
+}
+
+.championship-season-button:focus-visible {
+  outline: 3px solid var(--lsffl-white);
+  outline-offset: 3px;
+}
+
+/* TABLET */
+
+@media (max-width: 1000px) {
+  .champion-section.champion-image-panel {
+    min-height: 400px;
+  }
+
+  .champion-image-panel .champion-overlay {
+    top: 31%;
+    right: 5%;
+    bottom: 7%;
+    left: 47%;
+  }
+}
+
+/* PHONE */
+
+@media (max-width: 680px) {
+  .champion-section.champion-image-panel {
+    min-height: 360px;
+
+    background-position: center;
+    background-size: cover;
+  }
+
+  .champion-image-panel .champion-overlay {
+    top: 30%;
+    right: 4%;
+    bottom: 5%;
+    left: 45%;
+
+    padding: 8px;
+
+    background: linear-gradient(
+      90deg,
+      rgba(4, 17, 31, 0.12),
+      rgba(4, 17, 31, 0.72)
+    );
+  }
+
+  .champion-image-panel .champion-overlay h1 {
+    font-size: clamp(1.05rem, 5vw, 1.5rem);
+  }
+
+  .champion-overlay-subtitle {
+    margin-bottom: 7px;
+    font-size: 0.68rem;
+  }
+
+  .champion-result p {
+    font-size: 0.67rem;
+  }
+
+  .champion-result .championship-score {
+    font-size: 0.92rem;
+  }
+
+  .championship-season-button {
+    padding: 7px 8px;
+    font-size: 0.54rem;
+  }
+}
+
+/* VERY SMALL PHONE */
+
+@media (max-width: 430px) {
+  .champion-section.champion-image-panel {
+    min-height: 330px;
+  }
+
+  .champion-image-panel .champion-overlay {
+    top: 29%;
+    right: 3%;
+    left: 44%;
+  }
+
+  .champion-image-panel .champion-overlay h1 {
+    font-size: 1rem;
+  }
+
+  .champion-result span {
+    letter-spacing: 0.06em;
+  }
+}
