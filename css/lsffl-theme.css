@@ -1055,5 +1055,48 @@ a {
   .mfl-franchise-logo {
     max-width: 76px;
     max-height: 62px;
+     /* =========================================================
+   STORY LAYOUT
+========================================================= */
+
+.story-layout{
+
+    display:grid;
+
+    grid-template-columns:2fr 1fr;
+
+    gap:18px;
+
+    margin-top:18px;
+
+    align-items:start;
+
+}
+
+.story-sidebar{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+
+}
+
+.story-sidebar .glance-card{
+
+    min-height:140px;
+
+}
+
+@media(max-width:900px){
+
+.story-layout{
+
+grid-template-columns:1fr;
+
+}
+
+}
   }
 }
