@@ -78,7 +78,137 @@
     <div class="navigation-inner">
 
       <a class="active" href="index.html">Home</a>
-      <a href="#">League</a>
+
+      <div class="nav-dropdown locker-room-dropdown">
+
+        <button
+          class="nav-dropdown-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="locker-room-menu"
+        >
+          Locker Room
+          <span class="nav-dropdown-arrow" aria-hidden="true">▾</span>
+        </button>
+
+        <div
+          id="locker-room-menu"
+          class="nav-dropdown-menu"
+          role="menu"
+          aria-label="Locker Room"
+        >
+
+          <div class="locker-room-heading">
+            <span class="locker-room-kicker">Team Operations</span>
+            <strong>LSFFL Locker Room</strong>
+          </div>
+
+          <div class="locker-room-grid">
+
+            <a
+              class="locker-room-button"
+              href="https://www48.myfantasyleague.com/2026/lineup?L=46007&FRANCHISE=0001"
+              target="_blank"
+              rel="noopener"
+              role="menuitem"
+            >
+              <span class="locker-room-icon" aria-hidden="true">🏈</span>
+              <span>
+                <strong>Submit Lineup</strong>
+                <small>Set weekly starters</small>
+              </span>
+            </a>
+
+            <a
+              class="locker-room-button"
+              href="https://www48.myfantasyleague.com/2026/add_drop?LEAGUE_ID=46007&FRANCHISE=0001&SELECT=Select+Franchise"
+              target="_blank"
+              rel="noopener"
+              role="menuitem"
+            >
+              <span class="locker-room-icon" aria-hidden="true">↕</span>
+              <span>
+                <strong>Add / Drop Players</strong>
+                <small>Manage free agents</small>
+              </span>
+            </a>
+
+            <a
+              class="locker-room-button"
+              href="https://www48.myfantasyleague.com/2026/options?LEAGUE_ID=46007&FRANCHISE=0001&O=05&SELECT=Select+Franchise"
+              target="_blank"
+              rel="noopener"
+              role="menuitem"
+            >
+              <span class="locker-room-icon" aria-hidden="true">🤝</span>
+              <span>
+                <strong>Propose Trade</strong>
+                <small>Send a trade offer</small>
+              </span>
+            </a>
+
+            <button class="locker-room-button is-disabled" type="button" disabled>
+              <span class="locker-room-icon" aria-hidden="true">👥</span>
+              <span>
+                <strong>My Roster</strong>
+                <small>Link will be added next</small>
+              </span>
+            </button>
+
+            <button class="locker-room-button is-disabled" type="button" disabled>
+              <span class="locker-room-icon" aria-hidden="true">📬</span>
+              <span>
+                <strong>Pending Trades</strong>
+                <small>Link will be added next</small>
+              </span>
+            </button>
+
+            <button class="locker-room-button is-disabled" type="button" disabled>
+              <span class="locker-room-icon" aria-hidden="true">📋</span>
+              <span>
+                <strong>Transactions</strong>
+                <small>Link will be added next</small>
+              </span>
+            </button>
+
+            <button class="locker-room-button is-disabled" type="button" disabled>
+              <span class="locker-room-icon" aria-hidden="true">✚</span>
+              <span>
+                <strong>Injured Reserve</strong>
+                <small>Link will be added next</small>
+              </span>
+            </button>
+
+            <button class="locker-room-button is-disabled" type="button" disabled>
+              <span class="locker-room-icon" aria-hidden="true">🚌</span>
+              <span>
+                <strong>Taxi Squad</strong>
+                <small>Link will be added next</small>
+              </span>
+            </button>
+
+            <button class="locker-room-button is-disabled" type="button" disabled>
+              <span class="locker-room-icon" aria-hidden="true">📅</span>
+              <span>
+                <strong>League Calendar</strong>
+                <small>Link will be added next</small>
+              </span>
+            </button>
+
+            <button class="locker-room-button is-disabled" type="button" disabled>
+              <span class="locker-room-icon" aria-hidden="true">📊</span>
+              <span>
+                <strong>Live Scoring</strong>
+                <small>Link will be added next</small>
+              </span>
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
       <a href="#">Franchises</a>
       <a href="#">History</a>
       <a href="#">Records</a>
@@ -89,13 +219,7 @@
 
   <main class="page-content">
 
-    <!-- =====================================================
-         HOMEPAGE FEATURE AREA
-    ====================================================== -->
-
     <section class="homepage-feature-layout">
-
-      <!-- LEFT COLUMN: DEFENDING CHAMPION -->
 
       <article
         class="champion-section champion-image-panel"
@@ -138,8 +262,6 @@
         </div>
 
       </article>
-
-      <!-- RIGHT COLUMN: IMPORTANT LINKS -->
 
       <div class="homepage-primary-links">
 
@@ -237,10 +359,6 @@
 
     </section>
 
-    <!-- =====================================================
-         LEAGUE AT A GLANCE
-    ====================================================== -->
-
     <section class="league-glance">
 
       <div class="section-heading">
@@ -290,10 +408,6 @@
 
     </section>
 
-    <!-- =====================================================
-         LIVE FRANCHISES
-    ====================================================== -->
-
     <section class="live-franchises-section">
 
       <div class="section-heading">
@@ -321,10 +435,6 @@
       </div>
 
     </section>
-
-    <!-- =====================================================
-         OUR STORY + LEAGUE STATS
-    ====================================================== -->
 
     <section class="story-layout">
 
@@ -414,6 +524,7 @@
   </footer>
 
   <script src="js/mfl-data.js"></script>
+  <script src="js/locker-room.js"></script>
 
 </body>
 
