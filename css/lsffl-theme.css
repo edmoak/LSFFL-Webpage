@@ -999,6 +999,7 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
 /* =========================================================
    HORIZONTAL FRANCHISE CARDS
 ========================================================= */
@@ -1043,63 +1044,6 @@ a {
   display: none;
 }
 
-@media (max-width: 520px) {
-  .mfl-franchise-card {
-    grid-template-columns: 90px minmax(0, 1fr);
-  }
-
-  .mfl-franchise-logo-wrap {
-    min-height: 82px;
-  }
-
-  .mfl-franchise-logo {
-    max-width: 76px;
-    max-height: 62px;
-     /* =========================================================
-   STORY LAYOUT
-========================================================= */
-
-.story-layout{
-
-    display:grid;
-
-    grid-template-columns:2fr 1fr;
-
-    gap:18px;
-
-    margin-top:18px;
-
-    align-items:start;
-
-}
-
-.story-sidebar{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:14px;
-
-}
-
-.story-sidebar .glance-card{
-
-    min-height:140px;
-
-}
-
-@media(max-width:900px){
-
-.story-layout{
-
-grid-template-columns:1fr;
-
-}
-
-}
-  }
-}
 /* =========================================================
    STORY + STATS SPLIT LAYOUT
 ========================================================= */
@@ -1131,14 +1075,12 @@ grid-template-columns:1fr;
   height: 100%;
   margin: 0;
   padding: 14px;
-
   color: var(--lsffl-white);
   background: linear-gradient(
     135deg,
     var(--lsffl-navy),
     var(--lsffl-navy-light)
   );
-
   border: 1px solid rgba(198, 161, 91, 0.45);
   border-top: 4px solid var(--lsffl-gold);
 }
@@ -1155,7 +1097,11 @@ grid-template-columns:1fr;
   color: var(--lsffl-ivory);
 }
 
-@media (max-width: 900px) {
+/* =========================================================
+   RESPONSIVE OVERRIDES
+========================================================= */
+
+@media (max-width: 1000px) {
   .story-layout {
     grid-template-columns: 1fr;
   }
@@ -1169,5 +1115,20 @@ grid-template-columns:1fr;
 @media (max-width: 600px) {
   .story-sidebar {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .mfl-franchise-card {
+    grid-template-columns: 90px minmax(0, 1fr);
+  }
+
+  .mfl-franchise-logo-wrap {
+    min-height: 82px;
+  }
+
+  .mfl-franchise-logo {
+    max-width: 76px;
+    max-height: 62px;
   }
 }
