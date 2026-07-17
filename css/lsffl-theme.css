@@ -1132,3 +1132,89 @@ a {
     max-height: 62px;
   }
 }
+/* =========================================================
+   FINAL HOMEPAGE POLISH
+   Story Stats + Larger Franchise Logos
+========================================================= */
+
+/* COMPLETED SEASONS / FOUNDERS ACTIVE */
+
+.story-sidebar .glance-card {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  grid-template-areas:
+    "number title"
+    "number description";
+  align-items: center;
+  column-gap: 14px;
+  row-gap: 2px;
+  padding: 16px 18px;
+}
+
+.story-sidebar .glance-number {
+  grid-area: number;
+  align-self: center;
+  margin: 0;
+
+  color: var(--lsffl-gold-light);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+}
+
+.story-sidebar .glance-card h3 {
+  grid-area: title;
+  align-self: end;
+  margin: 0;
+
+  color: var(--lsffl-white);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1rem;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.story-sidebar .glance-card p:last-child {
+  grid-area: description;
+  align-self: start;
+  margin: 3px 0 0;
+
+  color: var(--lsffl-ivory);
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+/* LARGER FRANCHISE LOGOS */
+
+.mfl-franchise-logo-wrap {
+  padding: 3px;
+  overflow: hidden;
+}
+
+.mfl-franchise-logo {
+  width: 96%;
+  height: 88%;
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
+}
+
+/* SMALL SCREEN ADJUSTMENTS */
+
+@media (max-width: 600px) {
+  .story-sidebar .glance-card {
+    grid-template-columns: 52px minmax(0, 1fr);
+    padding: 14px;
+  }
+
+  .story-sidebar .glance-number {
+    font-size: 2.2rem;
+  }
+
+  .mfl-franchise-logo {
+    width: 94%;
+    height: 84%;
+  }
+}
