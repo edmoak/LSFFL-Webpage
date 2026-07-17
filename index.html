@@ -11,21 +11,115 @@
 
   <meta
     name="description"
-    content="The official website of the Lamad Squad Fantasy Football League, established in 2000 in La Maddalena, Italy."
+    content="The official website of the Lamad Squad Fantasy Football League, founded in La Maddalena, Italy."
   >
 
   <title>Lamad Squad Fantasy Football League</title>
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="images/branding/lsffl-favicon.png"
+  >
 
   <link rel="stylesheet" href="css/lsffl-theme.css">
 </head>
 
 <body>
 
-  <header
-    class="site-header"
-    role="img"
-    aria-label="Lamad Squad Fantasy Football League nautical header"
-  ></header>
+  <header class="site-header">
+
+    <div class="site-header-inner">
+
+      <div class="site-header-crest-wrap">
+        <img
+          class="site-header-crest"
+          src="images/branding/lsffl-crest.png"
+          alt="Lamad Squad Fantasy Football League crest"
+        >
+      </div>
+
+      <div class="site-header-title">
+
+        <h1>Lamad Squad</h1>
+
+        <p class="site-header-league-name">
+          Fantasy Football League
+        </p>
+
+        <p class="site-header-stars" aria-hidden="true">
+          ★ ★ ★ ★ ★
+        </p>
+
+        <p class="site-header-tagline">
+          A Tradition Born Across the Sea
+        </p>
+
+      </div>
+
+      <div class="site-header-stats">
+
+        <div class="header-stat">
+          <img
+            class="header-stat-icon"
+            src="images/icons/anchor.png"
+            alt=""
+            aria-hidden="true"
+          >
+
+          <div>
+            <strong>26 Seasons</strong>
+            <span>Of Competition</span>
+          </div>
+        </div>
+
+        <div class="header-stat">
+          <img
+            class="header-stat-icon"
+            src="images/icons/trophy.png"
+            alt=""
+            aria-hidden="true"
+          >
+
+          <div>
+            <strong>13 Champions</strong>
+            <span>In League History</span>
+          </div>
+        </div>
+
+        <div class="header-stat">
+          <img
+            class="header-stat-icon"
+            src="images/icons/football.png"
+            alt=""
+            aria-hidden="true"
+          >
+
+          <div>
+            <strong>16 Franchises</strong>
+            <span>Competing Every Season</span>
+          </div>
+        </div>
+
+        <div class="header-stat">
+          <img
+            class="header-stat-icon"
+            src="images/icons/globe.png"
+            alt=""
+            aria-hidden="true"
+          >
+
+          <div>
+            <strong>La Maddalena, Italy</strong>
+            <span>Where It All Began</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </header>
 
   <nav class="main-navigation" aria-label="Main navigation">
     <div class="navigation-inner">
@@ -34,7 +128,6 @@
       <a href="#">League</a>
       <a href="#">Franchises</a>
       <a href="#">History</a>
-      <a href="#">Hall of Fame</a>
       <a href="#">Records</a>
       <a href="#">Constitution</a>
 
@@ -97,51 +190,93 @@
 
       <div class="homepage-primary-links">
 
-        <article class="primary-link-card draft-link-card">
+        <article class="primary-link-card">
 
-          <div>
+          <div class="primary-link-card-icon">
+            <img
+              src="images/icons/draft-center.png"
+              alt=""
+              aria-hidden="true"
+            >
+          </div>
+
+          <div class="primary-link-card-copy">
             <p class="feature-label">2026 Season</p>
             <h2>Draft Center</h2>
 
             <p>
-              Access the upcoming draft, draft order, previous selections,
-              owner tendencies, draft history, and live draft information.
+              Access draft order, previous picks, owner tendencies,
+              draft history, and live draft information.
             </p>
           </div>
 
-          <a href="#">Enter Draft Center</a>
+          <span class="primary-link-card-arrow" aria-hidden="true">
+            ›
+          </span>
+
+          <a href="#" aria-label="Enter the 2026 Draft Center">
+            Enter Draft Center
+          </a>
 
         </article>
 
         <article class="primary-link-card">
 
-          <div>
+          <div class="primary-link-card-icon">
+            <img
+              src="images/icons/hall-of-champions.png"
+              alt=""
+              aria-hidden="true"
+            >
+          </div>
+
+          <div class="primary-link-card-copy">
             <p class="feature-label">Championship History</p>
             <h2>Hall of Champions</h2>
 
             <p>
               Explore every LSFFL champion and championship season
-              dating back to the inaugural 2000 campaign.
+              dating back to 2000.
             </p>
           </div>
 
-          <a href="#">View Champions</a>
+          <span class="primary-link-card-arrow" aria-hidden="true">
+            ›
+          </span>
+
+          <a href="#" aria-label="View the LSFFL Hall of Champions">
+            View Champions
+          </a>
 
         </article>
 
         <article class="primary-link-card">
 
-          <div>
+          <div class="primary-link-card-icon">
+            <img
+              src="images/icons/hall-of-fame.png"
+              alt=""
+              aria-hidden="true"
+            >
+          </div>
+
+          <div class="primary-link-card-copy">
             <p class="feature-label">League Legacy</p>
             <h2>Hall of Fame</h2>
 
             <p>
-              Celebrate the owners, franchises, dynasties, and memorable
-              achievements that helped shape the LSFFL.
+              Celebrate the owners, dynasties, and memorable
+              achievements that shaped our league.
             </p>
           </div>
 
-          <a href="#">Enter the Hall</a>
+          <span class="primary-link-card-arrow" aria-hidden="true">
+            ›
+          </span>
+
+          <a href="#" aria-label="Enter the LSFFL Hall of Fame">
+            Enter the Hall
+          </a>
 
         </article>
 
@@ -240,8 +375,6 @@
 
     <section class="story-layout">
 
-      <!-- LEFT COLUMN: OUR STORY -->
-
       <section class="story-section">
 
         <p class="section-kicker">
@@ -278,8 +411,6 @@
         </a>
 
       </section>
-
-      <!-- RIGHT COLUMN: LEAGUE STATS -->
 
       <aside class="story-sidebar">
 
