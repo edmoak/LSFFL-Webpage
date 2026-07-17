@@ -23,100 +23,52 @@
   >
 
   <link rel="stylesheet" href="css/lsffl-theme.css">
+
+  <style>
+    .site-header {
+      background: #03172a;
+      border-top: 1px solid #c99a3d;
+      border-bottom: 1px solid #c99a3d;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .site-header-banner-wrap {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      line-height: 0;
+    }
+
+    .site-header-banner {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    @media (max-width: 900px) {
+      .site-header-banner-wrap {
+        overflow-x: auto;
+      }
+
+      .site-header-banner {
+        min-width: 1100px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
   <header class="site-header">
 
-    <div class="site-header-inner">
-
-      <div class="site-header-crest-wrap">
-        <img
-          class="site-header-crest"
-          src="images/branding/lsffl-crest.png"
-          alt="Lamad Squad Fantasy Football League crest"
-        >
-      </div>
-
-      <div class="site-header-title">
-
-        <h1>Lamad Squad</h1>
-
-        <p class="site-header-league-name">
-          Fantasy Football League
-        </p>
-
-        <p class="site-header-stars" aria-hidden="true">
-          ★ ★ ★ ★ ★
-        </p>
-
-        <p class="site-header-tagline">
-          A Tradition Born Across the Sea
-        </p>
-
-      </div>
-
-      <div class="site-header-stats">
-
-        <div class="header-stat">
-          <img
-            class="header-stat-icon"
-            src="images/icons/anchor.png"
-            alt=""
-            aria-hidden="true"
-          >
-
-          <div>
-            <strong>26 Seasons</strong>
-            <span>Of Competition</span>
-          </div>
-        </div>
-
-        <div class="header-stat">
-          <img
-            class="header-stat-icon"
-            src="images/icons/trophy.png"
-            alt=""
-            aria-hidden="true"
-          >
-
-          <div>
-            <strong>13 Champions</strong>
-            <span>In League History</span>
-          </div>
-        </div>
-
-        <div class="header-stat">
-          <img
-            class="header-stat-icon"
-            src="images/icons/football.png"
-            alt=""
-            aria-hidden="true"
-          >
-
-          <div>
-            <strong>16 Franchises</strong>
-            <span>Competing Every Season</span>
-          </div>
-        </div>
-
-        <div class="header-stat">
-          <img
-            class="header-stat-icon"
-            src="images/icons/globe.png"
-            alt=""
-            aria-hidden="true"
-          >
-
-          <div>
-            <strong>La Maddalena, Italy</strong>
-            <span>Where It All Began</span>
-          </div>
-        </div>
-
-      </div>
-
+    <div class="site-header-banner-wrap">
+      <img
+        class="site-header-banner"
+        src="images/branding/lsffl-wordmark-v2.png"
+        alt="Lamad Squad Fantasy Football League banner featuring the USS Emory S. Land, 26 seasons, 16 franchises, and La Maddalena, Italy"
+      >
     </div>
 
   </header>
