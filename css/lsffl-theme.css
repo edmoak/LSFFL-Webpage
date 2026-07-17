@@ -1981,3 +1981,265 @@ a {
     font-size: clamp(1.05rem, 5vw, 1.5rem);
   }
 }
+/* =========================================================
+   FINAL VISUAL ALIGNMENT
+   Header artwork, larger branding, larger stat icons,
+   and corrected champion-panel proportions
+========================================================= */
+
+/* ---------- HEADER BACKGROUND ARTWORK ---------- */
+
+.site-header {
+  height: 310px;
+  background-color: var(--lsffl-navy-dark);
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(4, 17, 31, 0.18) 0%,
+      rgba(4, 17, 31, 0.06) 48%,
+      rgba(4, 17, 31, 0.22) 100%
+    ),
+    url("../images/backgrounds/home-header-v2.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center 54%;
+}
+
+/* ---------- HEADER LAYOUT ---------- */
+
+.site-header-inner {
+  grid-template-columns:
+    minmax(240px, 300px)
+    minmax(500px, 1fr)
+    minmax(330px, 390px);
+  gap: 18px;
+  width: min(1560px, calc(100% - 42px));
+  padding: 14px 0;
+}
+
+/* ---------- LARGER LEAGUE CREST ---------- */
+
+.site-header-crest {
+  width: min(100%, 280px);
+  max-height: 285px;
+  object-fit: contain;
+}
+
+/* ---------- CENTER TITLE ---------- */
+
+.site-header-title {
+  transform: translateY(-2px);
+}
+
+.site-header-title h1 {
+  font-size: clamp(3.1rem, 5.35vw, 5.8rem);
+  line-height: 0.9;
+}
+
+.site-header-league-name {
+  margin-top: 12px;
+  font-size: clamp(1.15rem, 2.05vw, 2.05rem);
+}
+
+.site-header-stars {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-size: 1.35rem;
+}
+
+.site-header-tagline {
+  margin-top: 2px;
+  font-size: clamp(1.05rem, 1.75vw, 1.6rem);
+}
+
+/* ---------- LARGER HEADER STAT ICONS ---------- */
+
+.site-header-stats {
+  padding: 10px 0 10px 20px;
+}
+
+.header-stat {
+  grid-template-columns: 78px minmax(0, 1fr);
+  gap: 14px;
+  padding: 5px 0;
+}
+
+.header-stat-icon {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
+
+.header-stat strong {
+  font-size: clamp(1rem, 1.4vw, 1.4rem);
+}
+
+.header-stat span {
+  margin-top: 3px;
+  font-size: clamp(0.68rem, 0.88vw, 0.84rem);
+}
+
+/* ---------- PAGE WIDTH ---------- */
+
+:root {
+  --page-width: 1500px;
+}
+
+/* ---------- FEATURE ROW ---------- */
+
+.homepage-feature-layout {
+  grid-template-columns: minmax(0, 1.8fr) minmax(390px, 0.8fr);
+  gap: 14px;
+  align-items: stretch;
+}
+
+/* ---------- DEFENDING CHAMPION PANEL ---------- */
+
+.champion-section.champion-image-panel {
+  width: 100%;
+  min-height: 0;
+  height: auto;
+  aspect-ratio: 2.48 / 1;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Keep the overlay positioned over the right side of the original art. */
+.champion-image-panel .champion-overlay {
+  top: 28%;
+  right: 4%;
+  bottom: 7%;
+  left: 46%;
+}
+
+.champion-image-panel .champion-overlay h1 {
+  font-size: clamp(1.45rem, 2.25vw, 2.3rem);
+}
+
+.champion-overlay-subtitle {
+  font-size: clamp(0.78rem, 1.15vw, 1rem);
+}
+
+.champion-result p {
+  font-size: clamp(0.7rem, 0.92vw, 0.85rem);
+}
+
+.champion-result .championship-score {
+  font-size: clamp(1rem, 1.4vw, 1.3rem);
+}
+
+/* ---------- RIGHT-SIDE CARDS ---------- */
+
+.homepage-primary-links {
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.primary-link-card {
+  min-height: 0;
+  height: 100%;
+  grid-template-columns: 112px minmax(0, 1fr) 34px;
+}
+
+.primary-link-card-icon img {
+  width: 82px;
+  height: 82px;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 1280px) {
+  .site-header {
+    height: 290px;
+  }
+
+  .site-header-inner {
+    grid-template-columns:
+      minmax(210px, 255px)
+      minmax(430px, 1fr)
+      minmax(300px, 340px);
+  }
+
+  .site-header-crest {
+    width: 235px;
+  }
+
+  .header-stat {
+    grid-template-columns: 62px minmax(0, 1fr);
+  }
+
+  .header-stat-icon {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .site-header {
+    height: auto;
+  }
+
+  .homepage-feature-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .champion-section.champion-image-panel {
+    aspect-ratio: 2.35 / 1;
+  }
+}
+
+@media (max-width: 760px) {
+  .site-header-inner {
+    width: min(100% - 22px, 700px);
+  }
+
+  .site-header-crest {
+    width: 150px;
+    max-height: 160px;
+  }
+
+  .site-header-title h1 {
+    font-size: clamp(2.3rem, 11vw, 4rem);
+  }
+
+  .site-header-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .header-stat {
+    grid-template-columns: 50px minmax(0, 1fr);
+  }
+
+  .header-stat-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .champion-section.champion-image-panel {
+    aspect-ratio: auto;
+    min-height: 360px;
+    background-size: cover;
+  }
+
+  .champion-image-panel .champion-overlay {
+    top: 29%;
+    right: 4%;
+    bottom: 5%;
+    left: 44%;
+  }
+}
+
+@media (max-width: 520px) {
+  .site-header-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .primary-link-card {
+    grid-template-columns: 86px minmax(0, 1fr) 28px;
+  }
+
+  .primary-link-card-icon img {
+    width: 62px;
+    height: 62px;
+  }
+}
