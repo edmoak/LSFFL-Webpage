@@ -644,3 +644,66 @@ ul.tabs .active a {
         font-size: 18px;
     }
 }
+/* =========================================================
+   MFL MAIN TAB MENU
+   Overrides the built-in horizontal page navigation
+   ========================================================= */
+
+.myfantasyleague_tabmenu,
+.myfantasyleague_tabmenu.main_tabmenu {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 8px 14px !important;
+    background: var(--lsffl-navy-dark) !important;
+    border: 0 !important;
+    border-bottom: 3px solid var(--lsffl-gold) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.22) !important;
+    text-align: left !important;
+}
+
+.myfantasyleague_tabmenu label {
+    display: inline-block !important;
+    margin: 2px 4px 2px 0 !important;
+    padding: 9px 15px !important;
+    background: var(--lsffl-navy) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    border-radius: 4px !important;
+    color: #ffffff !important;
+    cursor: pointer !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.025em !important;
+    line-height: 1.2 !important;
+    text-transform: uppercase !important;
+}
+
+.myfantasyleague_tabmenu label:hover {
+    background: var(--lsffl-gold) !important;
+    border-color: var(--lsffl-gold-light) !important;
+    color: var(--lsffl-navy-dark) !important;
+}
+
+.myfantasyleague_tabmenu input[type="radio"],
+.myfantasyleague_tabmenu input[type="checkbox"] {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+.myfantasyleague_tabmenu input:checked + label {
+    background: var(--lsffl-gold) !important;
+    border-color: var(--lsffl-gold-light) !important;
+    color: var(--lsffl-navy-dark) !important;
+    box-shadow: inset 0 -3px 0 var(--lsffl-gold-dark) !important;
+}
+
+.myfantasyleague_tabmenu .homepagetabs {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+}
