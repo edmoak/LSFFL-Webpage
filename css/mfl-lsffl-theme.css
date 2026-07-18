@@ -726,3 +726,156 @@ ul.tabs .active a {
         font-size: 11px !important;
     }
 }
+/* =========================================================
+   LSFFL CUSTOM MFL HEADER
+   ========================================================= */
+
+.lsffl-mfl-header {
+    width: 100%;
+    background:
+        linear-gradient(
+            135deg,
+            #061525 0%,
+            #0b2239 58%,
+            #163a5b 100%
+        );
+    border-bottom: 4px solid var(--lsffl-gold);
+    box-shadow: 0 6px 18px rgba(6, 21, 37, 0.24);
+}
+
+.lsffl-mfl-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: min(1280px, calc(100% - 36px));
+    min-height: 128px;
+    margin: 0 auto;
+    padding: 20px 4px;
+}
+
+.lsffl-mfl-brand {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+.lsffl-mfl-brand:hover {
+    color: #ffffff !important;
+}
+
+.lsffl-mfl-brand__mark {
+    display: grid;
+    place-items: center;
+    width: 82px;
+    height: 82px;
+    flex: 0 0 82px;
+    background:
+        radial-gradient(
+            circle at 35% 30%,
+            #e3c77a,
+            #c59a3d 48%,
+            #8f681f 100%
+        );
+    border: 3px solid #f4e4ae;
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 5px rgba(197, 154, 61, 0.16),
+        0 6px 18px rgba(0, 0, 0, 0.28);
+    color: var(--lsffl-navy-dark);
+    font-size: 17px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-align: center;
+}
+
+.lsffl-mfl-brand__text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+}
+
+.lsffl-mfl-brand__eyebrow {
+    margin-bottom: 7px;
+    color: var(--lsffl-gold-light);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.lsffl-mfl-brand__name {
+    color: #ffffff;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(30px, 3vw, 46px);
+    font-weight: 700;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+}
+
+.lsffl-mfl-brand__league {
+    margin-top: 6px;
+    color: #dfe7ee;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.lsffl-mfl-header__identity {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 7px;
+    padding-left: 24px;
+    text-align: right;
+}
+
+.lsffl-mfl-header__section {
+    color: #ffffff;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+.lsffl-mfl-header__season {
+    color: var(--lsffl-gold-light);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+@media screen and (max-width: 760px) {
+    .lsffl-mfl-header__inner {
+        align-items: flex-start;
+        min-height: auto;
+        padding: 18px 2px;
+    }
+
+    .lsffl-mfl-brand {
+        gap: 12px;
+    }
+
+    .lsffl-mfl-brand__mark {
+        width: 62px;
+        height: 62px;
+        flex-basis: 62px;
+        font-size: 13px;
+    }
+
+    .lsffl-mfl-brand__name {
+        font-size: 25px;
+    }
+
+    .lsffl-mfl-brand__league {
+        font-size: 10px;
+        letter-spacing: 0.08em;
+    }
+
+    .lsffl-mfl-header__identity {
+        display: none;
+    }
+}
