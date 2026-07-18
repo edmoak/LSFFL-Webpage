@@ -879,3 +879,58 @@ ul.tabs .active a {
         display: none;
     }
 }
+/* =========================================================
+   LSFFL MAIN NAVIGATION
+   ========================================================= */
+
+.lsffl-main-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    background: #0b2239;
+    border-top: 1px solid rgba(255,255,255,.08);
+    border-bottom: 3px solid var(--lsffl-gold);
+
+    padding: 0 20px;
+}
+
+.lsffl-main-nav a {
+    display: block;
+    padding: 16px 18px;
+
+    color: #ffffff !important;
+
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+
+    text-decoration: none;
+
+    border-bottom: 3px solid transparent;
+
+    transition: all .20s ease;
+}
+
+.lsffl-main-nav a:hover {
+    color: var(--lsffl-gold-light) !important;
+    border-bottom-color: var(--lsffl-gold);
+    background: rgba(255,255,255,.05);
+}
+
+@media (max-width:900px){
+
+    .lsffl-main-nav{
+        justify-content:flex-start;
+        overflow-x:auto;
+        flex-wrap:nowrap;
+    }
+
+    .lsffl-main-nav a{
+        white-space:nowrap;
+    }
+
+}
