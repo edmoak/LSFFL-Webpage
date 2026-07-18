@@ -1,1 +1,646 @@
+/* =========================================================
+   LSFFL MFL THEME
+   Lamad Squad Fantasy Football League
+   Phase 1 – Global Colors, Tables, Forms and Buttons
+   ========================================================= */
 
+/* Keep the existing MFL Scripts structure as our foundation */
+@import url("https://www.mflscripts.com/mfl-apps/global/css/light.css");
+
+/* =========================================================
+   LSFFL DESIGN TOKENS
+   ========================================================= */
+
+:root {
+    --lsffl-navy-dark: #061525;
+    --lsffl-navy: #0b2239;
+    --lsffl-navy-light: #163a5b;
+
+    --lsffl-gold-dark: #8f681f;
+    --lsffl-gold: #c59a3d;
+    --lsffl-gold-light: #e3c77a;
+
+    --lsffl-page: #e8edf2;
+    --lsffl-card: #ffffff;
+    --lsffl-card-alt: #f4f7f9;
+
+    --lsffl-text: #17212b;
+    --lsffl-muted: #66717d;
+    --lsffl-border: #cbd3da;
+
+    --lsffl-success: #236b45;
+    --lsffl-warning: #9a5b13;
+    --lsffl-danger: #9e2f2f;
+
+    --lsffl-radius: 6px;
+    --lsffl-shadow: 0 3px 12px rgba(6, 21, 37, 0.14);
+}
+
+/* =========================================================
+   PAGE FOUNDATION
+   ========================================================= */
+
+html {
+    background: var(--lsffl-page);
+}
+
+body {
+    margin: 0;
+    background:
+        linear-gradient(
+            180deg,
+            var(--lsffl-navy-dark) 0,
+            var(--lsffl-navy-dark) 132px,
+            var(--lsffl-page) 132px,
+            var(--lsffl-page) 100%
+        );
+    color: var(--lsffl-text);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+body,
+input,
+select,
+textarea,
+button {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+img {
+    max-width: 100%;
+}
+
+a {
+    color: var(--lsffl-navy-light);
+    text-decoration: none;
+    transition:
+        color 0.15s ease,
+        background-color 0.15s ease,
+        border-color 0.15s ease;
+}
+
+a:hover,
+a:focus {
+    color: var(--lsffl-gold-dark);
+    text-decoration: none;
+}
+
+/* Main MFL page container */
+.pagebody,
+#pagebody {
+    width: min(1280px, calc(100% - 32px));
+    margin: 0 auto 30px;
+    background: transparent;
+}
+
+/* =========================================================
+   TOP MFL NAVIGATION
+   ========================================================= */
+
+.myfantasyleague_menu {
+    background: var(--lsffl-navy-dark) !important;
+    border-bottom: 3px solid var(--lsffl-gold) !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.28);
+}
+
+.myfantasyleague_menu,
+.myfantasyleague_menu ul,
+.myfantasyleague_menu li {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.myfantasyleague_menu ul li a,
+.myfantasyleague_menu .item,
+.myfantasyleague_menu label {
+    color: #ffffff !important;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.myfantasyleague_menu ul li a:hover,
+.myfantasyleague_menu ul li:hover > a,
+.myfantasyleague_menu .item:hover {
+    background: var(--lsffl-gold) !important;
+    color: var(--lsffl-navy-dark) !important;
+}
+
+.myfantasyleague_menu ul ul {
+    background: var(--lsffl-navy) !important;
+    border: 1px solid var(--lsffl-gold) !important;
+    box-shadow: var(--lsffl-shadow);
+}
+
+.myfantasyleague_menu ul ul li a {
+    background: var(--lsffl-navy) !important;
+    color: #ffffff !important;
+    text-transform: none;
+}
+
+.myfantasyleague_menu ul ul li a:hover {
+    background: var(--lsffl-gold) !important;
+    color: var(--lsffl-navy-dark) !important;
+}
+
+/* =========================================================
+   LEAGUE HEADER AREA
+   ========================================================= */
+
+#league_banner,
+.league_banner,
+#banner {
+    background:
+        linear-gradient(
+            135deg,
+            var(--lsffl-navy-dark),
+            var(--lsffl-navy-light)
+        ) !important;
+    border-bottom: 4px solid var(--lsffl-gold) !important;
+    color: #ffffff !important;
+}
+
+#league_banner a,
+.league_banner a,
+#banner a {
+    color: #ffffff !important;
+}
+
+#league_banner a:hover,
+.league_banner a:hover,
+#banner a:hover {
+    color: var(--lsffl-gold-light) !important;
+}
+
+/* =========================================================
+   PAGE TITLES
+   ========================================================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--lsffl-navy-dark);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+h1 {
+    margin: 0 0 18px;
+    font-size: 28px;
+}
+
+h2 {
+    font-size: 22px;
+}
+
+h3 {
+    font-size: 18px;
+}
+
+.pagetitle,
+.page_title,
+.report-title,
+.reporttitle {
+    margin: 18px 0;
+    padding: 13px 18px;
+    background:
+        linear-gradient(
+            135deg,
+            var(--lsffl-navy-dark),
+            var(--lsffl-navy-light)
+        ) !important;
+    border-left: 5px solid var(--lsffl-gold);
+    border-radius: var(--lsffl-radius);
+    box-shadow: var(--lsffl-shadow);
+    color: #ffffff !important;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+/* =========================================================
+   MFL MODULES AND CARDS
+   ========================================================= */
+
+.homepagecolumn {
+    vertical-align: top;
+}
+
+.homepagemodule,
+.report,
+.mobile-wrap,
+form {
+    border-radius: var(--lsffl-radius);
+}
+
+.homepagemodule {
+    margin-bottom: 18px;
+    overflow: hidden;
+    background: var(--lsffl-card);
+    border: 1px solid var(--lsffl-border);
+    box-shadow: var(--lsffl-shadow);
+}
+
+.homepagemodule caption,
+.homepagemodule .moduleheader,
+.homepagemodule h3,
+.homepagemodule h4 {
+    margin: 0;
+    padding: 11px 14px;
+    background:
+        linear-gradient(
+            135deg,
+            var(--lsffl-navy-dark),
+            var(--lsffl-navy-light)
+        ) !important;
+    border-bottom: 3px solid var(--lsffl-gold);
+    color: #ffffff !important;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.025em;
+}
+
+.homepagemodule .modulebody,
+.homepagemodule .modulecontent {
+    padding: 12px;
+    background: var(--lsffl-card);
+}
+
+/* =========================================================
+   TABLES AND REPORTS
+   ========================================================= */
+
+table {
+    border-collapse: collapse;
+}
+
+.report,
+table.report {
+    width: 100%;
+    margin: 0 0 18px;
+    overflow: hidden;
+    background: var(--lsffl-card);
+    border: 1px solid var(--lsffl-border);
+    border-radius: var(--lsffl-radius);
+    box-shadow: var(--lsffl-shadow);
+}
+
+.report caption,
+table.report caption {
+    padding: 12px 14px;
+    background:
+        linear-gradient(
+            135deg,
+            var(--lsffl-navy-dark),
+            var(--lsffl-navy-light)
+        ) !important;
+    border-bottom: 3px solid var(--lsffl-gold);
+    color: #ffffff !important;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.025em;
+    text-align: left;
+}
+
+.report th,
+table.report th,
+th {
+    padding: 10px 9px;
+    background: var(--lsffl-navy) !important;
+    border: 1px solid #27435d;
+    color: #ffffff !important;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.report td,
+table.report td,
+td {
+    padding: 9px;
+    border: 1px solid var(--lsffl-border);
+}
+
+.report tr:nth-child(even) td,
+table.report tr:nth-child(even) td {
+    background: var(--lsffl-card-alt);
+}
+
+.report tr:nth-child(odd) td,
+table.report tr:nth-child(odd) td {
+    background: var(--lsffl-card);
+}
+
+.report tr:hover td,
+table.report tr:hover td {
+    background: #fff6dc !important;
+}
+
+.report .divisionheader,
+.report .division-header,
+.divisionheader {
+    background: var(--lsffl-gold) !important;
+    color: var(--lsffl-navy-dark) !important;
+    font-weight: 700;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+.button,
+.btn,
+a.button,
+a.btn {
+    display: inline-block;
+    min-height: 36px;
+    padding: 9px 16px;
+    background:
+        linear-gradient(
+            180deg,
+            var(--lsffl-gold-light),
+            var(--lsffl-gold)
+        ) !important;
+    border: 1px solid var(--lsffl-gold-dark) !important;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(6, 21, 37, 0.16);
+    color: var(--lsffl-navy-dark) !important;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none !important;
+}
+
+button:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+.button:hover,
+.btn:hover,
+a.button:hover,
+a.btn:hover {
+    background:
+        linear-gradient(
+            180deg,
+            #eed995,
+            var(--lsffl-gold-light)
+        ) !important;
+    border-color: var(--lsffl-navy-dark) !important;
+    color: var(--lsffl-navy-dark) !important;
+}
+
+button:active,
+input[type="button"]:active,
+input[type="submit"]:active,
+.button:active,
+.btn:active {
+    transform: translateY(1px);
+}
+
+/* =========================================================
+   FORM CONTROLS
+   ========================================================= */
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+input[type="date"],
+input[type="time"],
+select,
+textarea {
+    max-width: 100%;
+    min-height: 36px;
+    padding: 8px 10px;
+    background: #ffffff;
+    border: 1px solid #aeb9c3;
+    border-radius: 4px;
+    color: var(--lsffl-text);
+    font-size: 14px;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--lsffl-gold);
+    box-shadow: 0 0 0 3px rgba(197, 154, 61, 0.2);
+    outline: none;
+}
+
+label {
+    color: var(--lsffl-navy-dark);
+    font-weight: 700;
+}
+
+/* =========================================================
+   TABS
+   ========================================================= */
+
+.tabs,
+.tabmenu,
+ul.tabs {
+    margin: 0 0 16px;
+    padding: 5px;
+    background: var(--lsffl-navy-dark);
+    border: 1px solid var(--lsffl-navy);
+    border-radius: var(--lsffl-radius);
+}
+
+.tabs li,
+.tabmenu li,
+ul.tabs li {
+    display: inline-block;
+    margin: 2px;
+}
+
+.tabs a,
+.tabmenu a,
+ul.tabs a {
+    display: inline-block;
+    padding: 8px 13px;
+    border-radius: 4px;
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+.tabs a:hover,
+.tabmenu a:hover,
+ul.tabs a:hover,
+.tabs .active a,
+.tabmenu .active a,
+ul.tabs .active a {
+    background: var(--lsffl-gold) !important;
+    color: var(--lsffl-navy-dark) !important;
+}
+
+/* =========================================================
+   STATUS AND INFORMATION MESSAGES
+   ========================================================= */
+
+.warning,
+.error,
+.alert,
+.success,
+.info,
+.notice {
+    margin: 12px 0;
+    padding: 12px 14px;
+    border-radius: var(--lsffl-radius);
+    font-weight: 700;
+}
+
+.warning,
+.alert {
+    background: #fff3d1;
+    border: 1px solid #d59a2f;
+    color: #704509;
+}
+
+.error {
+    background: #fde4e4;
+    border: 1px solid #bf5d5d;
+    color: #7b2020;
+}
+
+.success {
+    background: #e3f3e9;
+    border: 1px solid #5c9a72;
+    color: #205d39;
+}
+
+.info,
+.notice {
+    background: #e5eef7;
+    border: 1px solid #6c91b5;
+    color: #234c70;
+}
+
+/* =========================================================
+   PLAYER AND FRANCHISE ELEMENTS
+   ========================================================= */
+
+.franchiseicon,
+.franchise-logo,
+.team-logo {
+    max-width: 55px;
+    max-height: 55px;
+    object-fit: contain;
+}
+
+.player,
+.playername,
+.franchisename {
+    font-weight: 700;
+}
+
+.player a,
+.playername a,
+.franchisename a {
+    color: var(--lsffl-navy-light);
+}
+
+.player a:hover,
+.playername a:hover,
+.franchisename a:hover {
+    color: var(--lsffl-gold-dark);
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+#footer,
+.footer,
+.pagefooter {
+    margin-top: 28px;
+    padding: 22px 16px;
+    background: var(--lsffl-navy-dark) !important;
+    border-top: 4px solid var(--lsffl-gold);
+    color: #dfe7ee !important;
+    text-align: center;
+}
+
+#footer a,
+.footer a,
+.pagefooter a {
+    color: var(--lsffl-gold-light) !important;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media screen and (max-width: 800px) {
+    body {
+        background:
+            linear-gradient(
+                180deg,
+                var(--lsffl-navy-dark) 0,
+                var(--lsffl-navy-dark) 95px,
+                var(--lsffl-page) 95px,
+                var(--lsffl-page) 100%
+            );
+        font-size: 13px;
+    }
+
+    .pagebody,
+    #pagebody {
+        width: calc(100% - 16px);
+    }
+
+    .homepagecolumn {
+        display: block;
+        width: 100% !important;
+    }
+
+    .report,
+    table.report {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    button,
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"],
+    .button,
+    .btn {
+        max-width: 100%;
+    }
+
+    .pagetitle,
+    .page_title,
+    .report-title,
+    .reporttitle {
+        font-size: 18px;
+    }
+}
