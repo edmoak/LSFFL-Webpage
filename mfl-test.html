@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>LSFFL MFL Connection Test</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background: #f4ecd8;
+      color: #161616;
+      font-family: Arial, sans-serif;
+    }
+
+    .test-card {
+      max-width: 850px;
+      margin: 0 auto;
+      padding: 30px;
+      background: #fffaf0;
+      border: 3px solid #b08a3c;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #080e25;
+    }
+
+    #status {
+      padding: 14px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      border-radius: 6px;
+      background: #ececec;
+    }
+
+    #results {
+      padding: 18px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      background: #080e25;
+      color: #ffffff;
+      border-radius: 6px;
+      min-height: 150px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="test-card">
+    <h1>LSFFL Live MFL Test</h1>
+
+    <div id="status">Connecting to MFL...</div>
+
+    <pre id="results">Waiting for league data.</pre>
+  </main>
+
+  <script>
+    const mflUrl =
+      "https://www48.myfantasyleague.com/2026/export?TYPE=league&L=46007";
+
+    const statusBox = document.getElementById("status");
+    const resultsBox = document.getElementById("results");
+
+    fetch(mflUrl, {
+      method: "GET",
+      cache: "no-store"
+    })
+      .then(function(response) {
+        if (!response.ok) {
+          throw new Error(
+            "MFL returned HTTP status " + response.status
+          );
+        }
+
+        return response.text();
+      })
+      .then(function(xmlText) {
+        statusBox.textContent =
+          "SUCCESS — GitHub Pages can read live MFL data.";
+
+        resultsBox.textContent = xmlText;
+      })
+      .catch(function(error) {
+        statusBox.textContent =
+          "FAILED — The browser could not read the MFL data.";
+
+        resultsBox.textContent =
+          error.name + ": " + error.message;
+      });
+  </script>
+
+</body>
+</html>
