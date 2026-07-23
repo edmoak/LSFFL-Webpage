@@ -55,6 +55,95 @@
   <main class="test-card">
     <h1>LSFFL Live MFL Test</h1>
 
+    <div id="status">Connecting through the LSFFL Worker...</div>
+
+    <pre id="results">Waiting for league data.</pre>
+  </main>
+
+  <script>
+    const workerUrl =
+      "https://lsffl-mfl-proxy.edward-moak.workers.dev/";
+
+    const statusBox = document.getElementById("status");
+    const resultsBox = document.getElementById("results");
+
+    fetch(workerUrl, {
+      method: "GET",
+      cache: "no-store"
+    })
+      .then(function(response) {
+        if (!response.ok) {
+          throw new Error(
+            "Worker returned HTTP status " + response.status
+          );
+        }
+
+        return response.text();
+      })
+      .then(function(xmlText) {
+        const parser = new DOMParser();
+        const xmlDocument = parser.parseFromString(
+          xmlText,
+          "application/xml"
+        );
+
+        const league = xmlDocument.querySelector("league");
+
+        if (!league) {
+          throw new Error(
+            "The Worker responded, but no league data was found."
+          );
+        }
+
+        const leagueName =
+          league.getAttribute("name") || "League name unavailable";
+
+        const leagueId =
+          league.getAttribute("id") || "League ID unavailable";
+
+        statusBox.textContent =
+          "SUCCESS — GitHub Pages can read live MFL data.";
+
+        resultsBox.textContent =
+          "League Name: " + leagueName + "\n" +
+          "League ID: " + leagueId + "\n\n" +
+          "Live connection confirmed.";
+      })
+      .catch(function(error) {
+        statusBox.textContent =
+          "FAILED — The GitHub page could not read the Worker.";
+
+        resultsBox.textContent =
+          error.name + ": " + error.message;
+      });
+  </script>
+
+</body>
+</html>
+      padding: 14px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      border-radius: 6px;
+      background: #ececec;
+    }
+
+    #results {
+      padding: 18px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      background: #080e25;
+      color: #ffffff;
+      border-radius: 6px;
+      min-height: 150px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="test-card">
+    <h1>LSFFL Live MFL Test</h1>
+
     <div id="status">Connecting to MFL...</div>
 
     <pre id="results">Waiting for league data.</pre>
