@@ -3,573 +3,865 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>The Navy Times | LSFFL</title>
-
-  <meta
-    name="description"
-    content="Official announcements, commissioner messages, and upcoming events for the Lamad Squad Fantasy Football League."
-  >
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Montserrat:wght@500;600;700;800;900&display=swap"
-    rel="stylesheet"
-  >
+  <title>LSFFL News Center | The Navy Times</title>
+  <meta name="description" content="Official news, commissioner dispatches, and league announcements from the Lamad Squad Fantasy Football League.">
 
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Montserrat:wght@500;600;700;800&display=swap');
+
     :root {
-      --navy-dark: #061c30;
-      --navy: #0b263f;
-      --navy-mid: #153b5b;
-      --gold: #c8a45a;
-      --gold-light: #e4cf97;
-      --cream: #f5efe2;
-      --paper: #fbf8f1;
-      --ink: #17212a;
-      --muted: #61707d;
-      --line: #d9ccb0;
-      --white: #ffffff;
-      --shadow: 0 12px 34px rgba(6, 28, 48, 0.18);
+      --navy-black: #020b14;
+      --navy-deep: #031628;
+      --navy: #062944;
+      --navy-mid: #0a3a5d;
+      --gold: #d4af37;
+      --gold-dark: #ad7f18;
+      --gold-soft: #ead79b;
+      --ivory: #f8f5ee;
+      --ivory-deep: #eee7d8;
+      --ink: #102131;
+      --muted: #62707c;
+      --line: rgba(212,175,55,.78);
+      --shadow: 0 18px 44px rgba(0,0,0,.28);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
       color: var(--ink);
+      font-family: 'Montserrat', Arial, sans-serif;
       background:
-        linear-gradient(rgba(6, 28, 48, 0.84), rgba(6, 28, 48, 0.9)),
-        url("https://edmoak.github.io/LSFFL-Webpage/images/backgrounds/home-header-v2.png")
-        center top / cover fixed;
-      font-family: Georgia, "Times New Roman", serif;
+        radial-gradient(circle at 15% 8%, rgba(20,78,116,.45), transparent 30%),
+        radial-gradient(circle at 86% 28%, rgba(8,55,89,.35), transparent 32%),
+        linear-gradient(135deg, var(--navy-black), var(--navy-deep) 42%, #041f36 100%);
+      background-attachment: fixed;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
+    a { color: inherit; text-decoration: none; }
+
+    .site {
+      min-height: 100vh;
+      background-image:
+        linear-gradient(rgba(2,11,20,.82), rgba(2,11,20,.89)),
+        url("https://github.com/edmoak/LSFFL-Webpage/blob/main/images/backgrounds/lsfflbackground.png?raw=true");
+      background-size: cover;
+      background-position: center top;
+      background-attachment: fixed;
     }
 
-    .site-header {
-      background: rgba(6, 28, 48, 0.98);
-      border-bottom: 4px solid var(--gold);
-      box-shadow: 0 5px 18px rgba(0, 0, 0, 0.25);
-    }
-
-    .site-header__inner {
-      width: min(1180px, calc(100% - 28px));
-      min-height: 74px;
+    .shell {
+      width: min(1180px, calc(100% - 32px));
       margin: 0 auto;
+    }
+
+    .topbar {
+      border-bottom: 2px solid rgba(212,175,55,.52);
+      background: rgba(1,10,18,.88);
+      backdrop-filter: blur(8px);
+    }
+
+    .topbar-inner {
+      min-height: 44px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 24px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: var(--white);
-    }
-
-    .brand__mark {
-      width: 48px;
-      height: 48px;
-      object-fit: contain;
-    }
-
-    .brand__text strong {
-      display: block;
-      font-family: "Cinzel", Georgia, serif;
-      font-size: 17px;
-      letter-spacing: 0.055em;
-    }
-
-    .brand__text span {
-      display: block;
-      margin-top: 3px;
-      color: var(--gold-light);
-      font-family: "Montserrat", Arial, sans-serif;
-      font-size: 9px;
+      gap: 18px;
+      color: #fff;
+      font-size: 11px;
       font-weight: 800;
-      letter-spacing: 0.13em;
+      letter-spacing: .09em;
       text-transform: uppercase;
     }
 
-    .site-nav {
+    .topbar-links {
       display: flex;
       flex-wrap: wrap;
-      justify-content: flex-end;
-      gap: 4px;
+      gap: 20px;
     }
 
-    .site-nav a {
-      padding: 10px 11px;
-      color: #e8edf1;
-      border-bottom: 2px solid transparent;
-      font-family: "Montserrat", Arial, sans-serif;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.055em;
-      text-transform: uppercase;
-    }
-
-    .site-nav a:hover,
-    .site-nav a[aria-current="page"] {
-      color: var(--gold-light);
-      border-bottom-color: var(--gold);
-    }
-
-    .page-shell {
-      width: min(1100px, calc(100% - 28px));
-      margin: 28px auto 42px;
-      background: var(--paper);
-      border: 1px solid rgba(200, 164, 90, 0.62);
-      box-shadow: var(--shadow);
-    }
+    .topbar a:hover { color: var(--gold); }
 
     .masthead {
-      padding: 30px 28px 24px;
-      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 7px solid var(--gold);
       background:
-        linear-gradient(rgba(251, 248, 241, 0.95), rgba(245, 239, 226, 0.98)),
-        repeating-linear-gradient(
-          0deg,
-          rgba(11, 38, 63, 0.025) 0,
-          rgba(11, 38, 63, 0.025) 1px,
-          transparent 1px,
-          transparent 5px
-        );
-      border-bottom: 5px double var(--navy);
+        linear-gradient(90deg, rgba(1,10,18,.94), rgba(3,22,40,.56) 50%, rgba(1,10,18,.94)),
+        url("https://github.com/edmoak/LSFFL-Webpage/blob/main/images/banners/lsfflbannerbackground.png?raw=true")
+        center/cover no-repeat;
+      box-shadow: 0 10px 32px rgba(0,0,0,.42);
     }
 
-    .masthead__eyebrow {
-      margin: 0 0 9px;
-      color: var(--navy-mid);
-      font-family: "Montserrat", Arial, sans-serif;
-      font-size: 10px;
-      font-weight: 900;
-      letter-spacing: 0.22em;
+    .masthead::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(180deg, transparent 58%, rgba(0,0,0,.32));
+    }
+
+    .masthead-inner {
+      position: relative;
+      z-index: 1;
+      min-height: 230px;
+      display: grid;
+      grid-template-columns: 230px minmax(0,1fr);
+      align-items: center;
+      gap: 18px;
+      padding: 18px 22px;
+    }
+
+    .crest {
+      width: 230px;
+      height: 230px;
+      object-fit: contain;
+      filter: drop-shadow(0 12px 20px rgba(0,0,0,.48));
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--gold);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: .23em;
       text-transform: uppercase;
     }
 
     .masthead h1 {
       margin: 0;
-      color: var(--navy-dark);
-      font-family: "Cinzel", Georgia, serif;
-      font-size: clamp(42px, 7vw, 76px);
-      line-height: 0.96;
-      letter-spacing: 0.04em;
+      color: #fff;
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: clamp(38px, 5vw, 66px);
+      font-weight: 800;
+      line-height: .98;
+      letter-spacing: .025em;
       text-transform: uppercase;
+      text-shadow: 0 4px 9px rgba(0,0,0,.65);
     }
 
-    .masthead__rule {
+    .masthead-subtitle {
+      margin: 13px 0 0;
+      color: var(--gold-soft);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 21px;
+      font-style: italic;
+      font-weight: 600;
+      letter-spacing: .07em;
+    }
+
+    .page {
+      padding: 34px 0 60px;
+    }
+
+    .section-label {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      gap: 14px;
-      max-width: 800px;
-      margin: 14px auto 9px;
-      color: var(--gold);
-      font-family: "Cinzel", Georgia, serif;
-      font-size: 18px;
+      gap: 16px;
+      margin: 0 0 18px;
     }
 
-    .masthead__rule::before,
-    .masthead__rule::after {
+    .section-label::before,
+    .section-label::after {
       content: "";
-      height: 2px;
-      background: var(--gold);
+      height: 4px;
+      background: linear-gradient(90deg, transparent, var(--gold));
     }
 
-    .masthead__tagline {
+    .section-label::after {
+      background: linear-gradient(90deg, var(--gold), transparent);
+    }
+
+    .section-label h2 {
       margin: 0;
-      color: #31465a;
-      font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: 19px;
-      font-style: italic;
-      font-weight: 700;
+      color: #fff;
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: clamp(18px, 2.3vw, 27px);
+      font-weight: 800;
+      letter-spacing: .045em;
+      text-align: center;
+      text-transform: uppercase;
     }
 
-    .edition-bar {
+    .feature-card,
+    .announcement-card,
+    .archive-card {
+      border: 2px solid rgba(212,175,55,.86);
+      background:
+        linear-gradient(rgba(248,245,238,.985), rgba(248,245,238,.985)),
+        repeating-linear-gradient(0deg, rgba(6,41,68,.025) 0, rgba(6,41,68,.025) 1px, transparent 1px, transparent 5px);
+      box-shadow: var(--shadow);
+    }
+
+    .feature-card {
+      overflow: hidden;
+      margin-bottom: 34px;
+    }
+
+    .feature-top {
       display: flex;
+      align-items: center;
       justify-content: space-between;
       gap: 18px;
-      padding: 9px 20px;
-      color: var(--cream);
-      background: var(--navy);
-      font-family: "Montserrat", Arial, sans-serif;
-      font-size: 9px;
+      padding: 15px 22px;
+      border-bottom: 4px solid var(--gold);
+      color: #fff;
+      background: linear-gradient(100deg, var(--navy-deep), var(--navy-mid));
+    }
+
+    .feature-top span {
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .feature-top .edition {
+      color: var(--gold-soft);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 14px;
+      font-style: italic;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: none;
+    }
+
+    .feature-body {
+      padding: clamp(24px, 4vw, 48px);
+    }
+
+    .article-title {
+      max-width: 920px;
+      margin: 0 0 13px;
+      color: var(--navy-deep);
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: clamp(30px, 4vw, 50px);
       font-weight: 800;
-      letter-spacing: 0.08em;
+      line-height: 1.06;
+      letter-spacing: -.015em;
+    }
+
+    .article-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      margin-bottom: 26px;
+      padding-bottom: 18px;
+      border-bottom: 2px solid rgba(173,127,24,.42);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .05em;
       text-transform: uppercase;
     }
 
-    .content {
-      padding: 26px;
+    .article-meta strong { color: var(--gold-dark); }
+
+    .article-copy {
+      max-width: 920px;
+      color: #253746;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(16px, 1.7vw, 19px);
+      line-height: 1.75;
     }
 
-    .panel {
-      margin-bottom: 22px;
-      background: var(--cream);
-      border: 1px solid var(--line);
-      box-shadow: 0 4px 12px rgba(6, 28, 48, 0.08);
+    .article-copy p {
+      margin: 0 0 1.15em;
     }
 
-    .panel:last-child {
-      margin-bottom: 0;
-    }
+    .article-copy p:last-child { margin-bottom: 0; }
 
-    .panel__heading {
+    .loading,
+    .empty {
       margin: 0;
-      padding: 14px 18px;
-      color: var(--white);
-      background: var(--navy);
-      border-bottom: 3px solid var(--gold);
-      font-family: "Cinzel", Georgia, serif;
-      font-size: 22px;
-      line-height: 1;
-      letter-spacing: 0.025em;
+      color: #5d6871;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 17px;
+      font-style: italic;
+    }
+
+    .archive-section { margin-bottom: 34px; }
+
+    .archive-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 16px;
+    }
+
+    .archive-card {
+      position: relative;
+      min-height: 210px;
+      padding: 22px 21px 20px;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+
+    .archive-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--gold);
+      box-shadow: 0 22px 44px rgba(0,0,0,.34);
+    }
+
+    .archive-kicker {
+      margin: 0 0 12px;
+      color: var(--gold-dark);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .13em;
       text-transform: uppercase;
     }
 
-    .panel__body {
-      padding: 20px;
+    .archive-title {
+      margin: 0 0 12px;
+      color: var(--navy-deep);
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 19px;
+      font-weight: 800;
+      line-height: 1.15;
     }
 
-    .dispatch {
-      position: relative;
+    .archive-date {
+      margin: 0 0 15px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .archive-teaser {
+      margin: 0 0 28px;
+      color: #425463;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 13px;
+      line-height: 1.48;
+    }
+
+    .archive-link {
+      position: absolute;
+      left: 21px;
+      bottom: 18px;
+      color: var(--gold-dark);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .archive-link::after { content: " →"; }
+
+    .archive-status {
+      grid-column: 1 / -1;
+      padding: 24px;
+      border: 2px solid rgba(212,175,55,.52);
+      background: rgba(3,22,40,.78);
+      color: #f1e8d2;
+      text-align: center;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 15px;
+    }
+
+    .announcement-card {
+      display: grid;
+      grid-template-columns: 150px minmax(0,1fr);
       overflow: hidden;
     }
 
-    .dispatch::after {
-      content: "⚓";
-      position: absolute;
-      right: 18px;
-      bottom: 4px;
-      color: rgba(11, 38, 63, 0.06);
-      font-size: 120px;
-      line-height: 1;
-      pointer-events: none;
-    }
-
-    .dispatch__date {
-      margin: 0 0 7px;
-      color: #8d6824;
-      font-family: "Montserrat", Arial, sans-serif;
-      font-size: 9px;
-      font-weight: 900;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-
-    .dispatch h3 {
-      margin: 0 0 12px;
-      color: var(--navy-dark);
-      font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: 29px;
-      line-height: 1.05;
-    }
-
-    .dispatch p {
-      position: relative;
-      z-index: 1;
-      margin: 0 0 13px;
-      max-width: 850px;
-      font-size: 16px;
-      line-height: 1.6;
-    }
-
-    .dispatch p:last-child {
-      margin-bottom: 0;
-    }
-
-    .signature {
-      margin-top: 18px !important;
-      color: var(--navy);
-      font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: 19px !important;
-      font-style: italic;
-      font-weight: 700;
-    }
-
-    .two-column {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 22px;
-    }
-
-    .announcement-list {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .announcement-list li {
-      position: relative;
-      padding: 12px 0 12px 23px;
-      border-bottom: 1px solid var(--line);
-      font-size: 15px;
-      line-height: 1.4;
-    }
-
-    .announcement-list li:last-child {
-      border-bottom: 0;
-    }
-
-    .announcement-list li::before {
-      content: "⚓";
-      position: absolute;
-      left: 0;
-      top: 11px;
-      color: var(--gold);
-      font-size: 12px;
-    }
-
-    .event-list {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .event {
-      display: grid;
-      grid-template-columns: 116px minmax(0, 1fr);
-      gap: 14px;
+    .announcement-mark {
+      display: flex;
       align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--line);
+      justify-content: center;
+      min-height: 210px;
+      border-right: 4px solid var(--gold);
+      background: linear-gradient(160deg, var(--navy-mid), var(--navy-deep));
     }
 
-    .event:last-child {
-      border-bottom: 0;
+    .announcement-mark img {
+      width: 104px;
+      height: 104px;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 12px rgba(0,0,0,.32));
     }
 
-    .event__date {
-      color: var(--navy-dark);
-      font-family: "Montserrat", Arial, sans-serif;
-      font-size: 11px;
+    .announcement-body {
+      padding: 26px 30px 28px;
+    }
+
+    .announcement-body h3 {
+      margin: 0 0 7px;
+      color: var(--navy-deep);
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: clamp(22px, 3vw, 33px);
+      line-height: 1.1;
+    }
+
+    .announcement-meta {
+      margin: 0 0 18px;
+      color: var(--gold-dark);
+      font-size: 10px;
       font-weight: 900;
-      letter-spacing: 0.03em;
+      letter-spacing: .07em;
       text-transform: uppercase;
     }
 
-    .event__name {
-      font-size: 15px;
-      font-weight: 700;
-      line-height: 1.3;
+    .announcement-copy {
+      color: #324656;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 16px;
+      line-height: 1.62;
     }
+
+    .announcement-copy p { margin: 0 0 .9em; }
+    .announcement-copy p:last-child { margin-bottom: 0; }
 
     .footer {
-      padding: 19px 20px;
-      color: #dbe4eb;
-      background: var(--navy-dark);
-      border-top: 4px solid var(--gold);
-      text-align: center;
+      border-top: 5px solid var(--gold);
+      background: #010a12;
+      color: #c7d0d8;
+    }
+
+    .footer-inner {
+      min-height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 18px 0;
+      font-size: 11px;
     }
 
     .footer strong {
       display: block;
-      color: var(--gold-light);
-      font-family: "Cinzel", Georgia, serif;
-      font-size: 13px;
-      letter-spacing: 0.04em;
-    }
-
-    .footer span {
-      display: block;
-      margin-top: 5px;
-      font-family: "Montserrat", Arial, sans-serif;
-      font-size: 8px;
-      font-weight: 700;
-      letter-spacing: 0.09em;
+      margin-bottom: 4px;
+      color: #fff;
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 14px;
       text-transform: uppercase;
     }
 
-    @media (max-width: 900px) {
-      .site-header__inner {
-        align-items: flex-start;
-        flex-direction: column;
-        padding: 12px 0;
-      }
-
-      .site-nav {
-        justify-content: flex-start;
-      }
-
-      .two-column {
-        grid-template-columns: 1fr;
-      }
+    .footer a {
+      color: var(--gold);
+      font-weight: 900;
+      letter-spacing: .05em;
+      text-transform: uppercase;
     }
 
-    @media (max-width: 650px) {
-      .page-shell {
-        width: min(100% - 12px, 1100px);
-        margin-top: 8px;
+    @media (max-width: 850px) {
+      .masthead-inner {
+        grid-template-columns: 165px minmax(0,1fr);
+        min-height: 190px;
       }
 
-      .masthead {
-        padding: 23px 14px 18px;
+      .crest {
+        width: 165px;
+        height: 165px;
       }
 
-      .edition-bar {
+      .archive-grid { grid-template-columns: 1fr; }
+
+      .announcement-card { grid-template-columns: 110px minmax(0,1fr); }
+      .announcement-mark img { width: 78px; height: 78px; }
+    }
+
+    @media (max-width: 620px) {
+      .shell { width: min(100% - 18px, 1180px); }
+
+      .topbar-inner {
         align-items: flex-start;
         flex-direction: column;
-        gap: 4px;
+        padding: 10px 0;
       }
 
-      .content {
-        padding: 14px;
-      }
+      .topbar-links { gap: 11px 16px; }
 
-      .panel__body {
-        padding: 16px;
-      }
-
-      .event {
+      .masthead-inner {
         grid-template-columns: 1fr;
-        gap: 4px;
+        justify-items: center;
+        gap: 0;
+        padding: 8px 14px 24px;
+        text-align: center;
       }
 
-      .site-nav a {
-        padding: 8px 7px;
-        font-size: 9px;
+      .crest {
+        width: 150px;
+        height: 150px;
+        margin-bottom: -6px;
+      }
+
+      .feature-top {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .announcement-card { grid-template-columns: 1fr; }
+      .announcement-mark {
+        min-height: 120px;
+        border-right: 0;
+        border-bottom: 4px solid var(--gold);
+      }
+
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
       }
     }
   </style>
 </head>
 
 <body>
-  <header class="site-header">
-    <div class="site-header__inner">
-      <a class="brand" href="index.html" aria-label="LSFFL Home">
-        <img
-          class="brand__mark"
-          src="https://edmoak.github.io/LSFFL-Webpage/images/icons/anchor.png"
-          alt=""
-        >
+<div class="site">
 
-        <span class="brand__text">
-          <strong>Lamad Squad Fantasy Football League</strong>
-          <span>A Tradition Born Across the Sea</span>
-        </span>
-      </a>
-
-      <nav class="site-nav" aria-label="Primary navigation">
+  <div class="topbar">
+    <div class="shell topbar-inner">
+      <div class="topbar-links">
         <a href="index.html">Home</a>
-        <a href="#">League</a>
-        <a href="#">Franchises</a>
-        <a href="#">History</a>
-        <a href="#">Hall of Fame</a>
-        <a href="#">Records</a>
-        <a href="#">Constitution</a>
-        <a href="navy-times.html" aria-current="page">Navy Times</a>
-      </nav>
+        <a href="navy-times.html">News Center</a>
+        <a href="#archives">From the Archives</a>
+        <a href="https://www48.myfantasyleague.com/2026/home/23135">Back to MFL</a>
+      </div>
+      <div>Official LSFFL League Bulletin</div>
+    </div>
+  </div>
+
+  <header class="masthead">
+    <div class="shell masthead-inner">
+      <img class="crest"
+           src="https://github.com/edmoak/LSFFL-Webpage/blob/main/images/logos/lsffl-logo-v1.png?raw=true"
+           alt="Lamad Squad Fantasy Football League crest">
+
+      <div>
+        <p class="eyebrow">Established 2000</p>
+        <h1>LSFFL News Center</h1>
+        <p class="masthead-subtitle">Continuing the Navy Times Tradition</p>
+      </div>
     </div>
   </header>
 
-  <main class="page-shell">
-    <header class="masthead">
-      <p class="masthead__eyebrow">The Official Bulletin of the LSFFL</p>
+  <main class="page">
+    <div class="shell">
 
-      <h1>The Navy Times</h1>
+      <div class="section-label">
+        <h2>Commissioner’s Dispatch</h2>
+      </div>
 
-      <div class="masthead__rule">⚓</div>
+      <article class="feature-card" aria-live="polite">
+        <div class="feature-top">
+          <span>Featured Story</span>
+          <span class="edition">The official voice of the Lamad Squad</span>
+        </div>
 
-      <p class="masthead__tagline">
-        Founded in La Maddalena, Italy • Serving the Fleet Since 2000
-      </p>
-    </header>
+        <div class="feature-body">
+          <h2 class="article-title" id="articleTitle">Loading the latest dispatch…</h2>
 
-    <div class="edition-bar">
-      <span>2026 Season</span>
-      <span>Lamad Squad Fantasy Football League</span>
-      <span>Established 2000</span>
-    </div>
+          <div class="article-meta" id="articleMeta">
+            <span>Connecting to the LSFFL news desk</span>
+          </div>
 
-    <div class="content">
-      <section class="panel dispatch">
-        <h2 class="panel__heading">Commissioner’s Dispatch</h2>
+          <div class="article-copy" id="articleBody">
+            <p class="loading">Please stand by while the latest Commissioner’s article is loaded.</p>
+          </div>
+        </div>
+      </article>
 
-        <div class="panel__body">
-          <p class="dispatch__date">2026 Preseason</p>
+      <section class="archive-section" id="archives">
+        <div class="section-label">
+          <h2>From the Archives</h2>
+        </div>
 
-          <h3>Welcome to the 2026 LSFFL Season</h3>
-
-          <p>
-            Welcome back for another season of the Lamad Squad Fantasy Football
-            League. The Navy Times will be the home for official commissioner
-            messages, league announcements, and important dates throughout the
-            season.
-          </p>
-
-          <p>
-            Check this page regularly for information that affects the league.
-            New announcements will be posted here as the draft and regular
-            season approach.
-          </p>
-
-          <p class="signature">— The Commissioner</p>
+        <div class="archive-grid" id="archiveGrid">
+          <div class="archive-status">Loading previous Commissioner stories…</div>
         </div>
       </section>
 
-      <div class="two-column">
-        <section class="panel">
-          <h2 class="panel__heading">League Announcements</h2>
+      <section>
+        <div class="section-label">
+          <h2>League Announcements</h2>
+        </div>
 
-          <div class="panel__body">
-            <ul class="announcement-list">
-              <li>The official 2026 LSFFL Draft Room is available through the website.</li>
-              <li>League dues and payment information will be announced by the Commissioner.</li>
-              <li>Any approved rule changes will be posted here before the season begins.</li>
-              <li>The new LSFFL website is currently being built and updated.</li>
-            </ul>
+        <article class="announcement-card" aria-live="polite">
+          <div class="announcement-mark">
+            <img src="https://github.com/edmoak/LSFFL-Webpage/blob/main/images/icons/news.png?raw=true"
+                 alt="">
           </div>
-        </section>
 
-        <section class="panel">
-          <h2 class="panel__heading">Upcoming Events</h2>
-
-          <div class="panel__body">
-            <ul class="event-list">
-              <li class="event">
-                <span class="event__date">August 23</span>
-                <span class="event__name">2026 LSFFL Draft</span>
-              </li>
-
-              <li class="event">
-                <span class="event__date">September</span>
-                <span class="event__name">2026 NFL Regular Season Begins</span>
-              </li>
-
-              <li class="event">
-                <span class="event__date">December 1</span>
-                <span class="event__name">LSFFL Trade Deadline</span>
-              </li>
-
-              <li class="event">
-                <span class="event__date">To Be Announced</span>
-                <span class="event__name">LSFFL Playoffs Begin</span>
-              </li>
-            </ul>
+          <div class="announcement-body">
+            <h3 id="messageTitle">Loading the latest announcement…</h3>
+            <p class="announcement-meta" id="messageMeta">Connecting to the MFL message board</p>
+            <div class="announcement-copy" id="messageBody">
+              <p class="loading">Please stand by while the latest league announcement is loaded.</p>
+            </div>
           </div>
-        </section>
-      </div>
+        </article>
+      </section>
+
     </div>
-
-    <footer class="footer">
-      <strong>The Navy Times</strong>
-      <span>The official bulletin of the Lamad Squad Fantasy Football League</span>
-    </footer>
   </main>
+
+  <footer class="footer">
+    <div class="shell footer-inner">
+      <div>
+        <strong>Lamad Squad Fantasy Football League</strong>
+        A tradition born across the sea · Established 2000
+      </div>
+
+      <a href="index.html">Return to Homepage →</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const API_BASE = "https://lsffl-mfl-proxy.edward-moak.workers.dev/api";
+  const ARTICLE_ENDPOINT = `${API_BASE}/latest-article`;
+  const MESSAGE_ENDPOINT = `${API_BASE}/latest-message`;
+
+  /*
+    The page checks these archive endpoints in order.
+    As soon as the Worker exposes one of them, the archive fills automatically.
+  */
+  const ARCHIVE_ENDPOINTS = [
+    `${API_BASE}/articles`,
+    `${API_BASE}/recent-articles`,
+    `${API_BASE}/article-archive`
+  ];
+
+  const byId = (id) => document.getElementById(id);
+
+  function text(value, fallback = "") {
+    return typeof value === "string" && value.trim() ? value.trim() : fallback;
+  }
+
+  function normalizeParagraphs(data) {
+    if (Array.isArray(data?.paragraphs) && data.paragraphs.length) {
+      return data.paragraphs.map(item => text(String(item))).filter(Boolean);
+    }
+
+    const body = text(data?.body);
+    if (!body) return [];
+
+    return body
+      .split(/\n\s*\n|\r\n\s*\r\n/)
+      .map(item => item.trim())
+      .filter(Boolean);
+  }
+
+  function renderParagraphs(container, paragraphs, emptyMessage) {
+    container.replaceChildren();
+
+    if (!paragraphs.length) {
+      const p = document.createElement("p");
+      p.className = "empty";
+      p.textContent = emptyMessage;
+      container.appendChild(p);
+      return;
+    }
+
+    paragraphs.forEach(paragraph => {
+      const p = document.createElement("p");
+      p.textContent = paragraph;
+      container.appendChild(p);
+    });
+  }
+
+  async function fetchJson(url, timeoutMs = 12000) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+      const response = await fetch(url, {
+        cache: "no-store",
+        signal: controller.signal
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      return await response.json();
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  function renderArticle(article) {
+    byId("articleTitle").textContent = text(article?.title, "Commissioner’s Dispatch");
+
+    byId("articleMeta").replaceChildren();
+
+    const author = document.createElement("span");
+    author.innerHTML = `<strong>By</strong> ${escapeHtml(text(article?.author, "LSFFL Commissioner"))}`;
+
+    const date = document.createElement("span");
+    date.innerHTML = `<strong>Published</strong> ${escapeHtml(text(article?.date, "Date unavailable"))}`;
+
+    byId("articleMeta").append(author, date);
+
+    renderParagraphs(
+      byId("articleBody"),
+      normalizeParagraphs(article),
+      "The latest Commissioner’s article does not contain any text."
+    );
+  }
+
+  function renderMessage(message) {
+    byId("messageTitle").textContent = text(message?.title, "League Announcement");
+
+    const author = text(message?.author, "Commissioner");
+    const date = text(message?.date, "Date unavailable");
+
+    byId("messageMeta").textContent = `${date} · Posted by ${author}`;
+
+    renderParagraphs(
+      byId("messageBody"),
+      normalizeParagraphs(message),
+      "The latest league announcement does not contain any text."
+    );
+  }
+
+  function getArchiveArray(payload) {
+    if (Array.isArray(payload)) return payload;
+    if (Array.isArray(payload?.articles)) return payload.articles;
+    if (Array.isArray(payload?.items)) return payload.items;
+    if (Array.isArray(payload?.stories)) return payload.stories;
+    return [];
+  }
+
+  function articleKey(article) {
+    return `${text(article?.title).toLowerCase()}|${text(article?.date).toLowerCase()}`;
+  }
+
+  function teaserFor(article) {
+    const body = normalizeParagraphs(article).join(" ");
+    if (!body) return "Open this Commissioner’s story to read the complete article.";
+    return body.length > 150 ? `${body.slice(0, 147).trim()}…` : body;
+  }
+
+  function archiveHref(article) {
+    return text(article?.url || article?.link || article?.href, "#");
+  }
+
+  function createArchiveCard(article) {
+    const card = document.createElement("article");
+    card.className = "archive-card";
+
+    const kicker = document.createElement("p");
+    kicker.className = "archive-kicker";
+    kicker.textContent = "Commissioner’s Dispatch";
+
+    const title = document.createElement("h3");
+    title.className = "archive-title";
+    title.textContent = text(article?.title, "Previous LSFFL Story");
+
+    const date = document.createElement("p");
+    date.className = "archive-date";
+    date.textContent = text(article?.date, "Date unavailable");
+
+    const teaser = document.createElement("p");
+    teaser.className = "archive-teaser";
+    teaser.textContent = teaserFor(article);
+
+    const link = document.createElement("a");
+    link.className = "archive-link";
+    link.href = archiveHref(article);
+    link.textContent = "Read Story";
+    link.setAttribute("aria-label", `Read ${title.textContent}`);
+
+    if (link.getAttribute("href") === "#") {
+      link.addEventListener("click", event => event.preventDefault());
+    }
+
+    card.append(kicker, title, date, teaser, link);
+    return card;
+  }
+
+  function renderArchive(articles, latestArticle) {
+    const grid = byId("archiveGrid");
+    grid.replaceChildren();
+
+    const latestKey = articleKey(latestArticle);
+
+    const previous = articles
+      .filter(article => article && articleKey(article) !== latestKey)
+      .slice(0, 5);
+
+    if (!previous.length) {
+      const status = document.createElement("div");
+      status.className = "archive-status";
+      status.textContent = "Previous Commissioner stories will appear here as the MFL article archive is connected.";
+      grid.appendChild(status);
+      return;
+    }
+
+    previous.forEach(article => grid.appendChild(createArchiveCard(article)));
+  }
+
+  async function loadArchive(latestArticle) {
+    for (const endpoint of ARCHIVE_ENDPOINTS) {
+      try {
+        const payload = await fetchJson(endpoint, 7000);
+        const articles = getArchiveArray(payload);
+
+        if (articles.length) {
+          renderArchive(articles, latestArticle);
+          return;
+        }
+      } catch (error) {
+        // Try the next supported archive route.
+      }
+    }
+
+    renderArchive([], latestArticle);
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  async function initialize() {
+    let latestArticle = null;
+
+    try {
+      latestArticle = await fetchJson(ARTICLE_ENDPOINT);
+      renderArticle(latestArticle);
+    } catch (error) {
+      byId("articleTitle").textContent = "Commissioner’s Dispatch";
+      byId("articleMeta").textContent = "The live article feed is temporarily unavailable.";
+      renderParagraphs(
+        byId("articleBody"),
+        [],
+        "Please check back shortly for the latest LSFFL news."
+      );
+    }
+
+    loadArchive(latestArticle);
+
+    try {
+      const latestMessage = await fetchJson(MESSAGE_ENDPOINT);
+      renderMessage(latestMessage);
+    } catch (error) {
+      byId("messageTitle").textContent = "League Announcements";
+      byId("messageMeta").textContent = "The live announcement feed is temporarily unavailable.";
+      renderParagraphs(
+        byId("messageBody"),
+        [],
+        "Please check back shortly for the latest league announcement."
+      );
+    }
+  }
+
+  initialize();
+})();
+</script>
 </body>
 </html>
