@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- LSFFL News Center: news-only replacement -->
+<!-- LSFFL News Center: premium news-only replacement, July 2026 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -450,6 +450,95 @@
       text-transform: uppercase;
     }
 
+
+    .feature-body {
+      position: relative;
+    }
+
+    .breaking-ribbon {
+      display: none;
+      width: fit-content;
+      margin: -4px 0 20px;
+      padding: 8px 13px 7px;
+      border-left: 4px solid var(--gold);
+      color: #fff;
+      background: linear-gradient(100deg, #8f1117, #bd1f27);
+      box-shadow: 0 7px 16px rgba(80,0,0,.24);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .breaking-ribbon.is-visible {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .breaking-ribbon::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(255,255,255,.16);
+    }
+
+    .article-title::after {
+      content: "";
+      display: block;
+      width: 86px;
+      height: 5px;
+      margin-top: 18px;
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold-soft));
+    }
+
+    .article-copy > p:first-child::first-letter {
+      float: left;
+      margin: 9px 9px 0 0;
+      color: var(--gold-dark);
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 57px;
+      font-weight: 800;
+      line-height: .72;
+    }
+
+    .archive-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 6px;
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold-soft), var(--gold-dark));
+    }
+
+    .archive-card {
+      cursor: pointer;
+    }
+
+    .archive-card:focus-within {
+      outline: 3px solid var(--gold-soft);
+      outline-offset: 3px;
+    }
+
+    .announcement-body h3::after {
+      content: "";
+      display: block;
+      width: 64px;
+      height: 4px;
+      margin-top: 13px;
+      background: var(--gold);
+    }
+
+    .news-desk-note {
+      margin: 28px auto 0;
+      color: rgba(255,255,255,.68);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 16px;
+      font-style: italic;
+      text-align: center;
+    }
+
     @media (max-width: 850px) {
       .masthead-inner {
         grid-template-columns: 165px minmax(0,1fr);
@@ -555,6 +644,7 @@
         </div>
 
         <div class="feature-body">
+          <div class="breaking-ribbon" id="breakingRibbon">Latest League News</div>
           <h2 class="article-title" id="articleTitle">Loading the latest dispatch…</h2>
 
           <div class="article-meta" id="articleMeta">
@@ -596,6 +686,10 @@
             </div>
           </div>
         </article>
+
+        <p class="news-desk-note">
+          News published through the LSFFL Commissioner’s office and league message board.
+        </p>
       </section>
 
     </div>
@@ -690,8 +784,44 @@
     }
   }
 
+  function parseArticleDate(value) {
+    if (!value) return null;
+
+    const direct = new Date(value);
+    if (!Number.isNaN(direct.getTime())) return direct;
+
+    const numeric = Number(value);
+    if (Number.isFinite(numeric)) {
+      const milliseconds = numeric < 100000000000 ? numeric * 1000 : numeric;
+      const converted = new Date(milliseconds);
+      if (!Number.isNaN(converted.getTime())) return converted;
+    }
+
+    return null;
+  }
+
+  function updateBreakingRibbon(article) {
+    const ribbon = byId("breakingRibbon");
+    const articleDate = parseArticleDate(article?.date);
+
+    if (!articleDate) {
+      ribbon.classList.remove("is-visible");
+      return;
+    }
+
+    const ageInDays = (Date.now() - articleDate.getTime()) / 86400000;
+
+    if (ageInDays >= 0 && ageInDays <= 7) {
+      ribbon.classList.add("is-visible");
+      ribbon.textContent = ageInDays < 1 ? "New Today" : "New This Week";
+    } else {
+      ribbon.classList.remove("is-visible");
+    }
+  }
+
   function renderArticle(article) {
     byId("articleTitle").textContent = text(article?.title, "Commissioner’s Dispatch");
+    updateBreakingRibbon(article);
 
     byId("articleMeta").replaceChildren();
 
@@ -773,8 +903,26 @@
     link.textContent = "Read Story";
     link.setAttribute("aria-label", `Read ${title.textContent}`);
 
-    if (link.getAttribute("href") === "#") {
+    const href = link.getAttribute("href");
+
+    if (href === "#") {
       link.addEventListener("click", event => event.preventDefault());
+    } else {
+      card.setAttribute("tabindex", "0");
+      card.setAttribute("role", "link");
+      card.setAttribute("aria-label", `Read ${title.textContent}`);
+
+      card.addEventListener("click", event => {
+        if (event.target.closest("a")) return;
+        window.location.href = href;
+      });
+
+      card.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          window.location.href = href;
+        }
+      });
     }
 
     card.append(kicker, title, date, teaser, link);
@@ -836,6 +984,7 @@
       latestArticle = await fetchJson(ARTICLE_ENDPOINT);
       renderArticle(latestArticle);
     } catch (error) {
+      byId("breakingRibbon").classList.remove("is-visible");
       byId("articleTitle").textContent = "Commissioner’s Dispatch";
       byId("articleMeta").textContent = "The live article feed is temporarily unavailable.";
       renderParagraphs(
