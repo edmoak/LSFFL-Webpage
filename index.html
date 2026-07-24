@@ -80,6 +80,220 @@ html,body,#body_options{
 @media screen and (max-width:1050px){.lsffl-feature-row{grid-template-columns:1fr}.lsffl-champion{min-height:430px}.lsffl-feature-cards{grid-template-columns:minmax(0,.85fr) minmax(0,1.6fr);grid-template-rows:auto}.lsffl-feature-card{min-height:175px}.lsffl-times-card{min-height:175px}.lsffl-glance-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.lsffl-franchise-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.lsffl-story-grid{grid-template-columns:1fr 1fr}.lsffl-story-main{grid-column:1/-1}}
 @media screen and (max-width:760px){.lsffl-header-main{grid-template-columns:1fr;gap:10px;padding:12px 14px}.lsffl-brand{align-items:center}.lsffl-logo{width:145px;height:145px;margin-right:14px;margin-top:-8px}.lsffl-title{font-size:31px}.lsffl-subtitle{font-size:10px;letter-spacing:.11em}.lsffl-established{font-size:13px}.lsffl-motto{font-size:13px}.lsffl-season{display:none}.lsffl-quicklinks-grid{grid-template-columns:repeat(3,1fr);padding:0}.lsffl-quicklink{min-height:78px;border-bottom:1px solid rgba(201,154,50,.45)}.lsffl-quicklink:nth-child(4){border-left:1px solid rgba(201,154,50,.55)}.lsffl-quicklink svg{width:31px;height:31px}.lsffl-quicklink span{font-size:9px}}
 @media screen and (max-width:700px){.lsffl-home{padding:12px 7px 25px}.lsffl-feature-cards{grid-template-columns:1fr}.lsffl-times-columns{grid-template-columns:1fr}.lsffl-times-column:first-child{padding-right:0;padding-bottom:8px;border-right:0;border-bottom:1px solid #ddd0b5}.lsffl-times-masthead{align-items:flex-start;flex-direction:column}.lsffl-times-masthead p{white-space:normal}.lsffl-champion{min-height:330px;background-position:center}.lsffl-champion-overlay{right:3%;width:54%}.lsffl-champion-overlay h1{font-size:21px}.lsffl-feature-cards,.lsffl-glance-grid,.lsffl-story-grid{grid-template-columns:1fr}.lsffl-franchise-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.lsffl-section-title{grid-template-columns:1fr}.lsffl-section-title::before,.lsffl-section-title::after{display:none}.lsffl-section-title h2{white-space:normal}}
+
+/* =========================================================
+   FINAL HOMEPAGE REFINEMENT — JULY 2026
+   ========================================================= */
+
+/* Warm ivory card color */
+.lsffl-site {
+  --cream: #F8F5EE;
+  --border: #C9A45A;
+}
+
+/* Stronger gold framework */
+.lsffl-header {
+  border-bottom-width: 6px;
+}
+
+.lsffl-quicklinks {
+  border-top: 2px solid rgba(201,154,50,.72);
+}
+
+.lsffl-section-title::before,
+.lsffl-section-title::after {
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    rgba(201,154,50,.18),
+    var(--gold) 24%,
+    var(--gold) 76%,
+    rgba(201,154,50,.18)
+  );
+}
+
+.lsffl-section-title h2 {
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: 800;
+}
+
+.lsffl-champion {
+  border-width: 2px;
+}
+
+.lsffl-feature-card,
+.lsffl-times-card,
+.lsffl-glance-card,
+.lsffl-franchise,
+.lsffl-story-main,
+.lsffl-story-stat {
+  border-color: rgba(201,164,90,.82);
+}
+
+.lsffl-feature-card,
+.lsffl-times-card {
+  border-width: 2px;
+}
+
+.lsffl-times-masthead {
+  border-bottom-width: 3px;
+}
+
+/* Warm ivory document-style surfaces */
+.lsffl-feature-card,
+.lsffl-times-card,
+.lsffl-glance-card,
+.lsffl-franchise,
+.lsffl-story-main,
+.lsffl-story-stat {
+  background-color: var(--cream);
+  background-image:
+    linear-gradient(rgba(248,245,238,.97), rgba(248,245,238,.97)),
+    repeating-linear-gradient(
+      0deg,
+      rgba(8,37,62,.025) 0,
+      rgba(8,37,62,.025) 1px,
+      transparent 1px,
+      transparent 5px
+    );
+  box-shadow: 0 4px 11px rgba(6,28,48,.11);
+}
+
+/* Larger crest while preserving its current left-side position */
+.lsffl-header-main {
+  min-height: 190px;
+}
+
+.lsffl-logo {
+  width: 252px;
+  height: 252px;
+  margin-left: 0;
+  margin-right: 24px;
+  margin-top: -30px;
+  margin-bottom: -27px;
+}
+
+/* Draft Center typography and spacing */
+.lsffl-feature-card {
+  grid-template-columns: 104px minmax(0,1fr) 32px;
+}
+
+.lsffl-feature-card .lsffl-feature-copy {
+  padding: 14px 15px;
+}
+
+.lsffl-feature-card .lsffl-feature-copy h2 {
+  margin: 0 0 7px;
+  color: var(--navy-dark);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: .015em;
+  text-transform: uppercase;
+}
+
+.lsffl-feature-card .lsffl-feature-copy > p:not(.lsffl-feature-cta) {
+  margin: 0;
+  color: #2C3E4C;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.lsffl-feature-card .lsffl-feature-cta {
+  display: inline-block;
+  margin: 11px 0 0 !important;
+  padding: 6px 9px;
+  color: #fff !important;
+  background: var(--navy-dark);
+  border-bottom: 3px solid var(--gold);
+  font-family: 'Montserrat', Arial, sans-serif !important;
+  font-size: 9px !important;
+  font-weight: 900 !important;
+  letter-spacing: .055em !important;
+  line-height: 1.2 !important;
+  text-transform: uppercase !important;
+}
+
+.lsffl-feature-card:hover .lsffl-feature-cta {
+  background: var(--navy-mid);
+}
+
+.lsffl-feature-arrow {
+  font-size: 34px;
+  font-weight: 700;
+}
+
+/* Navy Times preview refinement */
+.lsffl-times-content {
+  padding: 13px 15px 13px;
+}
+
+.lsffl-times-masthead {
+  align-items: center;
+  padding-bottom: 8px;
+}
+
+.lsffl-times-masthead h2 {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: .015em;
+}
+
+.lsffl-times-masthead p {
+  font-size: 10px;
+}
+
+.lsffl-times-columns {
+  gap: 18px;
+  padding-top: 10px;
+}
+
+.lsffl-times-column:first-child {
+  padding-right: 16px;
+}
+
+.lsffl-times-column h3 {
+  margin-bottom: 7px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .025em;
+}
+
+.lsffl-times-column li {
+  padding: 5px 0;
+  color: #263846;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.lsffl-times-link {
+  margin-top: 9px;
+  padding-bottom: 2px;
+  border-bottom: 2px solid var(--gold);
+}
+
+/* Maintain proportions on smaller screens */
+@media screen and (max-width:760px) {
+  .lsffl-header-main {
+    min-height: auto;
+  }
+
+  .lsffl-logo {
+    width: 172px;
+    height: 172px;
+    margin-left: 0;
+    margin-right: 14px;
+    margin-top: -14px;
+    margin-bottom: -12px;
+  }
+}
+
 </style>
 
 <div class="lsffl-site">
@@ -103,7 +317,7 @@ html,body,#body_options{
 <main class="lsffl-home lsffl-page-bg"><div class="lsffl-shell">
 <section class="lsffl-feature-row"><article class="lsffl-champion" aria-label="Get Off My Ditka, 2025 LSFFL Champion"><div class="lsffl-champion-overlay"><h1>Get Off My Ditka</h1><p class="champ-subtitle">2025 League Champion</p><div class="lsffl-champion-stats"><p><span>Regular-Season Record</span><strong>8-6</strong></p><p><span>Championship Victory</span><strong>Defeated Saints</strong></p><p class="lsffl-score">121.50 – 52.55</p></div></div></article><div class="lsffl-feature-cards">
 <article class="lsffl-feature-card"><div class="lsffl-icon-panel"><img src="https://edmoak.github.io/LSFFL-Webpage/images/icons/draft-center.png" alt=""></div><div class="lsffl-feature-copy"><h2>2026 Draft Center</h2><p>The official LSFFL live draft experience.</p><p class="lsffl-feature-cta">Launch Live Draft Room →</p></div><span class="lsffl-feature-arrow">›</span><a href="https://www48.myfantasyleague.com/2026/ajax_ld?L=23135" aria-label="Launch Live Draft Room">Launch Live Draft Room</a></article>
-<article class="lsffl-times-card"><div class="lsffl-icon-panel"><img src="https://edmoak.github.io/LSFFL-Webpage/images/icons/league.png" alt=""></div><div class="lsffl-times-content"><div class="lsffl-times-masthead"><h2>The Navy Times</h2><p>Serving the Fleet Since 2000</p></div><div class="lsffl-times-columns"><div class="lsffl-times-column"><h3>Latest Stories</h3><ul><li>Defending Champion Get Off My Ditka Prepares for the 2026 Season</li><li>Official 2026 LSFFL Draft Order Announced</li></ul></div><div class="lsffl-times-column"><h3>Commissioner’s Dispatch</h3><ul><li>Welcome to the 2026 LSFFL Season</li><li>Draft Day Information and League Reminders</li><li>Preparing for Another Season Across the Fleet</li></ul></div></div><span class="lsffl-times-link">Read The Navy Times →</span></div><a href="https://edmoak.github.io/LSFFL-Webpage/navy-times.html" aria-label="Read The Navy Times">Read The Navy Times</a></article>
+<article class="lsffl-times-card"><div class="lsffl-icon-panel"><img src="https://edmoak.github.io/LSFFL-Webpage/images/icons/league.png" alt=""></div><div class="lsffl-times-content"><div class="lsffl-times-masthead"><h2>The Navy Times</h2><p>Serving the Fleet Since 2000</p></div><div class="lsffl-times-columns"><div class="lsffl-times-column"><h3>Commissioner’s Dispatch</h3><ul><li>Welcome to the 2026 LSFFL Season</li><li>Draft Day Information and League Reminders</li></ul></div><div class="lsffl-times-column"><h3>League Announcements</h3><ul><li>2026 Draft: August 23</li><li>Trade Deadline: December 1</li><li>Website Updates and League Notices</li></ul></div></div><span class="lsffl-times-link">Read The Navy Times →</span></div><a href="https://edmoak.github.io/LSFFL-Webpage/navy-times.html" aria-label="Read The Navy Times">Read The Navy Times</a></article>
 </div></section>
 <section class="lsffl-section"><div class="lsffl-section-title"><h2>LSFFL at a Glance</h2></div><div class="lsffl-glance-grid">
 <article class="lsffl-glance-card"><div class="lsffl-icon-panel"><img src="https://edmoak.github.io/LSFFL-Webpage/images/icons/anchor.png" alt=""></div><div class="lsffl-glance-content"><p class="lsffl-glance-label">Founded</p><h3>2000</h3><ul><li>La Maddalena, Italy</li><li>USS Emory S. Land (AS-39)</li><li>A Tradition Born Across the Sea</li></ul></div></article>
