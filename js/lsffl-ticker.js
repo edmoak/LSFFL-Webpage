@@ -65,17 +65,17 @@
     style.textContent = `
       #${TICKER_ID} {
         --ticker-navy-dark: #02111f;
-        --ticker-navy: #061f36;
         --ticker-navy-light: #082a46;
         --ticker-gold: #d4af37;
         --ticker-white: #ffffff;
 
         position: relative;
-        z-index: 10;
+        z-index: 100;
         display: grid;
         grid-template-columns: 190px minmax(0, 1fr);
         width: 100%;
         min-height: 52px;
+        margin: 0;
         overflow: hidden;
         border-top: 1px solid rgba(212, 175, 55, 0.72);
         border-bottom: 4px solid var(--ticker-gold);
@@ -99,12 +99,11 @@
         min-width: 0;
         padding: 7px 14px;
         border-right: 3px solid var(--ticker-gold);
-        background:
-          linear-gradient(
-            135deg,
-            var(--ticker-navy-light),
-            var(--ticker-navy-dark)
-          );
+        background: linear-gradient(
+          135deg,
+          var(--ticker-navy-light),
+          var(--ticker-navy-dark)
+        );
         box-shadow: 8px 0 14px rgba(2, 17, 31, 0.32);
       }
 
@@ -145,12 +144,11 @@
         align-items: center;
         min-width: 0;
         overflow: hidden;
-        background:
-          linear-gradient(
-            90deg,
-            rgba(8, 42, 70, 0.96),
-            rgba(2, 17, 31, 0.98)
-          );
+        background: linear-gradient(
+          90deg,
+          rgba(8, 42, 70, 0.96),
+          rgba(2, 17, 31, 0.98)
+        );
       }
 
       #${TICKER_ID} .lsffl-ticker-window::before,
@@ -166,22 +164,20 @@
 
       #${TICKER_ID} .lsffl-ticker-window::before {
         left: 0;
-        background:
-          linear-gradient(
-            90deg,
-            var(--ticker-navy-light),
-            transparent
-          );
+        background: linear-gradient(
+          90deg,
+          var(--ticker-navy-light),
+          transparent
+        );
       }
 
       #${TICKER_ID} .lsffl-ticker-window::after {
         right: 0;
-        background:
-          linear-gradient(
-            270deg,
-            var(--ticker-navy-dark),
-            transparent
-          );
+        background: linear-gradient(
+          270deg,
+          var(--ticker-navy-dark),
+          transparent
+        );
       }
 
       #${TICKER_ID} .lsffl-ticker-track {
@@ -306,17 +302,24 @@
     document.head.appendChild(style);
   }
 
+  function findInsertionPoint() {
+    return (
+      document.getElementById('container-wrap') ||
+      document.getElementById('MFLMainContent') ||
+      document.querySelector('.pagebody') ||
+      document.querySelector('main')
+    );
+  }
+
   function buildTicker() {
     if (document.getElementById(TICKER_ID)) {
-      return;
+      return true;
     }
 
-    const header = document.querySelector('.lsffl-header');
-    const main = document.querySelector('.lsffl-home');
+    const insertionPoint = findInsertionPoint();
 
-    if (!header || !main) {
-      console.warn('LSFFL ticker could not find the homepage header or main content.');
-      return;
+    if (!insertionPoint || !insertionPoint.parentNode) {
+      return false;
     }
 
     addTickerStyles();
@@ -332,7 +335,7 @@
     logo.className = 'lsffl-ticker-logo';
     logo.src =
       'https://edmoak.github.io/LSFFL-Webpage/images/logos/lsffl-logo-v1.png';
-    logo.alt = '';
+    logo.alt = 'LSFFL';
 
     const brandText = document.createElement('div');
     brandText.className = 'lsffl-ticker-brand-text';
@@ -366,12 +369,40 @@
     ticker.appendChild(brand);
     ticker.appendChild(tickerWindow);
 
-    header.insertAdjacentElement('afterend', ticker);
+    insertionPoint.parentNode.insertBefore(ticker, insertionPoint);
+
+    console.log('LSFFL custom ticker loaded.');
+    return true;
+  }
+
+  function startTicker() {
+    if (buildTicker()) {
+      return;
+    }
+
+    let attempts = 0;
+
+    const retry = window.setInterval(function () {
+      attempts += 1;
+
+      if (buildTicker() || attempts >= 30) {
+        window.clearInterval(retry);
+      }
+
+      if (
+        attempts >= 30 &&
+        !document.getElementById(TICKER_ID)
+      ) {
+        console.warn(
+          'LSFFL ticker could not find an MFL content insertion point.'
+        );
+      }
+    }, 300);
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', buildTicker);
+    document.addEventListener('DOMContentLoaded', startTicker);
   } else {
-    buildTicker();
+    startTicker();
   }
 })();
