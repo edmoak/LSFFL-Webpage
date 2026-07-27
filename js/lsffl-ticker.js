@@ -3,7 +3,8 @@
 
   /* =========================================================
      LSFFL NAVY TIMES
-     CORRECTED DISPLAY + MFL SCROLLING TEXT CONNECTION
+     COMPLETE REPLACEMENT FILE
+     POSITION AND WIDTH CORRECTION
   ========================================================= */
 
   const TICKER_ID = 'lsffl-custom-ticker';
@@ -18,9 +19,10 @@
   let tickerTrack = null;
   let settingsPanel = null;
   let currentSettings = null;
+  let resizeTimer = null;
 
   /* =========================================================
-     HELPERS
+     GENERAL HELPERS
   ========================================================= */
 
   function cleanText(value) {
@@ -72,6 +74,39 @@
         return;
       }
 
+      const existingScript = Array.from(
+        document.querySelectorAll('script[src]')
+      ).find(function (script) {
+        return script.src === url;
+      });
+
+      if (existingScript) {
+        let checks = 0;
+
+        const checker = setInterval(function () {
+          checks += 1;
+
+          if (window[globalName]) {
+            clearInterval(checker);
+            resolve(window[globalName]);
+          }
+
+          if (checks >= 100) {
+            clearInterval(checker);
+
+            if (!window[globalName]) {
+              reject(
+                new Error(
+                  globalName + ' did not become available.'
+                )
+              );
+            }
+          }
+        }, 100);
+
+        return;
+      }
+
       const script = document.createElement('script');
       script.src = url;
       script.async = false;
@@ -95,7 +130,7 @@
   }
 
   /* =========================================================
-     FIND OLD MFL NAVY TIMES TICKER
+     LOCATE THE ORIGINAL MFL NAVY TIMES TICKER
   ========================================================= */
 
   function isOldMflTickerElement(element) {
@@ -202,6 +237,12 @@
     );
 
     oldTicker.style.setProperty(
+      'visibility',
+      'hidden',
+      'important'
+    );
+
+    oldTicker.style.setProperty(
       'height',
       '0',
       'important'
@@ -230,10 +271,16 @@
       '0',
       'important'
     );
+
+    oldTicker.style.setProperty(
+      'overflow',
+      'hidden',
+      'important'
+    );
   }
 
   /* =========================================================
-     READ MFL SCROLLING TEXT
+     READ MFL COMMISSIONER SCROLLING TEXT
   ========================================================= */
 
   function isValidCommissionerMessage(text) {
@@ -272,16 +319,15 @@
   function findMflScrollingTextElements() {
     const found = [];
 
-    /*
-      MFL normally renders the Scrolling Text Setup messages
-      inside a marquee-style element near the top of the page.
-    */
     document.querySelectorAll(
       'marquee, [id*="scroll" i], [class*="scroll" i]'
     ).forEach(function (element) {
       if (
         element.id === TICKER_ID ||
-        element.closest('#' + TICKER_ID)
+        element.closest('#' + TICKER_ID) ||
+        element.closest(
+          '[data-lsffl-hidden-old-ticker="true"]'
+        )
       ) {
         return;
       }
@@ -289,14 +335,7 @@
       const rect = element.getBoundingClientRect();
       const text = cleanText(element.textContent);
 
-      const belongsToOldTicker = Boolean(
-        element.closest(
-          '[data-lsffl-hidden-old-ticker="true"]'
-        )
-      );
-
       if (
-        !belongsToOldTicker &&
         rect.top < 210 &&
         rect.width > 400 &&
         rect.height > 5 &&
@@ -307,10 +346,6 @@
       }
     });
 
-    /*
-      Fallback for MFL themes that render the scrolling text
-      inside a normal DIV or table cell.
-    */
     document.querySelectorAll(
       'body div, body td, body span'
     ).forEach(function (element) {
@@ -399,6 +434,144 @@
         }
       }
     });
+  }
+
+  /* =========================================================
+     FIND THE SCOREBOARD/STANDINGS WIDTH
+  ========================================================= */
+
+  function findLeagueStandingsElement() {
+    const candidates = document.querySelectorAll(
+      'table, section, article, div'
+    );
+
+    let best = null;
+    let bestWidth = 0;
+
+    candidates.forEach(function (element) {
+      if (
+        element.id === TICKER_ID ||
+        element.closest('#' + TICKER_ID) ||
+        !isVisible(element)
+      ) {
+        return;
+      }
+
+      const text = normalizedText(element);
+      const rect = element.getBoundingClientRect();
+
+      if (
+        text.includes('LEAGUE STANDINGS') &&
+        text.includes('LIVE SCORING') &&
+        rect.width > 800 &&
+        rect.width < 1500 &&
+        rect.height > 80 &&
+        rect.width > bestWidth
+      ) {
+        best = element;
+        bestWidth = rect.width;
+      }
+    });
+
+    return best;
+  }
+
+  function findScoreboardRow() {
+    const leagueStandings = findLeagueStandingsElement();
+
+    if (leagueStandings) {
+      return leagueStandings;
+    }
+
+    const candidates = [
+      document.querySelector('.homepagecolumns'),
+      document.querySelector('#body_home'),
+      document.querySelector('.homepagetabcontent'),
+      document.querySelector('.reportnavigation')
+    ].filter(Boolean);
+
+    let best = null;
+    let bestWidth = 0;
+
+    candidates.forEach(function (element) {
+      if (!isVisible(element)) {
+        return;
+      }
+
+      const rect = element.getBoundingClientRect();
+
+      if (
+        rect.width > 800 &&
+        rect.width < 1500 &&
+        rect.width > bestWidth
+      ) {
+        best = element;
+        bestWidth = rect.width;
+      }
+    });
+
+    return best;
+  }
+
+  /*
+    This is the important correction.
+
+    The ticker may be inserted inside an MFL container that is
+    narrower than the standings area. This measures the exact
+    scoreboard width and shifts the ticker relative to its own
+    parent so both left and right edges line up.
+  */
+  function alignTickerToScoreboard() {
+    if (!tickerRoot) {
+      return;
+    }
+
+    if (window.innerWidth <= 760) {
+      tickerRoot.style.width = '100%';
+      tickerRoot.style.maxWidth = 'none';
+      tickerRoot.style.marginLeft = '0';
+      tickerRoot.style.marginRight = '0';
+      tickerRoot.style.left = '0';
+      return;
+    }
+
+    const scoreboard = findScoreboardRow();
+
+    if (!scoreboard) {
+      tickerRoot.style.width =
+        'min(1135px, calc(100vw - 40px))';
+
+      tickerRoot.style.maxWidth = 'none';
+      tickerRoot.style.marginLeft = 'auto';
+      tickerRoot.style.marginRight = 'auto';
+      tickerRoot.style.left = '0';
+
+      return;
+    }
+
+    const scoreboardRect =
+      scoreboard.getBoundingClientRect();
+
+    const tickerParent = tickerRoot.parentElement;
+
+    if (!tickerParent) {
+      return;
+    }
+
+    const parentRect =
+      tickerParent.getBoundingClientRect();
+
+    const requiredLeft =
+      scoreboardRect.left - parentRect.left;
+
+    tickerRoot.style.width =
+      Math.round(scoreboardRect.width) + 'px';
+
+    tickerRoot.style.maxWidth = 'none';
+    tickerRoot.style.marginLeft = '0';
+    tickerRoot.style.marginRight = '0';
+    tickerRoot.style.left =
+      Math.round(requiredLeft) + 'px';
   }
 
   /* =========================================================
@@ -574,10 +747,12 @@
       'is-paused',
       Boolean(currentSettings.paused)
     );
+
+    setTimeout(alignTickerToScoreboard, 50);
   }
 
   /* =========================================================
-     STYLES
+     TICKER STYLES
   ========================================================= */
 
   function addStyles() {
@@ -600,13 +775,21 @@
         --ticker-dark: #031426;
 
         position: relative;
+        left: 0;
         z-index: 1500;
         display: grid;
         grid-template-columns: 145px minmax(0, 1fr) 34px;
-        width: min(1135px, calc(100% - 24px));
+
+        width: 1135px;
+        max-width: none;
         height: 45px;
         min-height: 45px;
-        margin: 5px auto 7px;
+
+        margin-top: 5px;
+        margin-bottom: 7px;
+        margin-left: 0;
+        margin-right: 0;
+
         overflow: visible;
         border: 2px solid var(--ticker-gold);
         border-radius: 3px;
@@ -685,6 +868,37 @@
           );
       }
 
+      #${TICKER_ID} .lsffl-ticker-window::before,
+      #${TICKER_ID} .lsffl-ticker-window::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        z-index: 4;
+        width: 25px;
+        pointer-events: none;
+      }
+
+      #${TICKER_ID} .lsffl-ticker-window::before {
+        left: 0;
+        background:
+          linear-gradient(
+            90deg,
+            #0b3152,
+            transparent
+          );
+      }
+
+      #${TICKER_ID} .lsffl-ticker-window::after {
+        right: 0;
+        background:
+          linear-gradient(
+            270deg,
+            var(--ticker-dark),
+            transparent
+          );
+      }
+
       #${TICKER_ID} .lsffl-ticker-track {
         display: flex;
         align-items: center;
@@ -756,6 +970,15 @@
         cursor: pointer;
       }
 
+      #${TICKER_ID}
+      .lsffl-ticker-settings-button:hover,
+      #${TICKER_ID}
+      .lsffl-ticker-settings-button:focus {
+        color: #ffffff;
+        outline: none;
+        transform: rotate(30deg);
+      }
+
       #lsffl-ticker-settings-panel {
         position: absolute;
         top: calc(100% + 5px);
@@ -796,6 +1019,7 @@
       #lsffl-ticker-settings-panel
       .lsffl-settings-group-heading {
         display: flex;
+        align-items: center;
         justify-content: space-between;
         width: 100%;
         min-height: 28px;
@@ -806,6 +1030,7 @@
         font-size: 11px;
         font-weight: 900;
         text-transform: uppercase;
+        cursor: pointer;
       }
 
       #lsffl-ticker-settings-panel
@@ -829,6 +1054,24 @@
       }
 
       #lsffl-ticker-settings-panel
+      .lsffl-settings-checkbox input {
+        width: 14px;
+        height: 14px;
+        margin: 0;
+        accent-color: var(--ticker-gold);
+      }
+
+      #lsffl-ticker-settings-panel select {
+        height: 25px;
+        min-width: 48px;
+        border: 1px solid var(--ticker-gold);
+        background: #ffffff;
+        color: var(--ticker-dark);
+        font-size: 10px;
+        font-weight: 700;
+      }
+
+      #lsffl-ticker-settings-panel
       .lsffl-settings-action-row {
         display: flex;
         grid-column: 1 / -1;
@@ -846,6 +1089,14 @@
         color: #ffffff;
         font-size: 10px;
         font-weight: 900;
+        cursor: pointer;
+      }
+
+      #lsffl-ticker-settings-panel
+      .lsffl-settings-footer {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 9px;
       }
 
       @keyframes lsfflNavyTimesScroll {
@@ -861,7 +1112,11 @@
       @media screen and (max-width: 760px) {
         #${TICKER_ID} {
           grid-template-columns: 105px minmax(0, 1fr) 31px;
-          width: 100%;
+          left: 0 !important;
+          width: 100% !important;
+          max-width: none !important;
+          margin-left: 0 !important;
+          margin-right: 0 !important;
           border-radius: 0;
         }
 
@@ -876,7 +1131,7 @@
   }
 
   /* =========================================================
-     BUILD TICKER
+     FIND INSERTION POINT
   ========================================================= */
 
   function findInsertionReference() {
@@ -906,15 +1161,22 @@
     );
   }
 
+  /* =========================================================
+     BUILD THE TICKER
+  ========================================================= */
+
   function buildTicker() {
     const existing =
       document.getElementById(TICKER_ID);
 
     if (existing) {
       tickerRoot = existing;
+
       tickerTrack = existing.querySelector(
         '.lsffl-ticker-track'
       );
+
+      alignTickerToScoreboard();
 
       return true;
     }
@@ -933,6 +1195,11 @@
 
     tickerRoot = createElement('section');
     tickerRoot.id = TICKER_ID;
+
+    tickerRoot.setAttribute(
+      'aria-label',
+      'Navy Times league ticker'
+    );
 
     const title = createElement(
       'div',
@@ -964,6 +1231,7 @@
 
     settingsButton.type = 'button';
     settingsButton.innerHTML = '&#9881;';
+
     settingsButton.setAttribute(
       'aria-label',
       'Open Navy Times settings'
@@ -1013,11 +1281,15 @@
 
     rebuildTickerTrack();
 
+    setTimeout(alignTickerToScoreboard, 50);
+    setTimeout(alignTickerToScoreboard, 300);
+    setTimeout(alignTickerToScoreboard, 1000);
+
     return true;
   }
 
   /* =========================================================
-     INITIALIZATION
+     SETTINGS CONNECTION
   ========================================================= */
 
   function connectSettings() {
@@ -1033,19 +1305,20 @@
     );
   }
 
+  /* =========================================================
+     PAGE WATCHER
+  ========================================================= */
+
   function startPageWatcher() {
-    /*
-      Capture first, then hide. This lets us read the MFL
-      scrolling text before removing its original display.
-    */
     setInterval(function () {
       captureMflScrollingMessages();
 
       setTimeout(function () {
         hideOriginalMflScrollingText();
         hideOldMflTicker();
+        alignTickerToScoreboard();
       }, 50);
-    }, 800);
+    }, 1000);
 
     const observer = new MutationObserver(function () {
       captureMflScrollingMessages();
@@ -1057,6 +1330,7 @@
       setTimeout(function () {
         hideOriginalMflScrollingText();
         hideOldMflTicker();
+        alignTickerToScoreboard();
       }, 50);
     });
 
@@ -1065,7 +1339,20 @@
       subtree: true,
       characterData: true
     });
+
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+
+      resizeTimer = setTimeout(
+        alignTickerToScoreboard,
+        100
+      );
+    });
   }
+
+  /* =========================================================
+     INITIALIZE
+  ========================================================= */
 
   function initialize() {
     loadScript(
@@ -1074,7 +1361,6 @@
     )
       .then(function () {
         connectSettings();
-
         captureMflScrollingMessages();
 
         let attempts = 0;
@@ -1085,11 +1371,21 @@
           if (buildTicker()) {
             rebuildTickerTrack();
             startPageWatcher();
+
+            setTimeout(
+              alignTickerToScoreboard,
+              1500
+            );
+
             return;
           }
 
           if (attempts < 40) {
             setTimeout(attemptBuild, 500);
+          } else {
+            console.warn(
+              'LSFFL Navy Times could not find its insertion point.'
+            );
           }
         }
 
