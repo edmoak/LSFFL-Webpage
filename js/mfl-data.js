@@ -3,20 +3,24 @@
 
   /* =========================================================
      LSFFL MFL DATA BRIDGE
-     Reads information already rendered by MFL on the page.
+     LIVE COMMISSIONER SCROLLING TEXT
   ========================================================= */
 
-  const MESSAGE_STORAGE_KEY = 'lsfflMflCommissionerMessages';
-  const MAX_SAVED_MESSAGES = 5;
+  const CUSTOM_TICKER_ID = 'lsffl-custom-ticker';
 
-  const capturedMessages = new Set();
+  const STORAGE_KEY =
+    'lsfflLiveCommissionerMessagesV1';
+
+  const MAX_MESSAGES = 5;
+
+  const messages = [];
   const subscribers = new Set();
 
   let observer = null;
   let scanTimer = null;
 
   /* =========================================================
-     GENERAL HELPERS
+     HELPERS
   ========================================================= */
 
   function cleanText(value) {
@@ -26,8 +30,15 @@
       .trim();
   }
 
-  function isVisible(element) {
-    if (!element || !(element instanceof Element)) {
+  function getUpperText(element) {
+    return cleanText(element.textContent).toUpperCase();
+  }
+
+  function isElementVisible(element) {
+    if (
+      !element ||
+      !(element instanceof Element)
+    ) {
       return false;
     }
 
@@ -43,262 +54,160 @@
     );
   }
 
-  function isOurTicker(element) {
+  function belongsToCustomTicker(element) {
     return Boolean(
       element.closest &&
-      element.closest('#lsffl-custom-ticker')
+      element.closest('#' + CUSTOM_TICKER_ID)
     );
   }
 
-  function isIgnoredText(text) {
-    const normalized = cleanText(text).toUpperCase();
+  function belongsToOldNavyTimes(element) {
+    if (!element || belongsToCustomTicker(element)) {
+      return false;
+    }
 
-    if (!normalized) {
+    let current = element;
+
+    for (let level = 0; level < 6 && current; level += 1) {
+      const text = getUpperText(current);
+
+      if (
+        text.includes('NAVY TIMES') &&
+        (
+          text.includes('LATEST ARTICLES') ||
+          text.includes('FANTASY MATCHUPS') ||
+          text.includes('WAIVER ORDER') ||
+          text.includes('MARQUEE SETTINGS')
+        )
+      ) {
+        return true;
+      }
+
+      current = current.parentElement;
+    }
+
+    return false;
+  }
+
+  function isRejectedPageText(text) {
+    const upper = cleanText(text).toUpperCase();
+
+    if (!upper) {
       return true;
     }
 
-    const ignoredExactValues = [
+    const rejectedPhrases = [
       'NAVY TIMES',
       'LATEST ARTICLES',
-      'HOME',
-      'LOCKER ROOM',
-      'LATEST NEWS',
+      'FANTASY MATCHUPS',
+      'WAIVER ORDER',
+      'LEAGUE NEWS',
       'TRANSACTIONS',
-      'HISTORY PAGE',
-      'CALENDAR'
-    ];
-
-    if (ignoredExactValues.includes(normalized)) {
-      return true;
-    }
-
-    const ignoredFragments = [
+      'NFL NEWS',
       'LAMAD SQUAD FANTASY FOOTBALL LEAGUE',
+      'HOME AWAY FROM HOME',
       'SUBMIT LINEUP',
       'ADD/DROP',
+      'TRADES',
+      'ROSTERS',
       'SCOREBOARD',
+      'RULES',
       'LEAGUE STANDINGS',
       'LIVE SCORING',
       'BULLDOGS DIVISION',
-      'MY ACCOUNT',
+      'LOCKER ROOM',
+      'HISTORY PAGE',
       'PLAYER RESEARCH',
-      'DRAFT/AUCTION'
+      'DRAFT/AUCTION',
+      'MY ACCOUNT',
+      'WEEK 1',
+      'WED SEP'
     ];
 
-    return ignoredFragments.some(function (fragment) {
-      return normalized.includes(fragment);
+    return rejectedPhrases.some(function (phrase) {
+      return upper.includes(phrase);
     });
   }
 
-  function isReasonableMessage(text) {
+  function isValidCommissionerMessage(text) {
     const cleaned = cleanText(text);
 
     return (
       cleaned.length >= 3 &&
-      cleaned.length <= 400 &&
-      !isIgnoredText(cleaned)
+      cleaned.length <= 300 &&
+      !isRejectedPageText(cleaned)
     );
   }
 
   /* =========================================================
-     SAVED MESSAGE CACHE
+     STORAGE
   ========================================================= */
 
-  function loadSavedMessages() {
+  function loadStoredMessages() {
     try {
-      const saved = JSON.parse(
-        localStorage.getItem(MESSAGE_STORAGE_KEY)
+      const stored = JSON.parse(
+        localStorage.getItem(STORAGE_KEY)
       );
 
-      if (!Array.isArray(saved)) {
-        return [];
+      if (!Array.isArray(stored)) {
+        return;
       }
 
-      return saved
-        .map(cleanText)
-        .filter(isReasonableMessage)
-        .slice(0, MAX_SAVED_MESSAGES);
+      stored.forEach(function (message) {
+        addMessage(message, false);
+      });
     } catch (error) {
-      return [];
+      // Ignore invalid saved data.
     }
   }
 
   function saveMessages() {
-    const messages = Array.from(capturedMessages)
-      .filter(isReasonableMessage)
-      .slice(0, MAX_SAVED_MESSAGES);
-
     localStorage.setItem(
-      MESSAGE_STORAGE_KEY,
-      JSON.stringify(messages)
+      STORAGE_KEY,
+      JSON.stringify(messages.slice(0, MAX_MESSAGES))
     );
   }
 
-  loadSavedMessages().forEach(function (message) {
-    capturedMessages.add(message);
-  });
-
   /* =========================================================
-     MESSAGE DISCOVERY
+     MESSAGE MANAGEMENT
   ========================================================= */
 
-  function getLikelyScrollerElements() {
-    const selectors = [
-      'marquee',
-      '[id*="scroll" i]',
-      '[class*="scroll" i]',
-      '[id*="marquee" i]',
-      '[class*="marquee" i]',
-      '[id*="applet" i]',
-      '[class*="applet" i]'
-    ];
+  function addMessage(value, shouldNotify) {
+    const message = cleanText(value);
 
-    const elements = [];
-
-    selectors.forEach(function (selector) {
-      try {
-        document.querySelectorAll(selector).forEach(function (element) {
-          if (!elements.includes(element)) {
-            elements.push(element);
-          }
-        });
-      } catch (error) {
-        // Ignore unsupported selectors in older browsers.
-      }
-    });
-
-    return elements;
-  }
-
-  function extractTextCandidates(element) {
-    const candidates = [];
-
-    if (!element || isOurTicker(element)) {
-      return candidates;
+    if (!isValidCommissionerMessage(message)) {
+      return false;
     }
 
-    const directText = cleanText(element.textContent);
-
-    if (isReasonableMessage(directText)) {
-      candidates.push(directText);
+    if (messages.includes(message)) {
+      return false;
     }
 
-    element.querySelectorAll(
-      'span, div, p, a, td, font'
-    ).forEach(function (child) {
-      if (!isVisible(child) || isOurTicker(child)) {
-        return;
-      }
+    messages.push(message);
 
-      const childText = cleanText(child.textContent);
-
-      if (
-        isReasonableMessage(childText) &&
-        child.children.length === 0
-      ) {
-        candidates.push(childText);
-      }
-    });
-
-    return candidates;
-  }
-
-  function scanTopOfPage() {
-    const candidates = [];
-
-    document.querySelectorAll(
-      'body *'
-    ).forEach(function (element) {
-      if (
-        !isVisible(element) ||
-        isOurTicker(element)
-      ) {
-        return;
-      }
-
-      const rect = element.getBoundingClientRect();
-
-      if (
-        rect.top < -10 ||
-        rect.top > 220 ||
-        rect.width < 350 ||
-        rect.height < 10 ||
-        rect.height > 85
-      ) {
-        return;
-      }
-
-      const text = cleanText(element.textContent);
-
-      if (
-        isReasonableMessage(text) &&
-        element.children.length <= 3
-      ) {
-        candidates.push(text);
-      }
-    });
-
-    return candidates;
-  }
-
-  function addMessages(messages) {
-    let changed = false;
-
-    messages.forEach(function (message) {
-      const cleaned = cleanText(message);
-
-      if (
-        !isReasonableMessage(cleaned) ||
-        capturedMessages.has(cleaned)
-      ) {
-        return;
-      }
-
-      capturedMessages.add(cleaned);
-      changed = true;
-    });
-
-    while (capturedMessages.size > MAX_SAVED_MESSAGES) {
-      const oldest = capturedMessages.values().next().value;
-      capturedMessages.delete(oldest);
+    while (messages.length > MAX_MESSAGES) {
+      messages.shift();
     }
 
-    if (changed) {
-      saveMessages();
+    saveMessages();
+
+    if (shouldNotify !== false) {
       notifySubscribers();
     }
 
-    return changed;
+    return true;
   }
 
-  function scanForCommissionerMessages() {
-    const found = [];
-
-    getLikelyScrollerElements().forEach(function (element) {
-      extractTextCandidates(element).forEach(function (text) {
-        found.push(text);
-      });
-    });
-
-    scanTopOfPage().forEach(function (text) {
-      found.push(text);
-    });
-
-    addMessages(found);
-
-    return getCommissionerMessages();
+  function getCommissionerMessages() {
+    return messages.slice();
   }
-
-  /* =========================================================
-     SUBSCRIPTIONS
-  ========================================================= */
 
   function notifySubscribers() {
-    const messages = getCommissionerMessages();
+    const snapshot = getCommissionerMessages();
 
     subscribers.forEach(function (callback) {
       try {
-        callback(messages.slice());
+        callback(snapshot.slice());
       } catch (error) {
         console.error(
           'LSFFL commissioner message subscriber failed:',
@@ -314,7 +223,6 @@
     }
 
     subscribers.add(callback);
-
     callback(getCommissionerMessages());
 
     return function unsubscribe() {
@@ -322,25 +230,180 @@
     };
   }
 
+  function clearCommissionerMessageCache() {
+    messages.length = 0;
+    localStorage.removeItem(STORAGE_KEY);
+    notifySubscribers();
+  }
+
   /* =========================================================
-     PUBLIC DATA METHODS
+     FIND THE REAL MFL SCROLLING TEXT
   ========================================================= */
 
-  function getCommissionerMessages() {
-    return Array.from(capturedMessages)
-      .filter(isReasonableMessage)
-      .slice(0, MAX_SAVED_MESSAGES);
+  function getDirectText(element) {
+    let text = '';
+
+    element.childNodes.forEach(function (node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        text += ' ' + node.nodeValue;
+      }
+    });
+
+    return cleanText(text);
   }
 
-  function clearCommissionerMessageCache() {
-    capturedMessages.clear();
-    localStorage.removeItem(MESSAGE_STORAGE_KEY);
-    notifySubscribers();
-    scanForCommissionerMessages();
+  function collectCandidateText(element) {
+    const candidates = [];
+
+    const directText = getDirectText(element);
+    const fullText = cleanText(element.textContent);
+
+    if (isValidCommissionerMessage(directText)) {
+      candidates.push(directText);
+    }
+
+    if (
+      isValidCommissionerMessage(fullText) &&
+      element.children.length <= 3
+    ) {
+      candidates.push(fullText);
+    }
+
+    element.querySelectorAll(
+      'span, div, td, font, p, a'
+    ).forEach(function (child) {
+      if (
+        belongsToCustomTicker(child) ||
+        belongsToOldNavyTimes(child) ||
+        !isElementVisible(child) ||
+        child.children.length > 1
+      ) {
+        return;
+      }
+
+      const childText = cleanText(child.textContent);
+
+      if (isValidCommissionerMessage(childText)) {
+        candidates.push(childText);
+      }
+    });
+
+    return Array.from(new Set(candidates));
+  }
+
+  function findExplicitScrollerElements() {
+    const selectors = [
+      'marquee',
+      '[id*="scroll" i]',
+      '[class*="scroll" i]',
+      '[id*="applet" i]',
+      '[class*="applet" i]'
+    ];
+
+    const results = [];
+
+    selectors.forEach(function (selector) {
+      let found = [];
+
+      try {
+        found = document.querySelectorAll(selector);
+      } catch (error) {
+        return;
+      }
+
+      found.forEach(function (element) {
+        if (
+          belongsToCustomTicker(element) ||
+          belongsToOldNavyTimes(element)
+        ) {
+          return;
+        }
+
+        const rect = element.getBoundingClientRect();
+
+        if (
+          rect.top >= 70 &&
+          rect.top <= 210 &&
+          rect.width >= 500 &&
+          rect.height >= 8 &&
+          rect.height <= 80
+        ) {
+          results.push(element);
+        }
+      });
+    });
+
+    return Array.from(new Set(results));
+  }
+
+  function findTopPageScrollerFallbacks() {
+    const results = [];
+
+    document.querySelectorAll(
+      'body > div, body > table, body > span, body div, body td'
+    ).forEach(function (element) {
+      if (
+        belongsToCustomTicker(element) ||
+        belongsToOldNavyTimes(element) ||
+        !isElementVisible(element)
+      ) {
+        return;
+      }
+
+      const rect = element.getBoundingClientRect();
+
+      if (
+        rect.top < 70 ||
+        rect.top > 210 ||
+        rect.width < 700 ||
+        rect.height < 12 ||
+        rect.height > 60
+      ) {
+        return;
+      }
+
+      const text = cleanText(element.textContent);
+
+      if (
+        isValidCommissionerMessage(text) &&
+        element.children.length <= 3
+      ) {
+        results.push(element);
+      }
+    });
+
+    return Array.from(new Set(results));
+  }
+
+  function scanForCommissionerMessages() {
+    const candidateElements = [
+      ...findExplicitScrollerElements(),
+      ...findTopPageScrollerFallbacks()
+    ];
+
+    let changed = false;
+
+    Array.from(new Set(candidateElements)).forEach(
+      function (element) {
+        collectCandidateText(element).forEach(
+          function (text) {
+            if (addMessage(text, false)) {
+              changed = true;
+            }
+          }
+        );
+      }
+    );
+
+    if (changed) {
+      notifySubscribers();
+    }
+
+    return getCommissionerMessages();
   }
 
   /* =========================================================
-     PAGE WATCHER
+     WATCH FOR ROTATING MFL TEXT
   ========================================================= */
 
   function scheduleScan() {
@@ -348,7 +411,7 @@
 
     scanTimer = setTimeout(function () {
       scanForCommissionerMessages();
-    }, 150);
+    }, 100);
   }
 
   function startObserver() {
@@ -368,20 +431,23 @@
   }
 
   function initialize() {
+    loadStoredMessages();
+
     scanForCommissionerMessages();
     startObserver();
 
     /*
-      MFL scrolling text may rotate messages without replacing
-      the entire page element, so periodically scan the header.
+      The MFL message may move inside its scrolling container
+      without replacing the whole page element. Recheck once
+      per second so all five saved lines can be captured.
     */
-    setInterval(function () {
+    window.setInterval(function () {
       scanForCommissionerMessages();
     }, 1000);
   }
 
   /* =========================================================
-     EXPOSE DATA BRIDGE
+     PUBLIC MODULE
   ========================================================= */
 
   window.LSFFL_MFL_DATA = {
