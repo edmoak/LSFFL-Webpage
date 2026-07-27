@@ -3,109 +3,24 @@
 
   /* =========================================================
      LSFFL NAVY TIMES
-     FINAL UI MODULE
+     CORRECTED DISPLAY + MFL SCROLLING TEXT CONNECTION
   ========================================================= */
 
   const TICKER_ID = 'lsffl-custom-ticker';
   const STYLE_ID = 'lsffl-custom-ticker-styles';
 
-  const DATA_SCRIPT_URL =
-    'https://edmoak.github.io/LSFFL-Webpage/js/mfl-data.js';
-
-  const SETTINGS_SCRIPT_URL =
+  const SETTINGS_URL =
     'https://edmoak.github.io/LSFFL-Webpage/js/lsffl-settings.js';
 
-  const SITE_GOLD = '#c9a227';
-  const SITE_NAVY = '#071a2f';
-  const SITE_NAVY_DARK = '#031426';
+  const capturedCommissionerMessages = new Set();
 
   let tickerRoot = null;
   let tickerTrack = null;
   let settingsPanel = null;
   let currentSettings = null;
-  let commissionerMessages = [];
-
-  let initializationStarted = false;
-  let resizeTimer = null;
 
   /* =========================================================
-     LOAD REQUIRED MODULES
-  ========================================================= */
-
-  function loadScript(url, globalName) {
-    return new Promise(function (resolve, reject) {
-      if (window[globalName]) {
-        resolve(window[globalName]);
-        return;
-      }
-
-      const existing = Array.from(
-        document.querySelectorAll('script[src]')
-      ).find(function (script) {
-        return script.src === url;
-      });
-
-      if (existing) {
-        const checkExisting = setInterval(function () {
-          if (window[globalName]) {
-            clearInterval(checkExisting);
-            resolve(window[globalName]);
-          }
-        }, 100);
-
-        setTimeout(function () {
-          clearInterval(checkExisting);
-
-          if (!window[globalName]) {
-            reject(
-              new Error(globalName + ' did not become available.')
-            );
-          }
-        }, 10000);
-
-        return;
-      }
-
-      const script = document.createElement('script');
-      script.src = url;
-      script.async = false;
-
-      script.addEventListener('load', function () {
-        if (window[globalName]) {
-          resolve(window[globalName]);
-        } else {
-          reject(
-            new Error(
-              url + ' loaded, but ' + globalName +
-              ' was not created.'
-            )
-          );
-        }
-      });
-
-      script.addEventListener('error', function () {
-        reject(new Error('Unable to load ' + url));
-      });
-
-      document.head.appendChild(script);
-    });
-  }
-
-  function loadRequiredModules() {
-    return Promise.all([
-      loadScript(
-        DATA_SCRIPT_URL,
-        'LSFFL_MFL_DATA'
-      ),
-      loadScript(
-        SETTINGS_SCRIPT_URL,
-        'LSFFL_TICKER_SETTINGS'
-      )
-    ]);
-  }
-
-  /* =========================================================
-     GENERAL HELPERS
+     HELPERS
   ========================================================= */
 
   function cleanText(value) {
@@ -113,6 +28,10 @@
       .replace(/\u00a0/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
+  }
+
+  function normalizedText(element) {
+    return cleanText(element.textContent).toUpperCase();
   }
 
   function isVisible(element) {
@@ -146,22 +65,79 @@
     return element;
   }
 
+  function loadScript(url, globalName) {
+    return new Promise(function (resolve, reject) {
+      if (window[globalName]) {
+        resolve(window[globalName]);
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = url;
+      script.async = false;
+
+      script.onload = function () {
+        if (window[globalName]) {
+          resolve(window[globalName]);
+        } else {
+          reject(
+            new Error(globalName + ' was not created.')
+          );
+        }
+      };
+
+      script.onerror = function () {
+        reject(new Error('Could not load ' + url));
+      };
+
+      document.head.appendChild(script);
+    });
+  }
+
   /* =========================================================
-     FIND MFL PAGE ELEMENTS
+     FIND OLD MFL NAVY TIMES TICKER
   ========================================================= */
 
-  function findOldMarqueeTicker() {
+  function isOldMflTickerElement(element) {
+    if (
+      !element ||
+      element.id === TICKER_ID ||
+      element.closest('#' + TICKER_ID)
+    ) {
+      return false;
+    }
+
+    const text = normalizedText(element);
+    const rect = element.getBoundingClientRect();
+
+    const containsTickerTitle =
+      text.includes('NAVY TIMES');
+
+    const containsTickerMaterial =
+      text.includes('LATEST ARTICLES') ||
+      text.includes('FANTASY MATCHUPS') ||
+      text.includes('WAIVER ORDER') ||
+      text.includes('MARQUEE SETTINGS');
+
+    return (
+      containsTickerTitle &&
+      containsTickerMaterial &&
+      rect.width > 500 &&
+      rect.height >= 25 &&
+      rect.height < 320
+    );
+  }
+
+  function findOldMflTicker() {
     const selectors = [
-      '#marquee',
-      '#marquee_wrapper',
-      '#marquee-container',
-      '#marqueeContainer',
-      '#mfl-marquee',
-      '.mfl-marquee',
-      '.marquee-wrapper',
-      '.marquee-container',
       '[id*="marquee" i]',
-      '[class*="marquee" i]'
+      '[class*="marquee" i]',
+      '[id*="ticker" i]',
+      '[class*="ticker" i]',
+      'table',
+      'section',
+      'article',
+      'div'
     ];
 
     for (const selector of selectors) {
@@ -174,28 +150,7 @@
       }
 
       for (const element of elements) {
-        if (
-          element.id === TICKER_ID ||
-          element.closest('#' + TICKER_ID)
-        ) {
-          continue;
-        }
-
-        const text = cleanText(element.textContent)
-          .toUpperCase();
-
-        const rect = element.getBoundingClientRect();
-
-        if (
-          rect.width > 500 &&
-          rect.height > 15 &&
-          rect.height < 300 &&
-          (
-            text.includes('NAVY TIMES') ||
-            text.includes('LATEST ARTICLES') ||
-            text.includes('MARQUEE SETTINGS')
-          )
-        ) {
+        if (isOldMflTickerElement(element)) {
           return element;
         }
       }
@@ -204,230 +159,246 @@
     return null;
   }
 
-  function findOldMarqueeContainer() {
-    const marquee = findOldMarqueeTicker();
+  function findOldMflTickerContainer() {
+    const ticker = findOldMflTicker();
 
-    if (!marquee) {
+    if (!ticker) {
       return null;
     }
 
     const candidates = [
-      marquee.closest('.mobile-wrap'),
-      marquee.closest('.report'),
-      marquee.closest('.homepagetabcontent'),
-      marquee.closest('table'),
-      marquee
+      ticker.closest('.mobile-wrap'),
+      ticker.closest('.report'),
+      ticker.closest('.homepagetabcontent'),
+      ticker.closest('table'),
+      ticker
     ].filter(Boolean);
 
     for (const candidate of candidates) {
-      const rect = candidate.getBoundingClientRect();
-      const text = cleanText(candidate.textContent)
-        .toUpperCase();
-
-      if (
-        rect.width > 500 &&
-        rect.height < 320 &&
-        (
-          text.includes('NAVY TIMES') ||
-          text.includes('LATEST ARTICLES')
-        )
-      ) {
+      if (isOldMflTickerElement(candidate)) {
         return candidate;
       }
     }
 
-    return marquee;
+    return ticker;
+  }
+
+  function hideOldMflTicker() {
+    const oldTicker = findOldMflTickerContainer();
+
+    if (!oldTicker) {
+      return;
+    }
+
+    oldTicker.setAttribute(
+      'data-lsffl-hidden-old-ticker',
+      'true'
+    );
+
+    oldTicker.style.setProperty(
+      'display',
+      'none',
+      'important'
+    );
+
+    oldTicker.style.setProperty(
+      'height',
+      '0',
+      'important'
+    );
+
+    oldTicker.style.setProperty(
+      'min-height',
+      '0',
+      'important'
+    );
+
+    oldTicker.style.setProperty(
+      'margin',
+      '0',
+      'important'
+    );
+
+    oldTicker.style.setProperty(
+      'padding',
+      '0',
+      'important'
+    );
+
+    oldTicker.style.setProperty(
+      'border',
+      '0',
+      'important'
+    );
+  }
+
+  /* =========================================================
+     READ MFL SCROLLING TEXT
+  ========================================================= */
+
+  function isValidCommissionerMessage(text) {
+    const cleaned = cleanText(text);
+    const upper = cleaned.toUpperCase();
+
+    if (
+      cleaned.length < 3 ||
+      cleaned.length > 300
+    ) {
+      return false;
+    }
+
+    const rejectedPhrases = [
+      'NAVY TIMES',
+      'LATEST ARTICLES',
+      'FANTASY MATCHUPS',
+      'WAIVER ORDER',
+      'LAMAD SQUAD FANTASY',
+      'SUBMIT LINEUP',
+      'ADD/DROP',
+      'TRANSACTIONS',
+      'LEAGUE STANDINGS',
+      'LIVE SCORING',
+      'BULLDOGS DIVISION',
+      'LOCKER ROOM',
+      'HISTORY PAGE',
+      'PLAYER RESEARCH'
+    ];
+
+    return !rejectedPhrases.some(function (phrase) {
+      return upper.includes(phrase);
+    });
   }
 
   function findMflScrollingTextElements() {
-    const results = [];
+    const found = [];
 
-    const selectors = [
-      'marquee',
-      '[id*="scroll" i]',
-      '[class*="scroll" i]',
-      '[id*="applet" i]',
-      '[class*="applet" i]'
-    ];
-
-    selectors.forEach(function (selector) {
-      let elements = [];
-
-      try {
-        elements = document.querySelectorAll(selector);
-      } catch (error) {
-        return;
-      }
-
-      elements.forEach(function (element) {
-        if (
-          element.id === TICKER_ID ||
-          element.closest('#' + TICKER_ID)
-        ) {
-          return;
-        }
-
-        const rect = element.getBoundingClientRect();
-        const text = cleanText(element.textContent);
-
-        if (
-          rect.top < 230 &&
-          rect.width > 300 &&
-          rect.height > 5 &&
-          rect.height < 100 &&
-          text
-        ) {
-          results.push(element);
-        }
-      });
-    });
-
-    document.querySelectorAll('body > div, body > table').forEach(
-      function (element) {
-        if (
-          element.id === TICKER_ID ||
-          element.closest('#' + TICKER_ID)
-        ) {
-          return;
-        }
-
-        const rect = element.getBoundingClientRect();
-        const text = cleanText(element.textContent);
-
-        if (
-          rect.top >= 100 &&
-          rect.top < 190 &&
-          rect.width > 700 &&
-          rect.height > 15 &&
-          rect.height < 60 &&
-          text &&
-          !text.toUpperCase().includes('LAMAD SQUAD')
-        ) {
-          results.push(element);
-        }
-      }
-    );
-
-    return Array.from(new Set(results));
-  }
-
-  function hideOriginalMflDisplays() {
-    const oldMarquee = findOldMarqueeContainer();
-
-    if (oldMarquee) {
-      oldMarquee.style.setProperty(
-        'display',
-        'none',
-        'important'
-      );
-    }
-
-    findMflScrollingTextElements().forEach(function (element) {
+    /*
+      MFL normally renders the Scrolling Text Setup messages
+      inside a marquee-style element near the top of the page.
+    */
+    document.querySelectorAll(
+      'marquee, [id*="scroll" i], [class*="scroll" i]'
+    ).forEach(function (element) {
       if (
-        tickerRoot &&
-        tickerRoot.contains(element)
+        element.id === TICKER_ID ||
+        element.closest('#' + TICKER_ID)
       ) {
         return;
       }
 
+      const rect = element.getBoundingClientRect();
+      const text = cleanText(element.textContent);
+
+      const belongsToOldTicker = Boolean(
+        element.closest(
+          '[data-lsffl-hidden-old-ticker="true"]'
+        )
+      );
+
+      if (
+        !belongsToOldTicker &&
+        rect.top < 210 &&
+        rect.width > 400 &&
+        rect.height > 5 &&
+        rect.height < 90 &&
+        isValidCommissionerMessage(text)
+      ) {
+        found.push(element);
+      }
+    });
+
+    /*
+      Fallback for MFL themes that render the scrolling text
+      inside a normal DIV or table cell.
+    */
+    document.querySelectorAll(
+      'body div, body td, body span'
+    ).forEach(function (element) {
+      if (
+        element.id === TICKER_ID ||
+        element.closest('#' + TICKER_ID) ||
+        element.closest(
+          '[data-lsffl-hidden-old-ticker="true"]'
+        )
+      ) {
+        return;
+      }
+
+      if (!isVisible(element)) {
+        return;
+      }
+
+      const rect = element.getBoundingClientRect();
+      const text = cleanText(element.textContent);
+
+      if (
+        rect.top >= 90 &&
+        rect.top < 190 &&
+        rect.width > 650 &&
+        rect.height >= 15 &&
+        rect.height <= 55 &&
+        element.children.length <= 2 &&
+        isValidCommissionerMessage(text)
+      ) {
+        found.push(element);
+      }
+    });
+
+    return Array.from(new Set(found));
+  }
+
+  function captureMflScrollingMessages() {
+    let changed = false;
+
+    findMflScrollingTextElements().forEach(function (element) {
+      const text = cleanText(element.textContent);
+
+      if (
+        isValidCommissionerMessage(text) &&
+        !capturedCommissionerMessages.has(text)
+      ) {
+        capturedCommissionerMessages.add(text);
+        changed = true;
+      }
+    });
+
+    while (capturedCommissionerMessages.size > 5) {
+      const oldest =
+        capturedCommissionerMessages.values().next().value;
+
+      capturedCommissionerMessages.delete(oldest);
+    }
+
+    if (changed) {
+      rebuildTickerTrack();
+    }
+  }
+
+  function hideOriginalMflScrollingText() {
+    findMflScrollingTextElements().forEach(function (element) {
       element.style.setProperty(
         'display',
         'none',
         'important'
       );
-    });
-  }
 
-  /* =========================================================
-     WIDTH AND PLACEMENT
-  ========================================================= */
+      const parent = element.parentElement;
 
-  function findWidthReference() {
-    const selectors = [
-      '.myfantasyleague_menu',
-      '.reportnavigation',
-      '.homepagecolumns',
-      '.homepagetabcontent',
-      '#body_home',
-      '#body_options_01',
-      '.report'
-    ];
+      if (parent) {
+        const rect = parent.getBoundingClientRect();
 
-    let best = null;
-    let bestWidth = 0;
-
-    selectors.forEach(function (selector) {
-      document.querySelectorAll(selector).forEach(
-        function (element) {
-          if (
-            element.closest('#' + TICKER_ID) ||
-            !isVisible(element)
-          ) {
-            return;
-          }
-
-          const rect = element.getBoundingClientRect();
-
-          if (
-            rect.width >= 800 &&
-            rect.width <= 1500 &&
-            rect.width > bestWidth
-          ) {
-            best = element;
-            bestWidth = rect.width;
-          }
+        if (
+          rect.height < 90 &&
+          rect.width > 650
+        ) {
+          parent.style.setProperty(
+            'display',
+            'none',
+            'important'
+          );
         }
-      );
+      }
     });
-
-    return best;
-  }
-
-  function matchTickerWidth() {
-    if (!tickerRoot) {
-      return;
-    }
-
-    const reference = findWidthReference();
-
-    if (!reference) {
-      tickerRoot.style.width = 'calc(100% - 24px)';
-      tickerRoot.style.maxWidth = '1135px';
-      return;
-    }
-
-    const rect = reference.getBoundingClientRect();
-
-    tickerRoot.style.width =
-      Math.round(rect.width) + 'px';
-
-    tickerRoot.style.maxWidth = 'none';
-  }
-
-  function findInsertionReference() {
-    const oldMarquee = findOldMarqueeContainer();
-
-    if (oldMarquee && oldMarquee.parentNode) {
-      return oldMarquee;
-    }
-
-    const matchupStrip =
-      document.querySelector(
-        '[class*="matchup"], [id*="matchup"]'
-      );
-
-    if (matchupStrip && matchupStrip.parentNode) {
-      return matchupStrip;
-    }
-
-    const menu =
-      document.querySelector('.myfantasyleague_menu');
-
-    if (menu && menu.parentNode) {
-      return menu;
-    }
-
-    return null;
   }
 
   /* =========================================================
@@ -435,15 +406,15 @@
   ========================================================= */
 
   function addTickerItem(items, category, text) {
-    const cleanedText = cleanText(text);
+    const cleaned = cleanText(text);
 
-    if (!cleanedText) {
+    if (!cleaned) {
       return;
     }
 
     items.push({
       category: category,
-      text: cleanedText
+      text: cleaned
     });
   }
 
@@ -452,13 +423,15 @@
     const items = [];
 
     if (settings.commissionerMessages) {
-      commissionerMessages.forEach(function (message) {
-        addTickerItem(
-          items,
-          'Commissioner',
-          message
-        );
-      });
+      Array.from(capturedCommissionerMessages)
+        .slice(0, 5)
+        .forEach(function (message) {
+          addTickerItem(
+            items,
+            'Commissioner',
+            message
+          );
+        });
     }
 
     if (settings.leagueNews) {
@@ -481,15 +454,7 @@
       addTickerItem(
         items,
         'Next Week',
-        'Upcoming LSFFL matchups will appear here when the active MFL schedule is connected.'
-      );
-    }
-
-    if (settings.lastWeekResults) {
-      addTickerItem(
-        items,
-        'Last Week',
-        'Completed LSFFL matchup results will appear here after games are played.'
+        'Upcoming LSFFL matchups will appear here when the live schedule connection is completed.'
       );
     }
 
@@ -501,113 +466,11 @@
       );
     }
 
-    if (settings.powerRank) {
-      addTickerItem(
-        items,
-        'Power Rank',
-        'Current LSFFL power rankings will appear here.'
-      );
-    }
-
-    if (settings.alternatePowerRank) {
-      addTickerItem(
-        items,
-        'Alt Power Rank',
-        'Alternate LSFFL power rankings will appear here.'
-      );
-    }
-
-    if (settings.pointsScored) {
-      addTickerItem(
-        items,
-        'Points Scored',
-        'League leaders in total fantasy points will appear here.'
-      );
-    }
-
-    if (settings.allPlayRecord) {
-      addTickerItem(
-        items,
-        'All-Play',
-        'Current LSFFL all-play records will appear here.'
-      );
-    }
-
-    if (Number(settings.topByStatCategory) > 0) {
-      addTickerItem(
-        items,
-        'Stat Leaders',
-        'Top ' +
-          settings.topByStatCategory +
-          ' players by statistical category will appear here.'
-      );
-    }
-
-    if (Number(settings.topFantasyPoints) > 0) {
-      addTickerItem(
-        items,
-        'Fantasy Leaders',
-        'Top ' +
-          settings.topFantasyPoints +
-          ' fantasy scorers by position will appear here.'
-      );
-    }
-
-    if (settings.draft) {
-      addTickerItem(
-        items,
-        'Draft',
-        settings.showEntireDraft
-          ? 'The full LSFFL draft board will appear here.'
-          : 'Recent LSFFL draft selections will appear here.'
-      );
-    }
-
-    if (settings.nflResults) {
-      addTickerItem(
-        items,
-        'NFL Results',
-        'Completed NFL game results will appear here.'
-      );
-    }
-
-    if (settings.nflMatchups) {
-      addTickerItem(
-        items,
-        'NFL Matchups',
-        'Upcoming NFL matchups will appear here.'
-      );
-    }
-
-    if (settings.fantasyMatchups) {
-      addTickerItem(
-        items,
-        'Live Fantasy',
-        'Live LSFFL matchup scores will appear here during games.'
-      );
-    }
-
-    if (settings.liveNFLMatchups) {
-      addTickerItem(
-        items,
-        'Live NFL',
-        'Live NFL scores will appear here during games.'
-      );
-    }
-
-    if (settings.nflMatchupLeaders) {
-      addTickerItem(
-        items,
-        'NFL Leaders',
-        'NFL matchup statistical leaders will appear here.'
-      );
-    }
-
     if (settings.nflNews) {
       addTickerItem(
         items,
         'NFL News',
-        'Current NFL headlines will appear here when the NFL news source is connected.'
+        'Current NFL headlines will appear here when the NFL news connection is completed.'
       );
     }
 
@@ -615,17 +478,16 @@
       addTickerItem(
         items,
         'Navy Times',
-        'Open the settings cog to choose which information is displayed.'
+        'Open the settings cog to select the information displayed.'
       );
     }
 
-    const maximum =
-      Math.max(
-        1,
-        Number(settings.articleHeadlines) || 5
-      );
+    const limit = Math.max(
+      1,
+      Number(settings.articleHeadlines) || 5
+    );
 
-    return items.slice(0, maximum);
+    return items.slice(0, limit);
   }
 
   function createTickerItem(item) {
@@ -733,24 +595,23 @@
       }
 
       #${TICKER_ID} {
-        --ticker-gold: ${SITE_GOLD};
-        --ticker-navy: ${SITE_NAVY};
-        --ticker-navy-dark: ${SITE_NAVY_DARK};
+        --ticker-gold: #c9a227;
+        --ticker-navy: #071a2f;
+        --ticker-dark: #031426;
 
         position: relative;
-        z-index: 1000;
+        z-index: 1500;
         display: grid;
         grid-template-columns: 145px minmax(0, 1fr) 34px;
-        width: calc(100% - 24px);
-        max-width: 1135px;
+        width: min(1135px, calc(100% - 24px));
         height: 45px;
         min-height: 45px;
         margin: 5px auto 7px;
         overflow: visible;
         border: 2px solid var(--ticker-gold);
         border-radius: 3px;
-        background: var(--ticker-navy-dark);
-        box-shadow: 0 5px 12px rgba(0, 0, 0, 0.22);
+        background: var(--ticker-dark);
+        box-shadow: 0 5px 12px rgba(0, 0, 0, 0.24);
         font-family: Arial, Helvetica, sans-serif;
       }
 
@@ -820,38 +681,7 @@
           linear-gradient(
             90deg,
             #0b3152,
-            var(--ticker-navy-dark)
-          );
-      }
-
-      #${TICKER_ID} .lsffl-ticker-window::before,
-      #${TICKER_ID} .lsffl-ticker-window::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        z-index: 4;
-        width: 25px;
-        pointer-events: none;
-      }
-
-      #${TICKER_ID} .lsffl-ticker-window::before {
-        left: 0;
-        background:
-          linear-gradient(
-            90deg,
-            #0b3152,
-            transparent
-          );
-      }
-
-      #${TICKER_ID} .lsffl-ticker-window::after {
-        right: 0;
-        background:
-          linear-gradient(
-            270deg,
-            var(--ticker-navy-dark),
-            transparent
+            var(--ticker-dark)
           );
       }
 
@@ -860,11 +690,8 @@
         align-items: center;
         width: max-content;
         min-width: max-content;
-        animation-name: lsfflNavyTimesScroll;
-        animation-duration: 55s;
-        animation-delay: 3s;
-        animation-timing-function: linear;
-        animation-iteration-count: infinite;
+        animation:
+          lsfflNavyTimesScroll 55s linear 3s infinite;
         will-change: transform;
       }
 
@@ -888,20 +715,11 @@
         white-space: nowrap;
       }
 
-      #${TICKER_ID}.ticker-size-small .lsffl-ticker-item {
-        font-size: 10px;
-      }
-
-      #${TICKER_ID}.ticker-size-large .lsffl-ticker-item {
-        font-size: 12px;
-      }
-
       #${TICKER_ID} .lsffl-ticker-category {
         margin-right: 7px;
         color: var(--ticker-gold);
         font-size: 10px;
         font-weight: 900;
-        letter-spacing: 0.035em;
         text-transform: uppercase;
       }
 
@@ -930,28 +748,19 @@
         justify-content: center;
         width: 21px;
         height: 21px;
-        margin: 0;
         padding: 0;
         border: 0;
         background: transparent;
         color: var(--ticker-gold);
         font-size: 16px;
-        line-height: 1;
         cursor: pointer;
-      }
-
-      #${TICKER_ID} .lsffl-ticker-settings-button:hover,
-      #${TICKER_ID} .lsffl-ticker-settings-button:focus {
-        color: #ffffff;
-        outline: none;
-        transform: rotate(30deg);
       }
 
       #lsffl-ticker-settings-panel {
         position: absolute;
         top: calc(100% + 5px);
         right: 0;
-        z-index: 4000;
+        z-index: 5000;
         display: none;
         width: 365px;
         max-height: 72vh;
@@ -970,7 +779,7 @@
 
       #lsffl-ticker-settings-panel
       .lsffl-settings-panel-title {
-        padding: 0 0 8px;
+        padding-bottom: 8px;
         border-bottom: 2px solid var(--ticker-gold);
         color: var(--ticker-gold);
         font-size: 15px;
@@ -987,19 +796,16 @@
       #lsffl-ticker-settings-panel
       .lsffl-settings-group-heading {
         display: flex;
-        align-items: center;
         justify-content: space-between;
         width: 100%;
         min-height: 28px;
         padding: 5px 7px;
         border: 0;
-        border-bottom: 1px solid rgba(201, 162, 39, 0.55);
         background: #0a2947;
         color: #ffffff;
         font-size: 11px;
         font-weight: 900;
         text-transform: uppercase;
-        cursor: pointer;
       }
 
       #lsffl-ticker-settings-panel
@@ -1017,27 +823,7 @@
         display: flex;
         align-items: center;
         gap: 5px;
-        min-width: 0;
         color: #ffffff;
-        font-size: 10px;
-        font-weight: 700;
-        line-height: 1.2;
-      }
-
-      #lsffl-ticker-settings-panel
-      .lsffl-settings-checkbox input {
-        width: 14px;
-        height: 14px;
-        margin: 0;
-        accent-color: var(--ticker-gold);
-      }
-
-      #lsffl-ticker-settings-panel select {
-        height: 25px;
-        min-width: 48px;
-        border: 1px solid var(--ticker-gold);
-        background: #ffffff;
-        color: var(--ticker-navy-dark);
         font-size: 10px;
         font-weight: 700;
       }
@@ -1056,27 +842,10 @@
         min-height: 27px;
         padding: 0 9px;
         border: 1px solid var(--ticker-gold);
-        border-radius: 2px;
         background: #0b3152;
         color: #ffffff;
         font-size: 10px;
         font-weight: 900;
-        cursor: pointer;
-      }
-
-      #lsffl-ticker-settings-panel
-      .lsffl-settings-action:hover,
-      #lsffl-ticker-settings-panel
-      .lsffl-settings-footer button:hover {
-        background: var(--ticker-gold);
-        color: var(--ticker-navy-dark);
-      }
-
-      #lsffl-ticker-settings-panel
-      .lsffl-settings-footer {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 9px;
       }
 
       @keyframes lsfflNavyTimesScroll {
@@ -1092,32 +861,13 @@
       @media screen and (max-width: 760px) {
         #${TICKER_ID} {
           grid-template-columns: 105px minmax(0, 1fr) 31px;
-          width: 100% !important;
+          width: 100%;
           border-radius: 0;
-        }
-
-        #${TICKER_ID} .lsffl-ticker-title {
-          padding: 0 7px;
-          font-size: 9px;
-        }
-
-        #${TICKER_ID} .lsffl-ticker-item {
-          font-size: 9px;
-        }
-
-        #${TICKER_ID} .lsffl-ticker-category {
-          font-size: 8px;
         }
 
         #lsffl-ticker-settings-panel {
           right: 1px;
           width: min(360px, calc(100vw - 8px));
-        }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        #${TICKER_ID} .lsffl-ticker-track {
-          animation-play-state: paused;
         }
       }
     `;
@@ -1126,21 +876,45 @@
   }
 
   /* =========================================================
-     BUILD UI
+     BUILD TICKER
   ========================================================= */
 
+  function findInsertionReference() {
+    const oldTicker = findOldMflTickerContainer();
+
+    if (oldTicker && oldTicker.parentNode) {
+      return oldTicker;
+    }
+
+    const matchupCandidates = document.querySelectorAll(
+      '[id*="matchup" i], [class*="matchup" i]'
+    );
+
+    for (const element of matchupCandidates) {
+      const rect = element.getBoundingClientRect();
+
+      if (
+        rect.width > 700 &&
+        rect.height > 50
+      ) {
+        return element;
+      }
+    }
+
+    return document.querySelector(
+      '.myfantasyleague_menu'
+    );
+  }
+
   function buildTicker() {
-    if (document.getElementById(TICKER_ID)) {
-      tickerRoot =
-        document.getElementById(TICKER_ID);
+    const existing =
+      document.getElementById(TICKER_ID);
 
-      tickerTrack =
-        tickerRoot.querySelector(
-          '.lsffl-ticker-track'
-        );
-
-      matchTickerWidth();
-      hideOriginalMflDisplays();
+    if (existing) {
+      tickerRoot = existing;
+      tickerTrack = existing.querySelector(
+        '.lsffl-ticker-track'
+      );
 
       return true;
     }
@@ -1157,16 +931,8 @@
 
     addStyles();
 
-    tickerRoot = createElement(
-      'section',
-      ''
-    );
-
+    tickerRoot = createElement('section');
     tickerRoot.id = TICKER_ID;
-    tickerRoot.setAttribute(
-      'aria-label',
-      'Navy Times league ticker'
-    );
 
     const title = createElement(
       'div',
@@ -1202,10 +968,6 @@
       'aria-label',
       'Open Navy Times settings'
     );
-    settingsButton.setAttribute(
-      'aria-expanded',
-      'false'
-    );
 
     settingsCell.appendChild(settingsButton);
 
@@ -1219,14 +981,8 @@
         event.preventDefault();
         event.stopPropagation();
 
-        const isOpen =
-          settingsPanel.classList.toggle(
-            'is-open'
-          );
-
-        settingsButton.setAttribute(
-          'aria-expanded',
-          String(isOpen)
+        settingsPanel.classList.toggle(
+          'is-open'
         );
       }
     );
@@ -1235,17 +991,11 @@
       'click',
       function (event) {
         if (
-          settingsPanel &&
           tickerRoot &&
           !tickerRoot.contains(event.target)
         ) {
           settingsPanel.classList.remove(
             'is-open'
-          );
-
-          settingsButton.setAttribute(
-            'aria-expanded',
-            'false'
           );
         }
       }
@@ -1262,24 +1012,18 @@
     );
 
     rebuildTickerTrack();
-    matchTickerWidth();
-    hideOriginalMflDisplays();
 
     return true;
   }
 
   /* =========================================================
-     MODULE SUBSCRIPTIONS
+     INITIALIZATION
   ========================================================= */
 
-  function connectModules() {
+  function connectSettings() {
     currentSettings =
       window.LSFFL_TICKER_SETTINGS
         .getSettings();
-
-    commissionerMessages =
-      window.LSFFL_MFL_DATA
-        .getCommissionerMessages();
 
     window.LSFFL_TICKER_SETTINGS.subscribe(
       function (updatedSettings) {
@@ -1287,108 +1031,73 @@
         rebuildTickerTrack();
       }
     );
-
-    window.LSFFL_MFL_DATA
-      .subscribeToCommissionerMessages(
-        function (updatedMessages) {
-          commissionerMessages =
-            updatedMessages
-              .map(cleanText)
-              .filter(Boolean)
-              .slice(0, 5);
-
-          rebuildTickerTrack();
-
-          setTimeout(
-            hideOriginalMflDisplays,
-            100
-          );
-        }
-      );
   }
 
-  /* =========================================================
-     INITIALIZATION
-  ========================================================= */
+  function startPageWatcher() {
+    /*
+      Capture first, then hide. This lets us read the MFL
+      scrolling text before removing its original display.
+    */
+    setInterval(function () {
+      captureMflScrollingMessages();
 
-  function finishInitialization() {
-    connectModules();
+      setTimeout(function () {
+        hideOriginalMflScrollingText();
+        hideOldMflTicker();
+      }, 50);
+    }, 800);
 
-    let attempts = 0;
+    const observer = new MutationObserver(function () {
+      captureMflScrollingMessages();
 
-    function attemptBuild() {
-      attempts += 1;
-
-      window.LSFFL_MFL_DATA
-        .scanForCommissionerMessages();
-
-      if (buildTicker()) {
-        setTimeout(
-          hideOriginalMflDisplays,
-          250
-        );
-
-        setTimeout(
-          hideOriginalMflDisplays,
-          1000
-        );
-
-        return;
+      if (!document.getElementById(TICKER_ID)) {
+        buildTicker();
       }
 
-      if (attempts < 40) {
-        setTimeout(attemptBuild, 500);
-      } else {
-        console.warn(
-          'LSFFL Navy Times could not find its insertion point.'
-        );
-      }
-    }
+      setTimeout(function () {
+        hideOriginalMflScrollingText();
+        hideOldMflTicker();
+      }, 50);
+    });
 
-    attemptBuild();
-
-    window.addEventListener(
-      'resize',
-      function () {
-        clearTimeout(resizeTimer);
-
-        resizeTimer = setTimeout(
-          matchTickerWidth,
-          100
-        );
-      }
-    );
-
-    const pageObserver =
-      new MutationObserver(function () {
-        if (!document.getElementById(TICKER_ID)) {
-          buildTicker();
-        }
-
-        hideOriginalMflDisplays();
-      });
-
-    pageObserver.observe(
-      document.documentElement,
-      {
-        childList: true,
-        subtree: true
-      }
-    );
+    observer.observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
   }
 
   function initialize() {
-    if (initializationStarted) {
-      return;
-    }
+    loadScript(
+      SETTINGS_URL,
+      'LSFFL_TICKER_SETTINGS'
+    )
+      .then(function () {
+        connectSettings();
 
-    initializationStarted = true;
+        captureMflScrollingMessages();
 
-    loadRequiredModules()
-      .then(finishInitialization)
+        let attempts = 0;
+
+        function attemptBuild() {
+          attempts += 1;
+
+          if (buildTicker()) {
+            rebuildTickerTrack();
+            startPageWatcher();
+            return;
+          }
+
+          if (attempts < 40) {
+            setTimeout(attemptBuild, 500);
+          }
+        }
+
+        attemptBuild();
+      })
       .catch(function (error) {
         console.error(
-          'LSFFL Navy Times failed to start:',
+          'LSFFL Navy Times failed:',
           error
         );
       });
