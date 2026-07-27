@@ -1,171 +1,409 @@
-/* =========================================================
-   LSFFL LIVE MFL DATA
-   League: 46007
-   Season: 2026
-========================================================= */
+(function () {
+  'use strict';
 
-const MFL_SEASON = "2026";
-const MFL_LEAGUE_ID = "46007";
-const MFL_LEAGUE_URL = "data/league.json";
+  /* =========================================================
+     LSFFL MFL DATA BRIDGE
+     Reads information already rendered by MFL on the page.
+  ========================================================= */
 
-/* =========================================================
-   FETCH LEAGUE DATA
-========================================================= */
+  const MESSAGE_STORAGE_KEY = 'lsfflMflCommissionerMessages';
+  const MAX_SAVED_MESSAGES = 5;
 
-async function fetchMflLeagueData() {
-  const response = await fetch(`${MFL_LEAGUE_URL}?_=${Date.now()}`, {
-    method: "GET",
-    cache: "no-store"
-  });
+  const capturedMessages = new Set();
+  const subscribers = new Set();
 
-  if (!response.ok) {
-    throw new Error(
-      `Local MFL data request failed with status ${response.status}`
+  let observer = null;
+  let scanTimer = null;
+
+  /* =========================================================
+     GENERAL HELPERS
+  ========================================================= */
+
+  function cleanText(value) {
+    return String(value || '')
+      .replace(/\u00a0/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function isVisible(element) {
+    if (!element || !(element instanceof Element)) {
+      return false;
+    }
+
+    const style = window.getComputedStyle(element);
+    const rect = element.getBoundingClientRect();
+
+    return (
+      style.display !== 'none' &&
+      style.visibility !== 'hidden' &&
+      Number(style.opacity || 1) !== 0 &&
+      rect.width > 0 &&
+      rect.height > 0
     );
   }
 
-  return response.json();
-}
-
-/* =========================================================
-   NORMALIZE FRANCHISE DATA
-========================================================= */
-
-function getFranchises(data) {
-  const franchises = data?.league?.franchises?.franchise;
-
-  if (!franchises) {
-    return [];
-  }
-
-  return Array.isArray(franchises)
-    ? franchises
-    : [franchises];
-}
-
-/* =========================================================
-   ESCAPE TEXT FOR SAFE HTML
-========================================================= */
-
-function escapeHtml(value = "") {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-/* =========================================================
-   CREATE ONE FRANCHISE CARD
-========================================================= */
-
-function createFranchiseCard(franchise) {
-  const name = escapeHtml(franchise.name || "Unknown Franchise");
-  const owner = escapeHtml(franchise.owner_name || "Owner unavailable");
-  const division = escapeHtml(franchise.division || "");
-  const logo = franchise.logo || franchise.icon || "";
-
-  const logoMarkup = logo
-    ? `
-      <img
-        class="mfl-franchise-logo"
-        src="${escapeHtml(logo)}"
-        alt="${name} logo"
-        loading="lazy"
-      >
-    `
-    : `
-      <div class="mfl-franchise-logo-placeholder">
-        LSFFL
-      </div>
-    `;
-
-  return `
-    <article class="mfl-franchise-card">
-      <div class="mfl-franchise-logo-wrap">
-        ${logoMarkup}
-      </div>
-
-      <div class="mfl-franchise-info">
-        <h3>${name}</h3>
-        <p class="mfl-franchise-owner">${owner}</p>
-        <p class="mfl-franchise-division">
-          Division ${division}
-        </p>
-      </div>
-    </article>
-  `;
-}
-
-/* =========================================================
-   RENDER FRANCHISES
-========================================================= */
-
-function renderFranchises(franchises) {
-  const container = document.getElementById("mfl-franchise-grid");
-
-  if (!container) {
-    console.warn(
-      'MFL data loaded, but no element with id="mfl-franchise-grid" was found.'
+  function isOurTicker(element) {
+    return Boolean(
+      element.closest &&
+      element.closest('#lsffl-custom-ticker')
     );
-    return;
   }
 
-  if (franchises.length === 0) {
-    container.innerHTML = `
-      <p class="mfl-data-message">
-        No franchise data was returned by MFL.
-      </p>
-    `;
-    return;
+  function isIgnoredText(text) {
+    const normalized = cleanText(text).toUpperCase();
+
+    if (!normalized) {
+      return true;
+    }
+
+    const ignoredExactValues = [
+      'NAVY TIMES',
+      'LATEST ARTICLES',
+      'HOME',
+      'LOCKER ROOM',
+      'LATEST NEWS',
+      'TRANSACTIONS',
+      'HISTORY PAGE',
+      'CALENDAR'
+    ];
+
+    if (ignoredExactValues.includes(normalized)) {
+      return true;
+    }
+
+    const ignoredFragments = [
+      'LAMAD SQUAD FANTASY FOOTBALL LEAGUE',
+      'SUBMIT LINEUP',
+      'ADD/DROP',
+      'SCOREBOARD',
+      'LEAGUE STANDINGS',
+      'LIVE SCORING',
+      'BULLDOGS DIVISION',
+      'MY ACCOUNT',
+      'PLAYER RESEARCH',
+      'DRAFT/AUCTION'
+    ];
+
+    return ignoredFragments.some(function (fragment) {
+      return normalized.includes(fragment);
+    });
   }
 
-  const sortedFranchises = [...franchises].sort((a, b) => {
-    return String(a.name || "").localeCompare(String(b.name || ""));
+  function isReasonableMessage(text) {
+    const cleaned = cleanText(text);
+
+    return (
+      cleaned.length >= 3 &&
+      cleaned.length <= 400 &&
+      !isIgnoredText(cleaned)
+    );
+  }
+
+  /* =========================================================
+     SAVED MESSAGE CACHE
+  ========================================================= */
+
+  function loadSavedMessages() {
+    try {
+      const saved = JSON.parse(
+        localStorage.getItem(MESSAGE_STORAGE_KEY)
+      );
+
+      if (!Array.isArray(saved)) {
+        return [];
+      }
+
+      return saved
+        .map(cleanText)
+        .filter(isReasonableMessage)
+        .slice(0, MAX_SAVED_MESSAGES);
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveMessages() {
+    const messages = Array.from(capturedMessages)
+      .filter(isReasonableMessage)
+      .slice(0, MAX_SAVED_MESSAGES);
+
+    localStorage.setItem(
+      MESSAGE_STORAGE_KEY,
+      JSON.stringify(messages)
+    );
+  }
+
+  loadSavedMessages().forEach(function (message) {
+    capturedMessages.add(message);
   });
 
-  container.innerHTML = sortedFranchises
-    .map(createFranchiseCard)
-    .join("");
-}
+  /* =========================================================
+     MESSAGE DISCOVERY
+  ========================================================= */
 
-/* =========================================================
-   SHOW ERROR
-========================================================= */
+  function getLikelyScrollerElements() {
+    const selectors = [
+      'marquee',
+      '[id*="scroll" i]',
+      '[class*="scroll" i]',
+      '[id*="marquee" i]',
+      '[class*="marquee" i]',
+      '[id*="applet" i]',
+      '[class*="applet" i]'
+    ];
 
-function renderMflError(error) {
-  console.error("Unable to load MFL league data:", error);
+    const elements = [];
 
-  const container = document.getElementById("mfl-franchise-grid");
+    selectors.forEach(function (selector) {
+      try {
+        document.querySelectorAll(selector).forEach(function (element) {
+          if (!elements.includes(element)) {
+            elements.push(element);
+          }
+        });
+      } catch (error) {
+        // Ignore unsupported selectors in older browsers.
+      }
+    });
 
-  if (!container) {
-    return;
+    return elements;
   }
 
-  container.innerHTML = `
-    <p class="mfl-data-message mfl-data-error">
-      Live league data could not be loaded right now.
-    </p>
-  `;
-}
+  function extractTextCandidates(element) {
+    const candidates = [];
 
-/* =========================================================
-   INITIALIZE
-========================================================= */
+    if (!element || isOurTicker(element)) {
+      return candidates;
+    }
 
-async function initializeMflData() {
-  try {
-    const data = await fetchMflLeagueData();
-    const franchises = getFranchises(data);
+    const directText = cleanText(element.textContent);
 
-    console.log("MFL league data loaded:", data);
-    console.log("MFL franchises loaded:", franchises);
+    if (isReasonableMessage(directText)) {
+      candidates.push(directText);
+    }
 
-    renderFranchises(franchises);
-  } catch (error) {
-    renderMflError(error);
+    element.querySelectorAll(
+      'span, div, p, a, td, font'
+    ).forEach(function (child) {
+      if (!isVisible(child) || isOurTicker(child)) {
+        return;
+      }
+
+      const childText = cleanText(child.textContent);
+
+      if (
+        isReasonableMessage(childText) &&
+        child.children.length === 0
+      ) {
+        candidates.push(childText);
+      }
+    });
+
+    return candidates;
   }
-}
 
-document.addEventListener("DOMContentLoaded", initializeMflData);
+  function scanTopOfPage() {
+    const candidates = [];
+
+    document.querySelectorAll(
+      'body *'
+    ).forEach(function (element) {
+      if (
+        !isVisible(element) ||
+        isOurTicker(element)
+      ) {
+        return;
+      }
+
+      const rect = element.getBoundingClientRect();
+
+      if (
+        rect.top < -10 ||
+        rect.top > 220 ||
+        rect.width < 350 ||
+        rect.height < 10 ||
+        rect.height > 85
+      ) {
+        return;
+      }
+
+      const text = cleanText(element.textContent);
+
+      if (
+        isReasonableMessage(text) &&
+        element.children.length <= 3
+      ) {
+        candidates.push(text);
+      }
+    });
+
+    return candidates;
+  }
+
+  function addMessages(messages) {
+    let changed = false;
+
+    messages.forEach(function (message) {
+      const cleaned = cleanText(message);
+
+      if (
+        !isReasonableMessage(cleaned) ||
+        capturedMessages.has(cleaned)
+      ) {
+        return;
+      }
+
+      capturedMessages.add(cleaned);
+      changed = true;
+    });
+
+    while (capturedMessages.size > MAX_SAVED_MESSAGES) {
+      const oldest = capturedMessages.values().next().value;
+      capturedMessages.delete(oldest);
+    }
+
+    if (changed) {
+      saveMessages();
+      notifySubscribers();
+    }
+
+    return changed;
+  }
+
+  function scanForCommissionerMessages() {
+    const found = [];
+
+    getLikelyScrollerElements().forEach(function (element) {
+      extractTextCandidates(element).forEach(function (text) {
+        found.push(text);
+      });
+    });
+
+    scanTopOfPage().forEach(function (text) {
+      found.push(text);
+    });
+
+    addMessages(found);
+
+    return getCommissionerMessages();
+  }
+
+  /* =========================================================
+     SUBSCRIPTIONS
+  ========================================================= */
+
+  function notifySubscribers() {
+    const messages = getCommissionerMessages();
+
+    subscribers.forEach(function (callback) {
+      try {
+        callback(messages.slice());
+      } catch (error) {
+        console.error(
+          'LSFFL commissioner message subscriber failed:',
+          error
+        );
+      }
+    });
+  }
+
+  function subscribeToCommissionerMessages(callback) {
+    if (typeof callback !== 'function') {
+      return function () {};
+    }
+
+    subscribers.add(callback);
+
+    callback(getCommissionerMessages());
+
+    return function unsubscribe() {
+      subscribers.delete(callback);
+    };
+  }
+
+  /* =========================================================
+     PUBLIC DATA METHODS
+  ========================================================= */
+
+  function getCommissionerMessages() {
+    return Array.from(capturedMessages)
+      .filter(isReasonableMessage)
+      .slice(0, MAX_SAVED_MESSAGES);
+  }
+
+  function clearCommissionerMessageCache() {
+    capturedMessages.clear();
+    localStorage.removeItem(MESSAGE_STORAGE_KEY);
+    notifySubscribers();
+    scanForCommissionerMessages();
+  }
+
+  /* =========================================================
+     PAGE WATCHER
+  ========================================================= */
+
+  function scheduleScan() {
+    clearTimeout(scanTimer);
+
+    scanTimer = setTimeout(function () {
+      scanForCommissionerMessages();
+    }, 150);
+  }
+
+  function startObserver() {
+    if (observer || !document.documentElement) {
+      return;
+    }
+
+    observer = new MutationObserver(function () {
+      scheduleScan();
+    });
+
+    observer.observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
+  }
+
+  function initialize() {
+    scanForCommissionerMessages();
+    startObserver();
+
+    /*
+      MFL scrolling text may rotate messages without replacing
+      the entire page element, so periodically scan the header.
+    */
+    setInterval(function () {
+      scanForCommissionerMessages();
+    }, 1000);
+  }
+
+  /* =========================================================
+     EXPOSE DATA BRIDGE
+  ========================================================= */
+
+  window.LSFFL_MFL_DATA = {
+    getCommissionerMessages:
+      getCommissionerMessages,
+
+    subscribeToCommissionerMessages:
+      subscribeToCommissionerMessages,
+
+    scanForCommissionerMessages:
+      scanForCommissionerMessages,
+
+    clearCommissionerMessageCache:
+      clearCommissionerMessageCache
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener(
+      'DOMContentLoaded',
+      initialize
+    );
+  } else {
+    initialize();
+  }
+})();
