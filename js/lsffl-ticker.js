@@ -2,317 +2,155 @@
   'use strict';
 
   /* =========================================================
-     LSFFL NAVY TIMES TICKER
-     COMPLETE REPLACEMENT FILE
+     LSFFL NAVY TIMES
+     FINAL UI MODULE
   ========================================================= */
 
   const TICKER_ID = 'lsffl-custom-ticker';
   const STYLE_ID = 'lsffl-custom-ticker-styles';
-  const SETTINGS_ID = 'lsffl-ticker-settings';
 
-  const STORAGE_KEY = 'lsfflNavyTimesSettingsV2';
+  const DATA_SCRIPT_URL =
+    'https://edmoak.github.io/LSFFL-Webpage/js/mfl-data.js';
 
-  const DEFAULT_SETTINGS = {
-    tickerSize: 'medium',
-    delay: 3,
-    speed: 55,
-    paused: false,
+  const SETTINGS_SCRIPT_URL =
+    'https://edmoak.github.io/LSFFL-Webpage/js/lsffl-settings.js';
 
-    commissionerMessages: true,
-    franchiseIcons: false,
-    articleHeadlines: 5,
+  const SITE_GOLD = '#c9a227';
+  const SITE_NAVY = '#071a2f';
+  const SITE_NAVY_DARK = '#031426';
 
-    topByStatCategory: 5,
-    topFantasyPoints: 5,
-
-    powerRank: false,
-    alternatePowerRank: false,
-    pointsScored: false,
-    allPlayRecord: false,
-    lastWeekResults: false,
-    nextWeekMatchups: true,
-    nflResults: false,
-    nflMatchups: false,
-    waiverOrder: true,
-    draft: false,
-    showEntireDraft: false,
-
-    topPicksOnly: 0,
-    picksMade: 5,
-    picksPending: 5,
-
-    fantasyMatchups: false,
-    topLiveByCategory: 5,
-    liveNFLMatchups: true,
-    nflMatchupLeaders: true,
-
-    leagueNews: true,
-    transactions: true,
-    nflNews: true
-  };
-
-  let settings = loadSettings();
   let tickerRoot = null;
   let tickerTrack = null;
   let settingsPanel = null;
-  let oldTickerContainer = null;
+  let currentSettings = null;
+  let commissionerMessages = [];
+
+  let initializationStarted = false;
+  let resizeTimer = null;
 
   /* =========================================================
-     SETTINGS STORAGE
+     LOAD REQUIRED MODULES
   ========================================================= */
 
-  function loadSettings() {
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  function loadScript(url, globalName) {
+    return new Promise(function (resolve, reject) {
+      if (window[globalName]) {
+        resolve(window[globalName]);
+        return;
+      }
 
-      return Object.assign(
-        {},
-        DEFAULT_SETTINGS,
-        saved && typeof saved === 'object' ? saved : {}
-      );
-    } catch (error) {
-      return Object.assign({}, DEFAULT_SETTINGS);
-    }
+      const existing = Array.from(
+        document.querySelectorAll('script[src]')
+      ).find(function (script) {
+        return script.src === url;
+      });
+
+      if (existing) {
+        const checkExisting = setInterval(function () {
+          if (window[globalName]) {
+            clearInterval(checkExisting);
+            resolve(window[globalName]);
+          }
+        }, 100);
+
+        setTimeout(function () {
+          clearInterval(checkExisting);
+
+          if (!window[globalName]) {
+            reject(
+              new Error(globalName + ' did not become available.')
+            );
+          }
+        }, 10000);
+
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = url;
+      script.async = false;
+
+      script.addEventListener('load', function () {
+        if (window[globalName]) {
+          resolve(window[globalName]);
+        } else {
+          reject(
+            new Error(
+              url + ' loaded, but ' + globalName +
+              ' was not created.'
+            )
+          );
+        }
+      });
+
+      script.addEventListener('error', function () {
+        reject(new Error('Unable to load ' + url));
+      });
+
+      document.head.appendChild(script);
+    });
   }
 
-  function saveSettings() {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(settings)
-    );
-  }
-
-  /* =========================================================
-     SAMPLE CONTENT
-     Live MFL data can replace these messages later.
-  ========================================================= */
-
-  function getTickerItems() {
-    const items = [];
-
-    if (settings.commissionerMessages) {
-      items.push({
-        category: 'Commissioner',
-        text:
-          'Welcome to the 2026 LSFFL season. League announcements and commissioner updates will appear here.'
-      });
-    }
-
-    if (settings.leagueNews) {
-      items.push({
-        category: 'League News',
-        text:
-          'Get Off My Ditka enters the 2026 season as the defending LSFFL champion.'
-      });
-    }
-
-    if (settings.waiverOrder) {
-      items.push({
-        category: 'Waiver Order',
-        text:
-          '1. Mustangs  2. Cougars  3. Mad Hatters  4. Purple Hooters  5. Avalanche'
-      });
-    }
-
-    if (settings.nextWeekMatchups) {
-      items.push({
-        category: 'Next Week',
-        text:
-          'Upcoming LSFFL fantasy matchups will appear here when the season schedule is active.'
-      });
-    }
-
-    if (settings.lastWeekResults) {
-      items.push({
-        category: 'Last Week',
-        text:
-          'Completed LSFFL matchup results will appear here after games are played.'
-      });
-    }
-
-    if (settings.fantasyMatchups) {
-      items.push({
-        category: 'Live Fantasy',
-        text:
-          'Live LSFFL fantasy matchup scores will appear here during NFL games.'
-      });
-    }
-
-    if (settings.transactions) {
-      items.push({
-        category: 'Transactions',
-        text:
-          'Recent trades, waiver claims and roster moves will appear here.'
-      });
-    }
-
-    if (settings.powerRank) {
-      items.push({
-        category: 'Power Rank',
-        text:
-          'The current LSFFL power rankings will appear here.'
-      });
-    }
-
-    if (settings.alternatePowerRank) {
-      items.push({
-        category: 'Alt Power Rank',
-        text:
-          'Alternate LSFFL power rankings will appear here.'
-      });
-    }
-
-    if (settings.pointsScored) {
-      items.push({
-        category: 'Points Scored',
-        text:
-          'League leaders in total fantasy points scored will appear here.'
-      });
-    }
-
-    if (settings.allPlayRecord) {
-      items.push({
-        category: 'All-Play',
-        text:
-          'Current LSFFL all-play records will appear here.'
-      });
-    }
-
-    if (settings.topByStatCategory > 0) {
-      items.push({
-        category: 'Stat Leaders',
-        text:
-          'Top ' +
-          settings.topByStatCategory +
-          ' players by statistical category will appear here.'
-      });
-    }
-
-    if (settings.topFantasyPoints > 0) {
-      items.push({
-        category: 'Fantasy Leaders',
-        text:
-          'Top ' +
-          settings.topFantasyPoints +
-          ' fantasy scorers by position will appear here.'
-      });
-    }
-
-    if (settings.draft) {
-      items.push({
-        category: 'Draft',
-        text: settings.showEntireDraft
-          ? 'The complete LSFFL draft board will appear in the ticker.'
-          : 'Recent and upcoming LSFFL draft selections will appear here.'
-      });
-    }
-
-    if (settings.topPicksOnly > 0) {
-      items.push({
-        category: 'Top Picks',
-        text:
-          'Showing the top ' +
-          settings.topPicksOnly +
-          ' draft picks.'
-      });
-    }
-
-    if (settings.picksMade > 0) {
-      items.push({
-        category: 'Picks Made',
-        text:
-          'The latest ' +
-          settings.picksMade +
-          ' completed draft selections will appear here.'
-      });
-    }
-
-    if (settings.picksPending > 0) {
-      items.push({
-        category: 'Picks Pending',
-        text:
-          'The next ' +
-          settings.picksPending +
-          ' pending draft selections will appear here.'
-      });
-    }
-
-    if (settings.nflResults) {
-      items.push({
-        category: 'NFL Results',
-        text:
-          'Completed NFL game results will appear here.'
-      });
-    }
-
-    if (settings.nflMatchups) {
-      items.push({
-        category: 'NFL Matchups',
-        text:
-          'Upcoming NFL matchups will appear here.'
-      });
-    }
-
-    if (settings.liveNFLMatchups) {
-      items.push({
-        category: 'Live NFL',
-        text:
-          'Live NFL game scores will appear here during games.'
-      });
-    }
-
-    if (settings.nflMatchupLeaders) {
-      items.push({
-        category: 'NFL Leaders',
-        text:
-          'NFL matchup statistical leaders will appear here during games.'
-      });
-    }
-
-    if (settings.topLiveByCategory > 0) {
-      items.push({
-        category: 'Live Leaders',
-        text:
-          'Top ' +
-          settings.topLiveByCategory +
-          ' live players by category will appear here.'
-      });
-    }
-
-    if (settings.nflNews) {
-      items.push({
-        category: 'NFL News',
-        text:
-          'Current NFL headlines and breaking news will appear here.'
-      });
-    }
-
-    if (!items.length) {
-      items.push({
-        category: 'Navy Times',
-        text:
-          'Open the settings cog to choose which information is displayed.'
-      });
-    }
-
-    return items.slice(
-      0,
-      Math.max(1, Number(settings.articleHeadlines) || 5)
-    );
+  function loadRequiredModules() {
+    return Promise.all([
+      loadScript(
+        DATA_SCRIPT_URL,
+        'LSFFL_MFL_DATA'
+      ),
+      loadScript(
+        SETTINGS_SCRIPT_URL,
+        'LSFFL_TICKER_SETTINGS'
+      )
+    ]);
   }
 
   /* =========================================================
-     FIND AND REMOVE OLD MFL TICKER
+     GENERAL HELPERS
   ========================================================= */
 
-  function normalizedText(element) {
-    return String(element.textContent || '')
+  function cleanText(value) {
+    return String(value || '')
+      .replace(/\u00a0/g, ' ')
       .replace(/\s+/g, ' ')
-      .trim()
-      .toUpperCase();
+      .trim();
   }
 
-  function findOldTicker() {
+  function isVisible(element) {
+    if (!element || !(element instanceof Element)) {
+      return false;
+    }
+
+    const style = window.getComputedStyle(element);
+    const rect = element.getBoundingClientRect();
+
+    return (
+      style.display !== 'none' &&
+      style.visibility !== 'hidden' &&
+      Number(style.opacity || 1) !== 0 &&
+      rect.width > 0 &&
+      rect.height > 0
+    );
+  }
+
+  function createElement(tagName, className, text) {
+    const element = document.createElement(tagName);
+
+    if (className) {
+      element.className = className;
+    }
+
+    if (typeof text === 'string') {
+      element.textContent = text;
+    }
+
+    return element;
+  }
+
+  /* =========================================================
+     FIND MFL PAGE ELEMENTS
+  ========================================================= */
+
+  function findOldMarqueeTicker() {
     const selectors = [
       '#marquee',
       '#marquee_wrapper',
@@ -322,141 +160,227 @@
       '.mfl-marquee',
       '.marquee-wrapper',
       '.marquee-container',
-      '[id*="marquee"]',
-      '[class*="marquee"]'
+      '[id*="marquee" i]',
+      '[class*="marquee" i]'
     ];
 
     for (const selector of selectors) {
-      const elements = document.querySelectorAll(selector);
+      let elements = [];
 
-      for (const element of elements) {
-        if (
-          element.id !== TICKER_ID &&
-          !element.closest('#' + TICKER_ID)
-        ) {
-          const text = normalizedText(element);
-
-          if (
-            text.includes('NAVY TIMES') ||
-            text.includes('LATEST ARTICLES')
-          ) {
-            return element;
-          }
-        }
-      }
-    }
-
-    const candidates = document.querySelectorAll(
-      'div, section, table, article'
-    );
-
-    for (const element of candidates) {
-      if (
-        element.id === TICKER_ID ||
-        element.closest('#' + TICKER_ID)
-      ) {
+      try {
+        elements = document.querySelectorAll(selector);
+      } catch (error) {
         continue;
       }
 
-      const text = normalizedText(element);
-      const rect = element.getBoundingClientRect();
+      for (const element of elements) {
+        if (
+          element.id === TICKER_ID ||
+          element.closest('#' + TICKER_ID)
+        ) {
+          continue;
+        }
 
-      if (
-        text.includes('NAVY TIMES') &&
-        text.includes('LATEST ARTICLES') &&
-        rect.width > 600 &&
-        rect.height < 250
-      ) {
-        return element;
+        const text = cleanText(element.textContent)
+          .toUpperCase();
+
+        const rect = element.getBoundingClientRect();
+
+        if (
+          rect.width > 500 &&
+          rect.height > 15 &&
+          rect.height < 300 &&
+          (
+            text.includes('NAVY TIMES') ||
+            text.includes('LATEST ARTICLES') ||
+            text.includes('MARQUEE SETTINGS')
+          )
+        ) {
+          return element;
+        }
       }
     }
 
     return null;
   }
 
-  function getOldTickerContainer(element) {
-    if (!element) {
+  function findOldMarqueeContainer() {
+    const marquee = findOldMarqueeTicker();
+
+    if (!marquee) {
       return null;
     }
 
     const candidates = [
-      element.closest('.mobile-wrap'),
-      element.closest('.report'),
-      element.closest('.homepagetabcontent'),
-      element.closest('table'),
-      element
+      marquee.closest('.mobile-wrap'),
+      marquee.closest('.report'),
+      marquee.closest('.homepagetabcontent'),
+      marquee.closest('table'),
+      marquee
     ].filter(Boolean);
 
     for (const candidate of candidates) {
       const rect = candidate.getBoundingClientRect();
-      const text = normalizedText(candidate);
+      const text = cleanText(candidate.textContent)
+        .toUpperCase();
 
       if (
-        text.includes('NAVY TIMES') &&
-        rect.width > 600 &&
-        rect.height < 300
+        rect.width > 500 &&
+        rect.height < 320 &&
+        (
+          text.includes('NAVY TIMES') ||
+          text.includes('LATEST ARTICLES')
+        )
       ) {
         return candidate;
       }
     }
 
-    return element;
+    return marquee;
   }
 
-  function hideOldTicker() {
-    if (!oldTickerContainer) {
-      return;
-    }
+  function findMflScrollingTextElements() {
+    const results = [];
 
-    oldTickerContainer.style.setProperty(
-      'display',
-      'none',
-      'important'
-    );
-  }
-
-  /* =========================================================
-     MATCH SCOREBOARD WIDTH
-  ========================================================= */
-
-  function findContentWidthReference() {
     const selectors = [
-      '.homepagecolumns',
-      '.homepagecolumn',
-      '#body_options_01',
-      '#body_home',
-      '.homepagetabcontent',
-      '.myfantasyleague_menu',
-      '.reportnavigation',
-      '.report'
+      'marquee',
+      '[id*="scroll" i]',
+      '[class*="scroll" i]',
+      '[id*="applet" i]',
+      '[class*="applet" i]'
     ];
 
-    let bestElement = null;
-    let bestWidth = 0;
-
     selectors.forEach(function (selector) {
-      document.querySelectorAll(selector).forEach(function (element) {
+      let elements = [];
+
+      try {
+        elements = document.querySelectorAll(selector);
+      } catch (error) {
+        return;
+      }
+
+      elements.forEach(function (element) {
         if (
-          element.closest('#' + TICKER_ID) ||
-          element === oldTickerContainer
+          element.id === TICKER_ID ||
+          element.closest('#' + TICKER_ID)
         ) {
           return;
         }
 
         const rect = element.getBoundingClientRect();
+        const text = cleanText(element.textContent);
 
         if (
-          rect.width > bestWidth &&
-          rect.width >= 850 &&
-          rect.width <= 1400
+          rect.top < 230 &&
+          rect.width > 300 &&
+          rect.height > 5 &&
+          rect.height < 100 &&
+          text
         ) {
-          bestWidth = rect.width;
-          bestElement = element;
+          results.push(element);
         }
       });
     });
 
-    return bestElement;
+    document.querySelectorAll('body > div, body > table').forEach(
+      function (element) {
+        if (
+          element.id === TICKER_ID ||
+          element.closest('#' + TICKER_ID)
+        ) {
+          return;
+        }
+
+        const rect = element.getBoundingClientRect();
+        const text = cleanText(element.textContent);
+
+        if (
+          rect.top >= 100 &&
+          rect.top < 190 &&
+          rect.width > 700 &&
+          rect.height > 15 &&
+          rect.height < 60 &&
+          text &&
+          !text.toUpperCase().includes('LAMAD SQUAD')
+        ) {
+          results.push(element);
+        }
+      }
+    );
+
+    return Array.from(new Set(results));
+  }
+
+  function hideOriginalMflDisplays() {
+    const oldMarquee = findOldMarqueeContainer();
+
+    if (oldMarquee) {
+      oldMarquee.style.setProperty(
+        'display',
+        'none',
+        'important'
+      );
+    }
+
+    findMflScrollingTextElements().forEach(function (element) {
+      if (
+        tickerRoot &&
+        tickerRoot.contains(element)
+      ) {
+        return;
+      }
+
+      element.style.setProperty(
+        'display',
+        'none',
+        'important'
+      );
+    });
+  }
+
+  /* =========================================================
+     WIDTH AND PLACEMENT
+  ========================================================= */
+
+  function findWidthReference() {
+    const selectors = [
+      '.myfantasyleague_menu',
+      '.reportnavigation',
+      '.homepagecolumns',
+      '.homepagetabcontent',
+      '#body_home',
+      '#body_options_01',
+      '.report'
+    ];
+
+    let best = null;
+    let bestWidth = 0;
+
+    selectors.forEach(function (selector) {
+      document.querySelectorAll(selector).forEach(
+        function (element) {
+          if (
+            element.closest('#' + TICKER_ID) ||
+            !isVisible(element)
+          ) {
+            return;
+          }
+
+          const rect = element.getBoundingClientRect();
+
+          if (
+            rect.width >= 800 &&
+            rect.width <= 1500 &&
+            rect.width > bestWidth
+          ) {
+            best = element;
+            bestWidth = rect.width;
+          }
+        }
+      );
+    });
+
+    return best;
   }
 
   function matchTickerWidth() {
@@ -464,10 +388,10 @@
       return;
     }
 
-    const reference = findContentWidthReference();
+    const reference = findWidthReference();
 
     if (!reference) {
-      tickerRoot.style.width = '100%';
+      tickerRoot.style.width = 'calc(100% - 24px)';
       tickerRoot.style.maxWidth = '1135px';
       return;
     }
@@ -480,8 +404,318 @@
     tickerRoot.style.maxWidth = 'none';
   }
 
+  function findInsertionReference() {
+    const oldMarquee = findOldMarqueeContainer();
+
+    if (oldMarquee && oldMarquee.parentNode) {
+      return oldMarquee;
+    }
+
+    const matchupStrip =
+      document.querySelector(
+        '[class*="matchup"], [id*="matchup"]'
+      );
+
+    if (matchupStrip && matchupStrip.parentNode) {
+      return matchupStrip;
+    }
+
+    const menu =
+      document.querySelector('.myfantasyleague_menu');
+
+    if (menu && menu.parentNode) {
+      return menu;
+    }
+
+    return null;
+  }
+
   /* =========================================================
-     CSS
+     TICKER CONTENT
+  ========================================================= */
+
+  function addTickerItem(items, category, text) {
+    const cleanedText = cleanText(text);
+
+    if (!cleanedText) {
+      return;
+    }
+
+    items.push({
+      category: category,
+      text: cleanedText
+    });
+  }
+
+  function buildTickerItems() {
+    const settings = currentSettings || {};
+    const items = [];
+
+    if (settings.commissionerMessages) {
+      commissionerMessages.forEach(function (message) {
+        addTickerItem(
+          items,
+          'Commissioner',
+          message
+        );
+      });
+    }
+
+    if (settings.leagueNews) {
+      addTickerItem(
+        items,
+        'League News',
+        'Get Off My Ditka enters the 2026 season as the defending LSFFL champion.'
+      );
+    }
+
+    if (settings.waiverOrder) {
+      addTickerItem(
+        items,
+        'Waiver Order',
+        '1. Mustangs  2. Cougars  3. Mad Hatters  4. Purple Hooters  5. Avalanche'
+      );
+    }
+
+    if (settings.nextWeekMatchups) {
+      addTickerItem(
+        items,
+        'Next Week',
+        'Upcoming LSFFL matchups will appear here when the active MFL schedule is connected.'
+      );
+    }
+
+    if (settings.lastWeekResults) {
+      addTickerItem(
+        items,
+        'Last Week',
+        'Completed LSFFL matchup results will appear here after games are played.'
+      );
+    }
+
+    if (settings.transactions) {
+      addTickerItem(
+        items,
+        'Transactions',
+        'Recent LSFFL trades, waiver claims and roster moves will appear here.'
+      );
+    }
+
+    if (settings.powerRank) {
+      addTickerItem(
+        items,
+        'Power Rank',
+        'Current LSFFL power rankings will appear here.'
+      );
+    }
+
+    if (settings.alternatePowerRank) {
+      addTickerItem(
+        items,
+        'Alt Power Rank',
+        'Alternate LSFFL power rankings will appear here.'
+      );
+    }
+
+    if (settings.pointsScored) {
+      addTickerItem(
+        items,
+        'Points Scored',
+        'League leaders in total fantasy points will appear here.'
+      );
+    }
+
+    if (settings.allPlayRecord) {
+      addTickerItem(
+        items,
+        'All-Play',
+        'Current LSFFL all-play records will appear here.'
+      );
+    }
+
+    if (Number(settings.topByStatCategory) > 0) {
+      addTickerItem(
+        items,
+        'Stat Leaders',
+        'Top ' +
+          settings.topByStatCategory +
+          ' players by statistical category will appear here.'
+      );
+    }
+
+    if (Number(settings.topFantasyPoints) > 0) {
+      addTickerItem(
+        items,
+        'Fantasy Leaders',
+        'Top ' +
+          settings.topFantasyPoints +
+          ' fantasy scorers by position will appear here.'
+      );
+    }
+
+    if (settings.draft) {
+      addTickerItem(
+        items,
+        'Draft',
+        settings.showEntireDraft
+          ? 'The full LSFFL draft board will appear here.'
+          : 'Recent LSFFL draft selections will appear here.'
+      );
+    }
+
+    if (settings.nflResults) {
+      addTickerItem(
+        items,
+        'NFL Results',
+        'Completed NFL game results will appear here.'
+      );
+    }
+
+    if (settings.nflMatchups) {
+      addTickerItem(
+        items,
+        'NFL Matchups',
+        'Upcoming NFL matchups will appear here.'
+      );
+    }
+
+    if (settings.fantasyMatchups) {
+      addTickerItem(
+        items,
+        'Live Fantasy',
+        'Live LSFFL matchup scores will appear here during games.'
+      );
+    }
+
+    if (settings.liveNFLMatchups) {
+      addTickerItem(
+        items,
+        'Live NFL',
+        'Live NFL scores will appear here during games.'
+      );
+    }
+
+    if (settings.nflMatchupLeaders) {
+      addTickerItem(
+        items,
+        'NFL Leaders',
+        'NFL matchup statistical leaders will appear here.'
+      );
+    }
+
+    if (settings.nflNews) {
+      addTickerItem(
+        items,
+        'NFL News',
+        'Current NFL headlines will appear here when the NFL news source is connected.'
+      );
+    }
+
+    if (!items.length) {
+      addTickerItem(
+        items,
+        'Navy Times',
+        'Open the settings cog to choose which information is displayed.'
+      );
+    }
+
+    const maximum =
+      Math.max(
+        1,
+        Number(settings.articleHeadlines) || 5
+      );
+
+    return items.slice(0, maximum);
+  }
+
+  function createTickerItem(item) {
+    const wrapper = createElement(
+      'span',
+      'lsffl-ticker-item'
+    );
+
+    const category = createElement(
+      'strong',
+      'lsffl-ticker-category',
+      item.category + ':'
+    );
+
+    const text = createElement(
+      'span',
+      'lsffl-ticker-text',
+      item.text
+    );
+
+    const separator = createElement(
+      'span',
+      'lsffl-ticker-separator',
+      '★'
+    );
+
+    separator.setAttribute('aria-hidden', 'true');
+
+    wrapper.appendChild(category);
+    wrapper.appendChild(text);
+    wrapper.appendChild(separator);
+
+    return wrapper;
+  }
+
+  function rebuildTickerTrack() {
+    if (
+      !tickerRoot ||
+      !tickerTrack ||
+      !currentSettings
+    ) {
+      return;
+    }
+
+    tickerTrack.innerHTML = '';
+
+    const firstGroup = createElement(
+      'div',
+      'lsffl-ticker-group'
+    );
+
+    const secondGroup = createElement(
+      'div',
+      'lsffl-ticker-group'
+    );
+
+    secondGroup.setAttribute('aria-hidden', 'true');
+
+    buildTickerItems().forEach(function (item) {
+      firstGroup.appendChild(createTickerItem(item));
+      secondGroup.appendChild(createTickerItem(item));
+    });
+
+    tickerTrack.appendChild(firstGroup);
+    tickerTrack.appendChild(secondGroup);
+
+    tickerRoot.classList.remove(
+      'ticker-size-small',
+      'ticker-size-medium',
+      'ticker-size-large'
+    );
+
+    tickerRoot.classList.add(
+      'ticker-size-' + currentSettings.tickerSize
+    );
+
+    tickerTrack.style.animationDuration =
+      Number(currentSettings.speed || 55) + 's';
+
+    tickerTrack.style.animationDelay =
+      Number(currentSettings.delay || 0) + 's';
+
+    tickerTrack.classList.toggle(
+      'is-paused',
+      Boolean(currentSettings.paused)
+    );
+  }
+
+  /* =========================================================
+     STYLES
   ========================================================= */
 
   function addStyles() {
@@ -499,26 +733,24 @@
       }
 
       #${TICKER_ID} {
-        --ticker-navy-dark: #031426;
-        --ticker-navy: #082743;
-        --ticker-blue: #0b3152;
-        --ticker-gold: #c9a227;
-        --ticker-white: #ffffff;
+        --ticker-gold: ${SITE_GOLD};
+        --ticker-navy: ${SITE_NAVY};
+        --ticker-navy-dark: ${SITE_NAVY_DARK};
 
         position: relative;
         z-index: 1000;
         display: grid;
-        grid-template-columns: 155px minmax(0, 1fr) 38px;
-        width: 100%;
+        grid-template-columns: 145px minmax(0, 1fr) 34px;
+        width: calc(100% - 24px);
         max-width: 1135px;
-        height: 47px;
-        min-height: 47px;
+        height: 45px;
+        min-height: 45px;
         margin: 5px auto 7px;
         overflow: visible;
         border: 2px solid var(--ticker-gold);
-        border-radius: 4px;
+        border-radius: 3px;
         background: var(--ticker-navy-dark);
-        box-shadow: 0 5px 13px rgba(0, 0, 0, 0.24);
+        box-shadow: 0 5px 12px rgba(0, 0, 0, 0.22);
         font-family: Arial, Helvetica, sans-serif;
       }
 
@@ -528,28 +760,17 @@
       }
 
       #${TICKER_ID}.ticker-size-large {
-        height: 55px;
-        min-height: 55px;
+        height: 53px;
+        min-height: 53px;
       }
 
-      #${TICKER_ID} .lsffl-ticker-title {
-        display: flex;
-        align-items: center;
-        height: 43px;
-        padding: 0 14px;
-        border-right: 1px solid rgba(201, 162, 39, 0.55);
-        background:
-          linear-gradient(
-            180deg,
-            #0d3559 0%,
-            #061d34 100%
-          );
-        color: var(--ticker-gold);
-        font-size: 14px;
-        font-weight: 900;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        white-space: nowrap;
+      #${TICKER_ID} .lsffl-ticker-title,
+      #${TICKER_ID} .lsffl-ticker-window,
+      #${TICKER_ID} .lsffl-ticker-track,
+      #${TICKER_ID} .lsffl-ticker-group,
+      #${TICKER_ID} .lsffl-ticker-item,
+      #${TICKER_ID} .lsffl-ticker-settings-cell {
+        height: 41px;
       }
 
       #${TICKER_ID}.ticker-size-small .lsffl-ticker-title,
@@ -567,7 +788,26 @@
       #${TICKER_ID}.ticker-size-large .lsffl-ticker-group,
       #${TICKER_ID}.ticker-size-large .lsffl-ticker-item,
       #${TICKER_ID}.ticker-size-large .lsffl-ticker-settings-cell {
-        height: 51px;
+        height: 49px;
+      }
+
+      #${TICKER_ID} .lsffl-ticker-title {
+        display: flex;
+        align-items: center;
+        padding: 0 12px;
+        border-right: 1px solid rgba(201, 162, 39, 0.55);
+        background:
+          linear-gradient(
+            180deg,
+            #0d3559,
+            #061d34
+          );
+        color: var(--ticker-gold);
+        font-size: 13px;
+        font-weight: 900;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        white-space: nowrap;
       }
 
       #${TICKER_ID} .lsffl-ticker-window {
@@ -575,12 +815,11 @@
         display: flex;
         align-items: center;
         min-width: 0;
-        height: 43px;
         overflow: hidden;
         background:
           linear-gradient(
             90deg,
-            var(--ticker-blue),
+            #0b3152,
             var(--ticker-navy-dark)
           );
       }
@@ -591,7 +830,7 @@
         position: absolute;
         top: 0;
         bottom: 0;
-        z-index: 3;
+        z-index: 4;
         width: 25px;
         pointer-events: none;
       }
@@ -601,7 +840,7 @@
         background:
           linear-gradient(
             90deg,
-            var(--ticker-blue),
+            #0b3152,
             transparent
           );
       }
@@ -621,8 +860,7 @@
         align-items: center;
         width: max-content;
         min-width: max-content;
-        height: 43px;
-        animation-name: lsfflTickerScroll;
+        animation-name: lsfflNavyTimesScroll;
         animation-duration: 55s;
         animation-delay: 3s;
         animation-timing-function: linear;
@@ -638,15 +876,13 @@
         display: flex;
         align-items: center;
         flex-shrink: 0;
-        height: 43px;
       }
 
       #${TICKER_ID} .lsffl-ticker-item {
         display: inline-flex;
         align-items: center;
         flex-shrink: 0;
-        height: 43px;
-        color: var(--ticker-white);
+        color: #ffffff;
         font-size: 11px;
         font-weight: 600;
         white-space: nowrap;
@@ -679,7 +915,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 43px;
         border-left: 1px solid rgba(201, 162, 39, 0.55);
         background:
           linear-gradient(
@@ -693,19 +928,16 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 24px;
-        height: 24px;
+        width: 21px;
+        height: 21px;
         margin: 0;
         padding: 0;
         border: 0;
         background: transparent;
         color: var(--ticker-gold);
-        font-size: 18px;
+        font-size: 16px;
         line-height: 1;
         cursor: pointer;
-        transition:
-          color 0.2s ease,
-          transform 0.2s ease;
       }
 
       #${TICKER_ID} .lsffl-ticker-settings-button:hover,
@@ -715,30 +947,29 @@
         transform: rotate(30deg);
       }
 
-      #${SETTINGS_ID} {
+      #lsffl-ticker-settings-panel {
         position: absolute;
         top: calc(100% + 5px);
         right: 0;
-        z-index: 3000;
+        z-index: 4000;
         display: none;
-        width: 360px;
+        width: 365px;
         max-height: 72vh;
         overflow-y: auto;
-        padding: 10px;
+        padding: 9px;
         border: 2px solid var(--ticker-gold);
-        border-radius: 4px;
+        border-radius: 3px;
         background: #061b30;
         color: #ffffff;
         box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
-        font-family: Arial, Helvetica, sans-serif;
       }
 
-      #${SETTINGS_ID}.is-open {
+      #lsffl-ticker-settings-panel.is-open {
         display: block;
       }
 
-      #${SETTINGS_ID} .settings-title {
-        margin: 0 0 9px;
+      #lsffl-ticker-settings-panel
+      .lsffl-settings-panel-title {
         padding: 0 0 8px;
         border-bottom: 2px solid var(--ticker-gold);
         color: var(--ticker-gold);
@@ -747,34 +978,42 @@
         text-transform: uppercase;
       }
 
-      #${SETTINGS_ID} .settings-group {
-        margin-top: 10px;
+      #lsffl-ticker-settings-panel
+      .lsffl-settings-group {
+        margin-top: 9px;
         border: 1px solid rgba(201, 162, 39, 0.7);
       }
 
-      #${SETTINGS_ID} .settings-group-title {
-        padding: 6px;
+      #lsffl-ticker-settings-panel
+      .lsffl-settings-group-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        min-height: 28px;
+        padding: 5px 7px;
+        border: 0;
         border-bottom: 1px solid rgba(201, 162, 39, 0.55);
         background: #0a2947;
         color: #ffffff;
         font-size: 11px;
         font-weight: 900;
-        text-align: center;
         text-transform: uppercase;
+        cursor: pointer;
       }
 
-      #${SETTINGS_ID} .settings-group-content {
+      #lsffl-ticker-settings-panel
+      .lsffl-settings-group-content {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 8px 10px;
         padding: 9px;
       }
 
-      #${SETTINGS_ID} .settings-full-row {
-        grid-column: 1 / -1;
-      }
-
-      #${SETTINGS_ID} label {
+      #lsffl-ticker-settings-panel
+      .lsffl-settings-checkbox,
+      #lsffl-ticker-settings-panel
+      .lsffl-settings-select-row {
         display: flex;
         align-items: center;
         gap: 5px;
@@ -785,38 +1024,36 @@
         line-height: 1.2;
       }
 
-      #${SETTINGS_ID} input[type="checkbox"] {
+      #lsffl-ticker-settings-panel
+      .lsffl-settings-checkbox input {
         width: 14px;
         height: 14px;
         margin: 0;
         accent-color: var(--ticker-gold);
       }
 
-      #${SETTINGS_ID} select {
+      #lsffl-ticker-settings-panel select {
         height: 25px;
+        min-width: 48px;
         border: 1px solid var(--ticker-gold);
         background: #ffffff;
-        color: #031426;
+        color: var(--ticker-navy-dark);
         font-size: 10px;
         font-weight: 700;
       }
 
-      #${SETTINGS_ID} .settings-select-row {
+      #lsffl-ticker-settings-panel
+      .lsffl-settings-action-row {
         display: flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 10px;
-        font-weight: 700;
-      }
-
-      #${SETTINGS_ID} .settings-controls {
-        display: flex;
-        align-items: center;
+        grid-column: 1 / -1;
         gap: 6px;
       }
 
-      #${SETTINGS_ID} button.settings-action {
-        height: 27px;
+      #lsffl-ticker-settings-panel
+      .lsffl-settings-action,
+      #lsffl-ticker-settings-panel
+      .lsffl-settings-footer button {
+        min-height: 27px;
         padding: 0 9px;
         border: 1px solid var(--ticker-gold);
         border-radius: 2px;
@@ -827,12 +1064,22 @@
         cursor: pointer;
       }
 
-      #${SETTINGS_ID} button.settings-action:hover {
+      #lsffl-ticker-settings-panel
+      .lsffl-settings-action:hover,
+      #lsffl-ticker-settings-panel
+      .lsffl-settings-footer button:hover {
         background: var(--ticker-gold);
-        color: #031426;
+        color: var(--ticker-navy-dark);
       }
 
-      @keyframes lsfflTickerScroll {
+      #lsffl-ticker-settings-panel
+      .lsffl-settings-footer {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 9px;
+      }
+
+      @keyframes lsfflNavyTimesScroll {
         from {
           transform: translateX(0);
         }
@@ -844,14 +1091,14 @@
 
       @media screen and (max-width: 760px) {
         #${TICKER_ID} {
-          grid-template-columns: 110px minmax(0, 1fr) 34px;
+          grid-template-columns: 105px minmax(0, 1fr) 31px;
           width: 100% !important;
           border-radius: 0;
         }
 
         #${TICKER_ID} .lsffl-ticker-title {
-          padding: 0 8px;
-          font-size: 10px;
+          padding: 0 7px;
+          font-size: 9px;
         }
 
         #${TICKER_ID} .lsffl-ticker-item {
@@ -862,9 +1109,9 @@
           font-size: 8px;
         }
 
-        #${SETTINGS_ID} {
-          right: 2px;
-          width: min(350px, calc(100vw - 14px));
+        #lsffl-ticker-settings-panel {
+          right: 1px;
+          width: min(360px, calc(100vw - 8px));
         }
       }
 
@@ -879,502 +1126,77 @@
   }
 
   /* =========================================================
-     TICKER ITEMS
-  ========================================================= */
-
-  function createTickerItem(item) {
-    const wrapper = document.createElement('span');
-    wrapper.className = 'lsffl-ticker-item';
-
-    const category = document.createElement('strong');
-    category.className = 'lsffl-ticker-category';
-    category.textContent = item.category + ':';
-
-    const text = document.createElement('span');
-    text.className = 'lsffl-ticker-text';
-    text.textContent = item.text;
-
-    const separator = document.createElement('span');
-    separator.className = 'lsffl-ticker-separator';
-    separator.textContent = '★';
-    separator.setAttribute('aria-hidden', 'true');
-
-    wrapper.appendChild(category);
-    wrapper.appendChild(text);
-    wrapper.appendChild(separator);
-
-    return wrapper;
-  }
-
-  function rebuildTicker() {
-    if (!tickerTrack || !tickerRoot) {
-      return;
-    }
-
-    tickerTrack.innerHTML = '';
-
-    const firstGroup = document.createElement('div');
-    firstGroup.className = 'lsffl-ticker-group';
-
-    const secondGroup = document.createElement('div');
-    secondGroup.className = 'lsffl-ticker-group';
-    secondGroup.setAttribute('aria-hidden', 'true');
-
-    getTickerItems().forEach(function (item) {
-      firstGroup.appendChild(createTickerItem(item));
-      secondGroup.appendChild(createTickerItem(item));
-    });
-
-    tickerTrack.appendChild(firstGroup);
-    tickerTrack.appendChild(secondGroup);
-
-    tickerRoot.classList.remove(
-      'ticker-size-small',
-      'ticker-size-medium',
-      'ticker-size-large'
-    );
-
-    tickerRoot.classList.add(
-      'ticker-size-' + settings.tickerSize
-    );
-
-    tickerTrack.style.animationDuration =
-      Number(settings.speed) + 's';
-
-    tickerTrack.style.animationDelay =
-      Number(settings.delay) + 's';
-
-    tickerTrack.classList.toggle(
-      'is-paused',
-      Boolean(settings.paused)
-    );
-
-    saveSettings();
-  }
-
-  /* =========================================================
-     SETTINGS ELEMENT HELPERS
-  ========================================================= */
-
-  function createCheckbox(labelText, settingName) {
-    const label = document.createElement('label');
-
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.checked = Boolean(settings[settingName]);
-
-    checkbox.addEventListener('change', function () {
-      settings[settingName] = checkbox.checked;
-      rebuildTicker();
-    });
-
-    const text = document.createElement('span');
-    text.textContent = labelText;
-
-    label.appendChild(checkbox);
-    label.appendChild(text);
-
-    return label;
-  }
-
-  function createSelect(
-    settingName,
-    values,
-    suffixText
-  ) {
-    const row = document.createElement('div');
-    row.className = 'settings-select-row';
-
-    const select = document.createElement('select');
-
-    values.forEach(function (value) {
-      const option = document.createElement('option');
-      option.value = value;
-      option.textContent = value;
-      option.selected =
-        String(settings[settingName]) === String(value);
-
-      select.appendChild(option);
-    });
-
-    select.addEventListener('change', function () {
-      const numericValue = Number(select.value);
-
-      settings[settingName] = Number.isNaN(numericValue)
-        ? select.value
-        : numericValue;
-
-      rebuildTicker();
-    });
-
-    const text = document.createElement('span');
-    text.textContent = suffixText;
-
-    row.appendChild(select);
-    row.appendChild(text);
-
-    return row;
-  }
-
-  function createGroup(titleText) {
-    const group = document.createElement('div');
-    group.className = 'settings-group';
-
-    const title = document.createElement('div');
-    title.className = 'settings-group-title';
-    title.textContent = titleText;
-
-    const content = document.createElement('div');
-    content.className = 'settings-group-content';
-
-    group.appendChild(title);
-    group.appendChild(content);
-
-    return {
-      group: group,
-      content: content
-    };
-  }
-
-  /* =========================================================
-     SETTINGS PANEL
-  ========================================================= */
-
-  function createSettingsPanel() {
-    const panel = document.createElement('div');
-    panel.id = SETTINGS_ID;
-
-    const title = document.createElement('div');
-    title.className = 'settings-title';
-    title.textContent = 'Navy Times Settings';
-
-    panel.appendChild(title);
-
-    const globalGroup = createGroup('Global Display');
-
-    globalGroup.content.appendChild(
-      createCheckbox(
-        'Commissioner Messages',
-        'commissionerMessages'
-      )
-    );
-
-    globalGroup.content.appendChild(
-      createCheckbox(
-        'Show Franchise Icons',
-        'franchiseIcons'
-      )
-    );
-
-    globalGroup.content.appendChild(
-      createSelect(
-        'tickerSize',
-        ['small', 'medium', 'large'],
-        'Ticker Size'
-      )
-    );
-
-    globalGroup.content.appendChild(
-      createSelect(
-        'delay',
-        [0, 1, 2, 3, 4, 5, 6],
-        'Delay Before Scroll'
-      )
-    );
-
-    globalGroup.content.appendChild(
-      createSelect(
-        'articleHeadlines',
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        '# of Headlines'
-      )
-    );
-
-    const controls = document.createElement('div');
-    controls.className =
-      'settings-controls settings-full-row';
-
-    const playButton = document.createElement('button');
-    playButton.type = 'button';
-    playButton.className = 'settings-action';
-
-    function updatePlayButton() {
-      playButton.textContent = settings.paused
-        ? 'Play Ticker'
-        : 'Pause Ticker';
-    }
-
-    playButton.addEventListener('click', function () {
-      settings.paused = !settings.paused;
-      updatePlayButton();
-      rebuildTicker();
-    });
-
-    updatePlayButton();
-
-    const fasterButton = document.createElement('button');
-    fasterButton.type = 'button';
-    fasterButton.className = 'settings-action';
-    fasterButton.textContent = 'Faster';
-
-    fasterButton.addEventListener('click', function () {
-      settings.speed = Math.max(
-        20,
-        Number(settings.speed) - 5
-      );
-
-      rebuildTicker();
-    });
-
-    const slowerButton = document.createElement('button');
-    slowerButton.type = 'button';
-    slowerButton.className = 'settings-action';
-    slowerButton.textContent = 'Slower';
-
-    slowerButton.addEventListener('click', function () {
-      settings.speed = Math.min(
-        120,
-        Number(settings.speed) + 5
-      );
-
-      rebuildTicker();
-    });
-
-    controls.appendChild(playButton);
-    controls.appendChild(fasterButton);
-    controls.appendChild(slowerButton);
-
-    globalGroup.content.appendChild(controls);
-    panel.appendChild(globalGroup.group);
-
-    const standardGroup = createGroup('Standard Display');
-
-    standardGroup.content.appendChild(
-      createSelect(
-        'topByStatCategory',
-        [0, 3, 5, 10],
-        '# Top by Stat Category'
-      )
-    );
-
-    standardGroup.content.appendChild(
-      createSelect(
-        'topFantasyPoints',
-        [0, 3, 5, 10],
-        '# Top Fantasy Points'
-      )
-    );
-
-    standardGroup.content.appendChild(
-      createCheckbox('Power Rank', 'powerRank')
-    );
-
-    standardGroup.content.appendChild(
-      createCheckbox(
-        'Alt Power Rank',
-        'alternatePowerRank'
-      )
-    );
-
-    standardGroup.content.appendChild(
-      createCheckbox(
-        'Points Scored',
-        'pointsScored'
-      )
-    );
-
-    standardGroup.content.appendChild(
-      createCheckbox(
-        'All Play Record',
-        'allPlayRecord'
-      )
-    );
-
-    standardGroup.content.appendChild(
-      createCheckbox(
-        'Last Week Results',
-        'lastWeekResults'
-      )
-    );
-
-    standardGroup.content.appendChild(
-      createCheckbox(
-        'Next Week Matchups',
-        'nextWeekMatchups'
-      )
-    );
-
-    standardGroup.content.appendChild(
-      createCheckbox(
-        'NFL Results',
-        'nflResults'
-      )
-    );
-
-    standardGroup.content.appendChild(
-      createCheckbox(
-        'NFL Matchups',
-        'nflMatchups'
-      )
-    );
-
-    standardGroup.content.appendChild(
-      createCheckbox(
-        'Waiver Order',
-        'waiverOrder'
-      )
-    );
-
-    standardGroup.content.appendChild(
-      createCheckbox('Draft', 'draft')
-    );
-
-    standardGroup.content.appendChild(
-      createCheckbox(
-        'Show Entire Draft',
-        'showEntireDraft'
-      )
-    );
-
-    standardGroup.content.appendChild(
-      createSelect(
-        'topPicksOnly',
-        [0, 3, 5, 10],
-        '# Top Picks Only'
-      )
-    );
-
-    standardGroup.content.appendChild(
-      createSelect(
-        'picksMade',
-        [0, 3, 5, 10],
-        '# Picks Made'
-      )
-    );
-
-    standardGroup.content.appendChild(
-      createSelect(
-        'picksPending',
-        [0, 3, 5, 10],
-        '# Picks Pending'
-      )
-    );
-
-    panel.appendChild(standardGroup.group);
-
-    const liveGroup = createGroup('Live Display');
-
-    liveGroup.content.appendChild(
-      createCheckbox(
-        'Fantasy Matchups',
-        'fantasyMatchups'
-      )
-    );
-
-    liveGroup.content.appendChild(
-      createSelect(
-        'topLiveByCategory',
-        [0, 3, 5, 10],
-        '# Top Live by Category'
-      )
-    );
-
-    liveGroup.content.appendChild(
-      createCheckbox(
-        'NFL Matchups',
-        'liveNFLMatchups'
-      )
-    );
-
-    liveGroup.content.appendChild(
-      createCheckbox(
-        'NFL Matchup Leaders',
-        'nflMatchupLeaders'
-      )
-    );
-
-    panel.appendChild(liveGroup.group);
-
-    const additionalGroup = createGroup(
-      'Additional Navy Times Content'
-    );
-
-    additionalGroup.content.appendChild(
-      createCheckbox(
-        'League News',
-        'leagueNews'
-      )
-    );
-
-    additionalGroup.content.appendChild(
-      createCheckbox(
-        'Transactions',
-        'transactions'
-      )
-    );
-
-    additionalGroup.content.appendChild(
-      createCheckbox(
-        'NFL News',
-        'nflNews'
-      )
-    );
-
-    panel.appendChild(additionalGroup.group);
-
-    return panel;
-  }
-
-  /* =========================================================
-     BUILD TICKER
+     BUILD UI
   ========================================================= */
 
   function buildTicker() {
+    if (document.getElementById(TICKER_ID)) {
+      tickerRoot =
+        document.getElementById(TICKER_ID);
+
+      tickerTrack =
+        tickerRoot.querySelector(
+          '.lsffl-ticker-track'
+        );
+
+      matchTickerWidth();
+      hideOriginalMflDisplays();
+
+      return true;
+    }
+
+    const insertionReference =
+      findInsertionReference();
+
     if (
-      !oldTickerContainer ||
-      !oldTickerContainer.parentNode
+      !insertionReference ||
+      !insertionReference.parentNode
     ) {
       return false;
     }
 
     addStyles();
 
-    const existing = document.getElementById(TICKER_ID);
+    tickerRoot = createElement(
+      'section',
+      ''
+    );
 
-    if (existing) {
-      tickerRoot = existing;
-      hideOldTicker();
-      matchTickerWidth();
-      return true;
-    }
-
-    tickerRoot = document.createElement('section');
     tickerRoot.id = TICKER_ID;
     tickerRoot.setAttribute(
       'aria-label',
       'Navy Times league ticker'
     );
 
-    const title = document.createElement('div');
-    title.className = 'lsffl-ticker-title';
-    title.textContent = 'Navy Times';
+    const title = createElement(
+      'div',
+      'lsffl-ticker-title',
+      'Navy Times'
+    );
 
-    const tickerWindow = document.createElement('div');
-    tickerWindow.className = 'lsffl-ticker-window';
+    const tickerWindow = createElement(
+      'div',
+      'lsffl-ticker-window'
+    );
 
-    tickerTrack = document.createElement('div');
-    tickerTrack.className = 'lsffl-ticker-track';
+    tickerTrack = createElement(
+      'div',
+      'lsffl-ticker-track'
+    );
 
     tickerWindow.appendChild(tickerTrack);
 
-    const settingsCell = document.createElement('div');
-    settingsCell.className =
-      'lsffl-ticker-settings-cell';
+    const settingsCell = createElement(
+      'div',
+      'lsffl-ticker-settings-cell'
+    );
 
-    const settingsButton = document.createElement('button');
+    const settingsButton = createElement(
+      'button',
+      'lsffl-ticker-settings-button'
+    );
+
     settingsButton.type = 'button';
-    settingsButton.className =
-      'lsffl-ticker-settings-button';
     settingsButton.innerHTML = '&#9881;';
     settingsButton.setAttribute(
       'aria-label',
@@ -1387,81 +1209,189 @@
 
     settingsCell.appendChild(settingsButton);
 
-    settingsPanel = createSettingsPanel();
+    settingsPanel =
+      window.LSFFL_TICKER_SETTINGS
+        .buildSettingsPanel();
 
-    settingsButton.addEventListener('click', function (event) {
-      event.preventDefault();
-      event.stopPropagation();
+    settingsButton.addEventListener(
+      'click',
+      function (event) {
+        event.preventDefault();
+        event.stopPropagation();
 
-      const isOpen =
-        settingsPanel.classList.toggle('is-open');
-
-      settingsButton.setAttribute(
-        'aria-expanded',
-        String(isOpen)
-      );
-    });
-
-    document.addEventListener('click', function (event) {
-      if (
-        settingsPanel &&
-        !tickerRoot.contains(event.target)
-      ) {
-        settingsPanel.classList.remove('is-open');
+        const isOpen =
+          settingsPanel.classList.toggle(
+            'is-open'
+          );
 
         settingsButton.setAttribute(
           'aria-expanded',
-          'false'
+          String(isOpen)
         );
       }
-    });
+    );
+
+    document.addEventListener(
+      'click',
+      function (event) {
+        if (
+          settingsPanel &&
+          tickerRoot &&
+          !tickerRoot.contains(event.target)
+        ) {
+          settingsPanel.classList.remove(
+            'is-open'
+          );
+
+          settingsButton.setAttribute(
+            'aria-expanded',
+            'false'
+          );
+        }
+      }
+    );
 
     tickerRoot.appendChild(title);
     tickerRoot.appendChild(tickerWindow);
     tickerRoot.appendChild(settingsCell);
     tickerRoot.appendChild(settingsPanel);
 
-    oldTickerContainer.parentNode.insertBefore(
+    insertionReference.parentNode.insertBefore(
       tickerRoot,
-      oldTickerContainer
+      insertionReference
     );
 
-    hideOldTicker();
-    rebuildTicker();
+    rebuildTickerTrack();
     matchTickerWidth();
-
-    window.addEventListener('resize', matchTickerWidth);
+    hideOriginalMflDisplays();
 
     return true;
   }
 
   /* =========================================================
-     INITIALIZE
+     MODULE SUBSCRIPTIONS
   ========================================================= */
 
-  let attempts = 0;
+  function connectModules() {
+    currentSettings =
+      window.LSFFL_TICKER_SETTINGS
+        .getSettings();
 
-  function initialize() {
-    attempts += 1;
+    commissionerMessages =
+      window.LSFFL_MFL_DATA
+        .getCommissionerMessages();
 
-    const oldTicker = findOldTicker();
+    window.LSFFL_TICKER_SETTINGS.subscribe(
+      function (updatedSettings) {
+        currentSettings = updatedSettings;
+        rebuildTickerTrack();
+      }
+    );
 
-    if (oldTicker) {
-      oldTickerContainer =
-        getOldTickerContainer(oldTicker);
+    window.LSFFL_MFL_DATA
+      .subscribeToCommissionerMessages(
+        function (updatedMessages) {
+          commissionerMessages =
+            updatedMessages
+              .map(cleanText)
+              .filter(Boolean)
+              .slice(0, 5);
+
+          rebuildTickerTrack();
+
+          setTimeout(
+            hideOriginalMflDisplays,
+            100
+          );
+        }
+      );
+  }
+
+  /* =========================================================
+     INITIALIZATION
+  ========================================================= */
+
+  function finishInitialization() {
+    connectModules();
+
+    let attempts = 0;
+
+    function attemptBuild() {
+      attempts += 1;
+
+      window.LSFFL_MFL_DATA
+        .scanForCommissionerMessages();
 
       if (buildTicker()) {
+        setTimeout(
+          hideOriginalMflDisplays,
+          250
+        );
+
+        setTimeout(
+          hideOriginalMflDisplays,
+          1000
+        );
+
         return;
+      }
+
+      if (attempts < 40) {
+        setTimeout(attemptBuild, 500);
+      } else {
+        console.warn(
+          'LSFFL Navy Times could not find its insertion point.'
+        );
       }
     }
 
-    if (attempts < 40) {
-      setTimeout(initialize, 500);
-    } else {
-      console.warn(
-        'LSFFL Navy Times could not locate the old MFL ticker.'
-      );
+    attemptBuild();
+
+    window.addEventListener(
+      'resize',
+      function () {
+        clearTimeout(resizeTimer);
+
+        resizeTimer = setTimeout(
+          matchTickerWidth,
+          100
+        );
+      }
+    );
+
+    const pageObserver =
+      new MutationObserver(function () {
+        if (!document.getElementById(TICKER_ID)) {
+          buildTicker();
+        }
+
+        hideOriginalMflDisplays();
+      });
+
+    pageObserver.observe(
+      document.documentElement,
+      {
+        childList: true,
+        subtree: true
+      }
+    );
+  }
+
+  function initialize() {
+    if (initializationStarted) {
+      return;
     }
+
+    initializationStarted = true;
+
+    loadRequiredModules()
+      .then(finishInitialization)
+      .catch(function (error) {
+        console.error(
+          'LSFFL Navy Times failed to start:',
+          error
+        );
+      });
   }
 
   if (document.readyState === 'loading') {
@@ -1472,24 +1402,4 @@
   } else {
     initialize();
   }
-
-  const observer = new MutationObserver(function () {
-    const oldTicker = findOldTicker();
-
-    if (oldTicker) {
-      oldTickerContainer =
-        getOldTickerContainer(oldTicker);
-
-      hideOldTicker();
-
-      if (!document.getElementById(TICKER_ID)) {
-        buildTicker();
-      }
-    }
-  });
-
-  observer.observe(document.documentElement, {
-    childList: true,
-    subtree: true
-  });
 })();
