@@ -80,7 +80,7 @@
       display: grid;
       grid-template-columns: minmax(0, 1.6fr) minmax(420px, 1fr);
       gap: 14px;
-      align-items: start;
+      align-items: stretch;
     }
 
     .lsffl-panel {
@@ -268,11 +268,10 @@
       object-position: center center;
       margin: 0;
       padding: 0;
-      border: 1px solid rgba(227, 170, 24, 0.8);
-      border-radius: 3px;
-      box-shadow:
-        0 3px 8px rgba(0, 0, 0, 0.38),
-        0 0 0 1px rgba(0, 0, 0, 0.65);
+      border: 0;
+      border-radius: 0;
+      outline: 0;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.38);
     }
 
     .lsffl-positive {
@@ -347,6 +346,32 @@
       color: var(--gold-500);
     }
 
+    .lsffl-power-panel {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .lsffl-power-panel > .lsffl-table-wrap {
+      display: flex;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    .lsffl-power-table {
+      height: 100%;
+    }
+
+    .lsffl-power-table tbody {
+      height: 100%;
+    }
+
+    .lsffl-power-table tbody tr {
+      height: 6.25%;
+    }
+
     .lsffl-power-table th:nth-child(1),
     .lsffl-power-table td:nth-child(1) {
       width: 48px;
@@ -375,15 +400,15 @@
     .lsffl-power-franchise {
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 12px;
       min-width: 0;
       text-align: left;
     }
 
     .lsffl-power-helmet {
-      width: 58px;
-      height: 58px;
-      flex: 0 0 58px;
+      width: 70px;
+      height: 70px;
+      flex: 0 0 70px;
       object-fit: contain;
       filter:
         drop-shadow(0 4px 4px rgba(0, 0, 0, 0.72));
@@ -402,7 +427,10 @@
     }
 
     .lsffl-power-table td {
-      height: 68px;
+      height: auto;
+      min-height: 76px;
+      padding-top: 4px;
+      padding-bottom: 4px;
     }
 
     .lsffl-power-rank {
@@ -442,10 +470,25 @@
     @media (max-width: 760px) {
       .lsffl-layout {
         grid-template-columns: 1fr;
+        align-items: start;
       }
 
       .lsffl-power-panel {
         width: 100%;
+        height: auto;
+      }
+
+      .lsffl-power-panel > .lsffl-table-wrap {
+        display: block;
+      }
+
+      .lsffl-power-table,
+      .lsffl-power-table tbody {
+        height: auto;
+      }
+
+      .lsffl-power-table tbody tr {
+        height: auto;
       }
     }
 
@@ -619,6 +662,25 @@
         "0006": "Mustangs",
         "0014": "Tiny But Mighty",
         "0015": "Get Off My Ditka"
+      };
+
+      const TEAM_PAGE_BY_ID = {
+        "0001": "teams/spartans.html",
+        "0002": "teams/saints.html",
+        "0003": "teams/g-men.html",
+        "0004": "teams/hambone-hogs.html",
+        "0005": "teams/purple-hooters.html",
+        "0006": "teams/mustangs.html",
+        "0007": "teams/hawky-bears.html",
+        "0008": "teams/da-boys.html",
+        "0009": "teams/dawgs.html",
+        "0010": "teams/camel-toes.html",
+        "0011": "teams/cougars.html",
+        "0012": "teams/mothabucca.html",
+        "0013": "teams/mad-hatters.html",
+        "0014": "teams/tiny-but-mighty.html",
+        "0015": "teams/get-off-my-ditka.html",
+        "0016": "teams/avalanche.html"
       };
 
       const divisionStandings =
@@ -1045,24 +1107,36 @@
       }
 
 
+      function teamPage(team) {
+        return TEAM_PAGE_BY_ID[team.id] || "#";
+      }
+
+
       function standingsRow(team, index) {
         const banner = bannerSource(team);
+        const page = teamPage(team);
 
         return `
           <tr>
             <td class="lsffl-rank-cell">${index + 1}</td>
 
             <td class="lsffl-franchise-cell">
-              <img
-                class="lsffl-banner"
-                src="${banner}"
-                alt="${escapeHTML(team.name)}"
-                onerror="
-                  this.onerror=null;
-                  this.style.display='none';
-                  this.parentElement.textContent='${escapeHTML(team.name)}';
-                "
+              <a
+                href="${page}"
+                aria-label="Open ${escapeHTML(team.name)} franchise page"
+                style="display:block; text-decoration:none; color:inherit;"
               >
+                <img
+                  class="lsffl-banner"
+                  src="${banner}"
+                  alt="${escapeHTML(team.name)}"
+                  onerror="
+                    this.onerror=null;
+                    this.style.display='none';
+                    this.parentElement.textContent='${escapeHTML(team.name)}';
+                  "
+                >
+              </a>
             </td>
 
             <td>
@@ -1098,27 +1172,34 @@
       function powerRow(team, index) {
         const localHelmet = helmetSource(team);
         const fallbackHelmet = escapeHTML(team.icon);
+        const page = teamPage(team);
 
         return `
           <tr>
             <td class="lsffl-power-rank">${index + 1}</td>
 
             <td>
-              <div class="lsffl-power-franchise">
-                <img
-                  class="lsffl-power-helmet"
-                  src="${localHelmet}"
-                  alt=""
-                  onerror="
-                    this.onerror=null;
-                    this.src='${fallbackHelmet}';
-                  "
-                >
+              <a
+                href="${page}"
+                aria-label="Open ${escapeHTML(team.name)} franchise page"
+                style="display:block; text-decoration:none; color:inherit;"
+              >
+                <div class="lsffl-power-franchise">
+                  <img
+                    class="lsffl-power-helmet"
+                    src="${localHelmet}"
+                    alt="${escapeHTML(team.name)} helmet"
+                    onerror="
+                      this.onerror=null;
+                      this.src='${fallbackHelmet}';
+                    "
+                  >
 
-                <span class="lsffl-power-name">
-                  ${escapeHTML(team.name)}
-                </span>
-              </div>
+                  <span class="lsffl-power-name">
+                    ${escapeHTML(team.name)}
+                  </span>
+                </div>
+              </a>
             </td>
 
             <td>
@@ -1241,7 +1322,6 @@
       }
 
 
-
       function showError(message) {
         const safeMessage = escapeHTML(message);
 
@@ -1351,7 +1431,7 @@
       }
 
 
-initialize();
+      initialize();
     })();
   </script>
 
