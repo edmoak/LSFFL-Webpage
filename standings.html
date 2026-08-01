@@ -78,7 +78,7 @@
 
     .lsffl-layout {
       display: grid;
-      grid-template-columns: minmax(0, 2fr) minmax(320px, 0.95fr);
+      grid-template-columns: minmax(0, 1.75fr) minmax(280px, 0.95fr);
       gap: 14px;
       align-items: start;
     }
@@ -260,11 +260,21 @@
     }
 
     .lsffl-banner {
+      display: block;
       width: 100%;
       max-width: 275px;
-      height: 39px;
-      object-fit: fill;
-      object-position: center;
+      height: 41px;
+
+      /*
+       * The uploaded banner files contain excess canvas above and below
+       * the visible artwork. "cover" fills the standings slot and crops
+       * that unused canvas instead of shrinking the entire image.
+       */
+      object-fit: cover;
+      object-position: center center;
+
+      margin: 0;
+      padding: 0;
       border: 1px solid rgba(227, 170, 24, 0.8);
       border-radius: 3px;
       box-shadow:
@@ -395,7 +405,7 @@
       }
     }
 
-    @media (max-width: 1100px) {
+    @media (max-width: 760px) {
       .lsffl-layout {
         grid-template-columns: 1fr;
       }
