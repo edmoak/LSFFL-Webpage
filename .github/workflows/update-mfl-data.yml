@@ -36,16 +36,47 @@ jobs:
             "https://www48.myfantasyleague.com/2026/export?TYPE=league&L=51036&JSON=1" \
             --output data/league.json
 
+      - name: Download standings data from MFL
+        run: |
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --location \
+            --retry 3 \
+            --retry-delay 5 \
+            "https://www48.myfantasyleague.com/2026/export?TYPE=leagueStandings&L=51036&JSON=1" \
+            --output data/standings.json
+
       - name: Verify downloaded JSON
         run: |
           jq empty data/league.json
+          jq empty data/standings.json
 
           FRANCHISE_COUNT=$(jq '.league.franchises.franchise | length' data/league.json)
 
           echo "MFL franchise count: ${FRANCHISE_COUNT}"
 
           if [ "${FRANCHISE_COUNT}" -lt 1 ]; then
-            echo "No franchises were found in the MFL response."
+            echo "No franchises were found in the MFL league response."
+            exit 1
+          fi
+
+          STANDINGS_COUNT=$(jq '
+            [
+              .. |
+              objects |
+              select(has("franchise")) |
+              .franchise |
+              if type == "array" then .[] else . end
+            ] |
+            length
+          ' data/standings.json)
+
+          echo "MFL standings record count: ${STANDINGS_COUNT}"
+
+          if [ "${STANDINGS_COUNT}" -lt 1 ]; then
+            echo "No franchise standings were found in the MFL standings response."
             exit 1
           fi
 
@@ -59,7 +90,11 @@ jobs:
               season: $season,
               leagueId: $leagueId,
               updatedAt: $updatedAt,
-              source: "MyFantasyLeague"
+              source: "MyFantasyLeague",
+              files: [
+                "league.json",
+                "standings.json"
+              ]
             }' \
             > data/sync-status.json
 
@@ -68,12 +103,15 @@ jobs:
           git config user.name "LSFFL Data Bot"
           git config user.email "actions@users.noreply.github.com"
 
-          git add data/league.json data/sync-status.json
+          git add \
+            data/league.json \
+            data/standings.json \
+            data/sync-status.json
 
           if git diff --cached --quiet; then
             echo "MFL data has not changed."
             exit 0
           fi
 
-          git commit -m "Update live MFL league data"
+          git commit -m "Update live MFL league and standings data"
           git push
