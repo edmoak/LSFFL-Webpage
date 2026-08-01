@@ -289,6 +289,47 @@
       color: var(--muted) !important;
     }
 
+    .lsffl-division-list {
+      display: grid;
+      gap: 14px;
+      padding: 14px;
+    }
+
+    .lsffl-division-block {
+      overflow: hidden;
+      border: 1px solid rgba(227, 170, 24, 0.78);
+      border-radius: 8px;
+      background: rgba(2, 14, 27, 0.96);
+      box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.30),
+        inset 0 0 18px rgba(255, 255, 255, 0.018);
+    }
+
+    .lsffl-division-heading {
+      margin: 0;
+      padding: 9px 14px;
+      color: var(--white);
+      background:
+        linear-gradient(
+          180deg,
+          rgba(13, 49, 85, 0.98),
+          rgba(4, 24, 44, 0.98)
+        );
+      border-bottom: 1px solid var(--gold-500);
+      font-size: 17px;
+      font-weight: 900;
+      font-style: italic;
+      letter-spacing: 0.045em;
+      text-align: left;
+      text-transform: uppercase;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.62);
+    }
+
+    .lsffl-division-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
     .lsffl-footer-key {
       display: flex;
       flex-wrap: wrap;
@@ -447,69 +488,22 @@
   >
     <div class="lsffl-layout">
 
-      <!-- LEAGUE STANDINGS -->
+      <!-- ALL FOUR DIVISION STANDINGS -->
       <section class="lsffl-panel">
         <header class="lsffl-panel-header">
           <h1 class="lsffl-panel-title lsffl-standings-title">
-            League Standings
+            Division Standings
           </h1>
-
-          <select
-            id="division-select"
-            class="lsffl-division-select"
-            aria-label="Choose a division"
-          >
-            <option value="all">All Divisions</option>
-          </select>
         </header>
 
-        <div class="lsffl-table-wrap">
-          <table
-            class="lsffl-table lsffl-standings-table"
-            aria-label="LSFFL league standings"
-          >
-            <colgroup>
-              <col style="width: 44px">
-              <col style="width: 350px">
-              <col style="width: 67px">
-              <col style="width: 57px">
-              <col style="width: 64px">
-              <col style="width: 64px">
-              <col style="width: 65px">
-              <col style="width: 60px">
-              <col style="width: 72px">
-              <col style="width: 72px">
-              <col style="width: 58px">
-              <col style="width: 54px">
-            </colgroup>
-
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Franchise</th>
-                <th>W-L-T</th>
-                <th>PCT</th>
-                <th>PF</th>
-                <th>PA</th>
-                <th>DIFF</th>
-                <th>STRK</th>
-                <th>MAX PF</th>
-                <th>MIN PF</th>
-                <th>PWR</th>
-                <th>WW</th>
-              </tr>
-            </thead>
-
-            <tbody id="standings-body">
-              <tr>
-                <td colspan="12">
-                  <p class="lsffl-message lsffl-loading">
-                    Loading LSFFL standings…
-                  </p>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div
+          id="division-standings"
+          class="lsffl-division-list"
+          aria-live="polite"
+        >
+          <p class="lsffl-message lsffl-loading">
+            Loading all four LSFFL divisions…
+          </p>
         </div>
 
         <footer class="lsffl-footer-key">
@@ -627,14 +621,11 @@
         "0015": "Get Off My Ditka"
       };
 
-      const standingsBody =
-        document.getElementById("standings-body");
+      const divisionStandings =
+        document.getElementById("division-standings");
 
       const powerBody =
         document.getElementById("power-body");
-
-      const divisionSelect =
-        document.getElementById("division-select");
 
       let allTeams = [];
       let divisionsById = {};
@@ -1147,34 +1138,94 @@
 
 
       function renderStandings() {
-        const selectedDivision = divisionSelect.value;
+        const divisions =
+          Object.entries(divisionsById)
+            .sort(function (a, b) {
+              return a[0].localeCompare(b[0]);
+            });
 
-        const visibleTeams = allTeams
-          .filter(function (team) {
-            return (
-              selectedDivision === "all" ||
-              team.division === selectedDivision
-            );
-          })
-          .sort(standingsSort);
-
-        if (!visibleTeams.length) {
-          standingsBody.innerHTML = `
-            <tr>
-              <td colspan="12">
-                <p class="lsffl-message">
-                  No standings are available for this division.
-                </p>
-              </td>
-            </tr>
+        if (!divisions.length) {
+          divisionStandings.innerHTML = `
+            <p class="lsffl-message">
+              No division standings are currently available.
+            </p>
           `;
-
           return;
         }
 
-        standingsBody.innerHTML =
-          visibleTeams
-            .map(standingsRow)
+        divisionStandings.innerHTML =
+          divisions
+            .map(function ([divisionId, divisionName]) {
+              const teams =
+                allTeams
+                  .filter(function (team) {
+                    return team.division === divisionId;
+                  })
+                  .sort(standingsSort);
+
+              const rows = teams.length
+                ? teams.map(standingsRow).join("")
+                : `
+                  <tr>
+                    <td colspan="12">
+                      <p class="lsffl-message">
+                        No teams are assigned to this division.
+                      </p>
+                    </td>
+                  </tr>
+                `;
+
+              return `
+                <section class="lsffl-division-block">
+                  <h2 class="lsffl-division-heading">
+                    ${escapeHTML(divisionName)}
+                  </h2>
+
+                  <div class="lsffl-division-table-wrap">
+                    <table
+                      class="lsffl-table lsffl-standings-table"
+                      aria-label="${escapeHTML(divisionName)} standings"
+                    >
+                      <colgroup>
+                        <col style="width: 44px">
+                        <col style="width: 350px">
+                        <col style="width: 67px">
+                        <col style="width: 57px">
+                        <col style="width: 64px">
+                        <col style="width: 64px">
+                        <col style="width: 65px">
+                        <col style="width: 60px">
+                        <col style="width: 72px">
+                        <col style="width: 72px">
+                        <col style="width: 58px">
+                        <col style="width: 54px">
+                      </colgroup>
+
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Franchise</th>
+                          <th>W-L-T</th>
+                          <th>PCT</th>
+                          <th>PF</th>
+                          <th>PA</th>
+                          <th>DIFF</th>
+                          <th>STRK</th>
+                          <th>MAX PF</th>
+                          <th>MIN PF</th>
+                          <th>PWR</th>
+                          <th>WW</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        ${rows}
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
+              `;
+            })
             .join("");
       }
 
@@ -1190,39 +1241,14 @@
       }
 
 
-      function renderDivisionOptions() {
-        divisionSelect.innerHTML =
-          '<option value="all">All Divisions</option>';
-
-        Object.entries(divisionsById)
-          .sort(function (a, b) {
-            return a[0].localeCompare(b[0]);
-          })
-          .forEach(function ([id, name]) {
-            const option =
-              document.createElement("option");
-
-            option.value = String(id);
-            option.textContent = name;
-
-            divisionSelect.appendChild(option);
-          });
-
-        divisionSelect.value = "all";
-      }
-
 
       function showError(message) {
         const safeMessage = escapeHTML(message);
 
-        standingsBody.innerHTML = `
-          <tr>
-            <td colspan="12">
-              <p class="lsffl-message lsffl-message-error">
-                ${safeMessage}
-              </p>
-            </td>
-          </tr>
+        divisionStandings.innerHTML = `
+          <p class="lsffl-message lsffl-message-error">
+            ${safeMessage}
+          </p>
         `;
 
         powerBody.innerHTML = `
@@ -1313,7 +1339,6 @@
             );
           });
 
-          renderDivisionOptions();
           renderStandings();
           renderPowerRankings();
         } catch (error) {
@@ -1326,17 +1351,7 @@
       }
 
 
-      divisionSelect.addEventListener(
-        "change",
-        renderStandings
-      );
-
-      divisionSelect.addEventListener(
-        "input",
-        renderStandings
-      );
-
-      initialize();
+initialize();
     })();
   </script>
 
