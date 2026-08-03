@@ -59,13 +59,7 @@
         Helvetica,
         sans-serif;
     }
-
-    button,
-    select {
-      font: inherit;
-    }
-
-    img {
+img {
       display: block;
       max-width: 100%;
     }
@@ -152,34 +146,7 @@
     .lsffl-power-title::after {
       content: "★";
     }
-
-    .lsffl-division-select {
-      width: min(300px, 42%);
-      min-width: 190px;
-      height: 38px;
-      padding: 0 38px 0 13px;
-      color: var(--white);
-      background:
-        linear-gradient(
-          180deg,
-          #071c31,
-          #031322
-        );
-      border: 1px solid var(--gold-500);
-      border-radius: 7px;
-      outline: none;
-      font-size: 14px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      cursor: pointer;
-    }
-
-    .lsffl-division-select:focus {
-      box-shadow: 0 0 0 3px rgba(227, 170, 24, 0.21);
-    }
-
-    .lsffl-table-wrap {
+.lsffl-table-wrap {
       width: 100%;
       overflow: hidden;
     }
@@ -530,12 +497,7 @@
         justify-content: center;
         text-align: center;
       }
-
-      .lsffl-division-select {
-        width: 100%;
-      }
-
-      .lsffl-standings-table th,
+.lsffl-standings-table th,
       .lsffl-standings-table td {
         padding-left: 3px;
         padding-right: 3px;
@@ -545,12 +507,7 @@
       .lsffl-banner {
         height: 48px;
       }
-
-      .lsffl-power-name {
-        font-size: 11px;
-      }
-
-      .lsffl-power-helmet {
+.lsffl-power-helmet {
         width: 62px;
         height: 62px;
         flex-basis: 62px;
@@ -572,7 +529,6 @@
   >
     <div class="lsffl-layout">
 
-      <!-- ALL FOUR DIVISION STANDINGS -->
       <section class="lsffl-panel">
         <header class="lsffl-panel-header">
           <h1 class="lsffl-panel-title lsffl-standings-title">
@@ -599,8 +555,6 @@
         </footer>
       </section>
 
-
-      <!-- POWER RANKINGS -->
       <section class="lsffl-panel lsffl-power-panel">
         <header class="lsffl-panel-header">
           <h2 class="lsffl-panel-title lsffl-power-title">
@@ -639,7 +593,6 @@
     </div>
   </main>
 
-
   <script>
     (function () {
       "use strict";
@@ -649,10 +602,6 @@
         standings: "data/standings.json"
       };
 
-      /*
-       * Banner filenames already stored in:
-       * images/banners/
-       */
       const BANNER_BY_ID = {
         "0001": "Spartans.png",
         "0002": "Saints.png",
@@ -672,10 +621,6 @@
         "0016": "Avalanche.png"
       };
 
-      /*
-       * Local helmet filenames.
-       * Every image has a fallback to the league.json icon.
-       */
       const HELMET_BY_ID = {
         "0001": "Spartans Helmet.png",
         "0002": "Saints Helmet.png",
@@ -731,7 +676,6 @@
       let allTeams = [];
       let divisionsById = {};
 
-
       function asArray(value) {
         if (Array.isArray(value)) {
           return value;
@@ -744,7 +688,6 @@
         return [value];
       }
 
-
       function text(value, fallback = "") {
         if (value === null || value === undefined) {
           return fallback;
@@ -753,7 +696,6 @@
         return String(value);
       }
 
-
       function number(value, fallback = 0) {
         const parsed = Number(value);
 
@@ -761,7 +703,6 @@
           ? parsed
           : fallback;
       }
-
 
       function firstValue(object, keys, fallback = "") {
         if (!object || typeof object !== "object") {
@@ -781,11 +722,9 @@
         return fallback;
       }
 
-
       function fixed(value, places = 2) {
         return number(value).toFixed(places);
       }
-
 
       function percent(value) {
         const numeric = number(value);
@@ -796,7 +735,6 @@
 
         return (numeric * 100).toFixed(1) + "%";
       }
-
 
       function escapeHTML(value) {
         return text(value).replace(
@@ -813,14 +751,12 @@
         );
       }
 
-
       function encodePath(path) {
         return path
           .split("/")
           .map(encodeURIComponent)
           .join("/");
       }
-
 
       function teamName(franchise) {
         return (
@@ -830,7 +766,6 @@
           "Unknown Team"
         );
       }
-
 
       function findFranchiseRecords(value, output = []) {
         if (Array.isArray(value)) {
@@ -873,7 +808,6 @@
         return output;
       }
 
-
       function uniqueById(records) {
         const map = new Map();
 
@@ -891,7 +825,6 @@
 
         return Array.from(map.values());
       }
-
 
       function normalizeTeam(franchise, standing) {
         const wins = number(
@@ -1085,7 +1018,6 @@
         };
       }
 
-
       function standingsSort(a, b) {
         if (b.pct !== a.pct) {
           return b.pct - a.pct;
@@ -1101,7 +1033,6 @@
 
         return a.name.localeCompare(b.name);
       }
-
 
       function powerSort(a, b) {
         if (a.powerRank && b.powerRank) {
@@ -1119,7 +1050,6 @@
         return standingsSort(a, b);
       }
 
-
       function differentialClass(value) {
         if (value > 0) {
           return "lsffl-positive";
@@ -1132,7 +1062,6 @@
         return "lsffl-neutral";
       }
 
-
       function pctDisplay(value) {
         const numeric = number(value);
 
@@ -1143,14 +1072,12 @@
         return (numeric / 100).toFixed(3).replace(/^0/, "");
       }
 
-
       function bannerSource(team) {
         return encodePath(
           "images/banners/" +
           (BANNER_BY_ID[team.id] || "")
         );
       }
-
 
       function helmetSource(team) {
         return encodePath(
@@ -1159,13 +1086,11 @@
         );
       }
 
-
       function teamPage(team) {
         return encodePath(
           TEAM_PAGE_BY_ID[team.id] || "#"
         );
       }
-
 
       function standingsRow(team, index) {
         const banner = bannerSource(team);
@@ -1216,7 +1141,6 @@
         `;
       }
 
-
       function powerRow(team, index) {
         const localHelmet = helmetSource(team);
         const fallbackHelmet = escapeHTML(team.icon);
@@ -1261,7 +1185,6 @@
           </tr>
         `;
       }
-
 
       function renderStandings() {
         const divisions =
@@ -1351,7 +1274,6 @@
             .join("");
       }
 
-
       function renderPowerRankings() {
         const rankedTeams =
           [...allTeams].sort(powerSort);
@@ -1361,7 +1283,6 @@
             .map(powerRow)
             .join("");
       }
-
 
       function showError(message) {
         const safeMessage = escapeHTML(message);
@@ -1383,7 +1304,6 @@
         `;
       }
 
-
       async function fetchJSON(url) {
         const response = await fetch(
           url + "?v=" + Date.now(),
@@ -1404,7 +1324,6 @@
 
         return response.json();
       }
-
 
       async function initialize() {
         try {
@@ -1470,7 +1389,6 @@
           );
         }
       }
-
 
       initialize();
     })();
