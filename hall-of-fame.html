@@ -54,70 +54,90 @@
 
     .hof-header {
       position: relative;
+      display: flex;
+      align-items: center;
+      gap: 18px;
       overflow: hidden;
-      padding: 34px 24px;
-      text-align: center;
+      padding: 20px 22px;
       color: var(--white);
       border: 2px solid var(--gold);
       border-radius: 10px 10px 0 0;
       background:
-        linear-gradient(115deg, rgba(216, 171, 63, 0.13), transparent 36%),
+        linear-gradient(90deg, rgba(201, 162, 39, 0.12), transparent 40%),
+        repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 1px, transparent 1px 8px),
         linear-gradient(180deg, var(--navy-light), var(--navy));
-      box-shadow: var(--shadow);
+      box-shadow:
+        0 10px 26px rgba(0,0,0,.34),
+        inset 0 1px 0 rgba(255,255,255,.05),
+        inset 0 -3px 0 rgba(201,162,39,.10);
     }
 
     .hof-header::before,
     .hof-header::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      width: 28%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--gold));
+      content: none;
     }
 
-    .hof-header::before {
-      left: 0;
+    .hof-header-icon {
+      display: grid;
+      place-items: center;
+      width: 92px;
+      height: 92px;
+      flex: 0 0 92px;
+      object-fit: contain;
+      filter:
+        drop-shadow(0 5px 7px rgba(0,0,0,.62))
+        drop-shadow(0 0 10px rgba(201,162,39,.18));
     }
 
-    .hof-header::after {
-      right: 0;
-      transform: rotate(180deg);
+    .hof-header-copy {
+      min-width: 0;
+      text-align: left;
     }
 
     .eyebrow {
-      margin: 0 0 8px;
+      margin: 0 0 6px;
       color: var(--gold-light);
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 800;
-      letter-spacing: 0.22em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
     }
 
     .hof-header h1 {
+      position: relative;
       margin: 0;
+      padding-bottom: 10px;
+      color: var(--gold-light);
       font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2rem, 6vw, 4rem);
+      font-size: clamp(2rem, 5vw, 3.4rem);
       line-height: 1;
       letter-spacing: 0.04em;
       text-transform: uppercase;
       text-shadow: 0 3px 12px rgba(0, 0, 0, 0.45);
     }
 
-    .header-rule {
-      width: 128px;
-      height: 4px;
-      margin: 17px auto 14px;
+    .hof-header h1::after {
+      content: "";
+      display: block;
+      width: 118px;
+      height: 3px;
+      margin-top: 9px;
       border-radius: 999px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      background: linear-gradient(90deg, var(--gold-light), rgba(225,196,90,0));
+    }
+
+    .header-rule {
+      display: none;
     }
 
     .hof-header p:last-child {
-      max-width: 700px;
-      margin: 0 auto;
-      color: #e7edf5;
-      font-size: 0.98rem;
-      line-height: 1.6;
+      max-width: 760px;
+      margin: 7px 0 0;
+      color: #ffffff;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1rem;
+      font-style: italic;
+      line-height: 1.55;
     }
 
     .hof-content {
@@ -409,6 +429,16 @@
         padding-left: 14px;
       }
 
+      .hof-header {
+        align-items: flex-start;
+      }
+
+      .hof-header-icon {
+        width: 76px;
+        height: 76px;
+        flex-basis: 76px;
+      }
+
       .team-banner {
         height: auto;
         min-height: 0;
@@ -488,16 +518,16 @@
   <main class="page-shell">
 
     <header class="hof-header">
-<p class="eyebrow">Lamad Squad Fantasy Football League</p>
-      <h1>Hall of Fame</h1>
-      <div class="header-rule"></div>
-      <p>
-        The LSFFL Hall of Fame recognizes retired franchises whose sustained excellence,
-        championships, innovation, and lasting influence helped shape the Lamad Squad
-        Fantasy Football League. Induction honors organizations that defined an era,
-        inspired future competitors, and left a legacy that continues to be part of
-        LSFFL history.
-      </p>
+      <img
+        class="hof-header-icon"
+        src="images/icons/hall-of-fame.png"
+        alt="LSFFL Hall of Fame"
+      >
+      <div class="hof-header-copy">
+        <p class="eyebrow">Lamad Squad Fantasy Football League</p>
+        <h1>Hall of Fame</h1>
+        <p>A Tradition Born Across the Sea</p>
+      </div>
     </header>
 
     <section class="hof-content" aria-label="LSFFL Hall of Fame inductees">
