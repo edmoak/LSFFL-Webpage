@@ -916,6 +916,116 @@
       }
     }
 
+  
+    /* =========================================================
+       FINAL LOGO + TROPHY BANNER FIX
+       ========================================================= */
+
+    /* Center the logo directly over the gold slash and reduce it to about 40%. */
+    .team-hero-logo{
+      left:-1px !important;
+      width:62px !important;
+      height:62px !important;
+      transform:translate(-50%,-50%) !important;
+      object-fit:contain !important;
+    }
+
+    .team-hero-glow{
+      left:-1px !important;
+      width:82px !important;
+      height:82px !important;
+      transform:translate(-50%,-50%) !important;
+    }
+
+    /* Real championship banner images. */
+    .trophy-banner-grid{
+      display:grid !important;
+      gap:7px !important;
+      align-items:start;
+    }
+
+    .championship-banner-grid{
+      grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    }
+
+    .division-banner-grid{
+      grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    }
+
+    .trophy-banner-card{
+      position:relative;
+      min-width:0;
+      margin:0 !important;
+      padding:0 !important;
+      overflow:visible;
+      text-align:center;
+      background:transparent !important;
+      border:0 !important;
+      box-shadow:none !important;
+    }
+
+    .trophy-banner-card img{
+      display:block;
+      width:100%;
+      height:112px;
+      margin:0 auto;
+      object-fit:contain;
+      object-position:center top;
+      filter:drop-shadow(0 5px 5px rgba(0,0,0,.48));
+    }
+
+    .trophy-banner-card figcaption{
+      position:absolute;
+      left:50%;
+      bottom:7px;
+      min-width:50px;
+      padding:2px 7px;
+      transform:translateX(-50%);
+      border:1px solid rgba(227,170,24,.88);
+      border-radius:4px;
+      background:rgba(2,10,19,.92);
+      color:var(--gold2);
+      font-family:"Arial Black",Arial,sans-serif;
+      font-size:12px;
+      font-weight:900;
+      line-height:1;
+      text-shadow:0 1px 2px #000;
+      box-shadow:0 3px 7px rgba(0,0,0,.42);
+    }
+
+    .trophy-details{
+      margin-top:6px !important;
+    }
+
+    .trophy-details summary{
+      padding:5px 4px 1px !important;
+    }
+
+    .hidden-title-grid{
+      margin-top:7px !important;
+    }
+
+    @media(max-width:620px){
+      .team-hero-logo{
+        width:54px !important;
+        height:54px !important;
+      }
+
+      .team-hero-glow{
+        width:70px !important;
+        height:70px !important;
+      }
+
+      .championship-banner-grid,
+      .division-banner-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+      }
+
+      .trophy-banner-card img{
+        height:98px;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -1045,44 +1155,82 @@
             <section class="card">
               <h2>🏆 Championships</h2>
               <div class="body">
-                <div class="banners">
-                  <div class="champ"><span class="pennant-year">2000</span><span class="pennant-label">League Champion</span></div>
-                  <div class="champ"><span class="pennant-year">2009</span><span class="pennant-label">League Champion</span></div>
-                  <div class="champ"><span class="pennant-year">2010</span><span class="pennant-label">League Champion</span></div>
-                  <div class="champ"><span class="pennant-year">2011</span><span class="pennant-label">League Champion</span></div>
+                <div class="trophy-banner-grid championship-banner-grid">
+                  <figure class="trophy-banner-card">
+                    <img src="../images/banners/Spartans%20Championship%20banner2.png" alt="Spartans 2000 LSFFL championship banner">
+                    <figcaption>2000</figcaption>
+                  </figure>
+
+                  <figure class="trophy-banner-card">
+                    <img src="../images/banners/Spartans%20Championship%20banner2.png" alt="Spartans 2009 LSFFL championship banner">
+                    <figcaption>2009</figcaption>
+                  </figure>
+
+                  <figure class="trophy-banner-card">
+                    <img src="../images/banners/Spartans%20Championship%20banner2.png" alt="Spartans 2010 LSFFL championship banner">
+                    <figcaption>2010</figcaption>
+                  </figure>
+
+                  <figure class="trophy-banner-card">
+                    <img src="../images/banners/Spartans%20Championship%20banner2.png" alt="Spartans 2011 LSFFL championship banner">
+                    <figcaption>2011</figcaption>
+                  </figure>
                 </div>
-                <details class="trophy-details">
-                  <summary>Championship List</summary>
-                  <div class="expanded-pennants">
-                    <div class="champ"><span class="pennant-year">2000</span><span class="pennant-label">League Champion</span></div>
-                    <div class="champ"><span class="pennant-year">2009</span><span class="pennant-label">League Champion</span></div>
-                    <div class="champ"><span class="pennant-year">2010</span><span class="pennant-label">League Champion</span></div>
-                    <div class="champ"><span class="pennant-year">2011</span><span class="pennant-label">League Champion</span></div>
-                  </div>
-                </details>
               </div>
             </section>
             <section class="card">
               <h2>🛡 Division Championships</h2>
               <div class="body">
-                <div class="division-banners">
-                  <div class="division-champ"><span class="pennant-year">2025</span><span class="pennant-label">Bulldogs</span></div>
-                  <div class="division-champ"><span class="pennant-year">2021</span><span class="pennant-label">Pennydrops</span></div>
-                  <div class="division-champ"><span class="pennant-year">2020</span><span class="pennant-label">Pennydrops</span></div>
-                  <div class="division-champ"><span class="pennant-year">2019</span><span class="pennant-label">Pennydrops</span></div>
+                <div class="trophy-banner-grid division-banner-grid">
+                  <figure class="trophy-banner-card">
+                    <img src="../images/banners/Bulldogs%20Banner.png" alt="2025 Bulldogs Division championship banner">
+                    <figcaption>2025</figcaption>
+                  </figure>
+
+                  <figure class="trophy-banner-card">
+                    <img src="../images/banners/Pennydrops%20Banner.png" alt="2021 Pennydrops Division championship banner">
+                    <figcaption>2021</figcaption>
+                  </figure>
+
+                  <figure class="trophy-banner-card">
+                    <img src="../images/banners/Pennydrops%20Banner.png" alt="2020 Pennydrops Division championship banner">
+                    <figcaption>2020</figcaption>
+                  </figure>
+
+                  <figure class="trophy-banner-card">
+                    <img src="../images/banners/Pennydrops%20Banner.png" alt="2019 Pennydrops Division championship banner">
+                    <figcaption>2019</figcaption>
+                  </figure>
                 </div>
+
                 <details class="trophy-details">
-                  <summary>Show All 9 Division Titles</summary>
-                  <div class="expanded-pennants">
-                    <div class="division-champ"><span class="pennant-year">2025</span><span class="pennant-label">Bulldogs</span></div>
-                    <div class="division-champ"><span class="pennant-year">2021</span><span class="pennant-label">Pennydrops</span></div>
-                    <div class="division-champ"><span class="pennant-year">2020</span><span class="pennant-label">Pennydrops</span></div>
-                    <div class="division-champ"><span class="pennant-year">2019</span><span class="pennant-label">Pennydrops</span></div>
-                    <div class="division-champ"><span class="pennant-year">2015</span><span class="pennant-label">Pennydrops</span></div>
-                    <div class="division-champ"><span class="pennant-year">2014</span><span class="pennant-label">Pennydrops</span></div>
-                    <div class="division-champ"><span class="pennant-year">2011</span><span class="pennant-label">Pennydrops</span></div>
-                    <div class="division-champ"><span class="pennant-year">2008</span><span class="pennant-label">Pennydrops</span></div>
-                    <div class="division-champ"><span class="pennant-year">2006</span><span class="pennant-label">Pennydrops</span></div>
+                  <summary>Show 5 More Division Titles</summary>
+
+                  <div class="trophy-banner-grid division-banner-grid hidden-title-grid">
+                    <figure class="trophy-banner-card">
+                      <img src="../images/banners/Pennydrops%20Banner.png" alt="2015 Pennydrops Division championship banner">
+                      <figcaption>2015</figcaption>
+                    </figure>
+
+                    <figure class="trophy-banner-card">
+                      <img src="../images/banners/Pennydrops%20Banner.png" alt="2014 Pennydrops Division championship banner">
+                      <figcaption>2014</figcaption>
+                    </figure>
+
+                    <figure class="trophy-banner-card">
+                      <img src="../images/banners/Pennydrops%20Banner.png" alt="2011 Pennydrops Division championship banner">
+                      <figcaption>2011</figcaption>
+                    </figure>
+
+                    <figure class="trophy-banner-card">
+                      <img src="../images/banners/Pennydrops%20Banner.png" alt="2008 Pennydrops Division championship banner">
+                      <figcaption>2008</figcaption>
+                    </figure>
+
+                    <figure class="trophy-banner-card">
+                      <img src="../images/banners/Pennydrops%20Banner.png" alt="2006 Pennydrops Division championship banner">
+                      <figcaption>2006</figcaption>
+                    </figure>
                   </div>
                 </details>
               </div>
