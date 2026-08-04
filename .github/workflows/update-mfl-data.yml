@@ -24,29 +24,130 @@ jobs:
       - name: Create data folder
         run: mkdir -p data
 
-      - name: Download league data
+      - name: Download core league data
+        shell: bash
         run: |
-          curl \
-            --fail \
-            --silent \
-            --show-error \
-            --location \
-            --retry 3 \
-            --retry-delay 5 \
-            "https://www48.myfantasyleague.com/2026/export?TYPE=league&L=51036&JSON=1" \
-            --output data/league.json
+          set -euo pipefail
 
-      - name: Download standings data
+          download_required() {
+            local type="$1"
+            local output="$2"
+
+            echo "Downloading ${type}..."
+
+            curl \
+              --fail \
+              --silent \
+              --show-error \
+              --location \
+              --retry 3 \
+              --retry-delay 5 \
+              "https://www48.myfantasyleague.com/2026/export?TYPE=${type}&L=51036&JSON=1" \
+              --output "${output}"
+
+            jq empty "${output}"
+
+            if jq -e '.error' "${output}" > /dev/null 2>&1; then
+              echo "MFL returned an error for ${type}:"
+              jq '.' "${output}"
+              exit 1
+            fi
+          }
+
+          download_required "league" "data/league.json"
+          download_required "leagueStandings" "data/standings.json"
+          download_required "schedule" "data/schedule.json"
+          download_required "rosters" "data/rosters.json"
+
+      - name: Download scoring data
+        shell: bash
         run: |
-          curl \
-            --fail \
-            --silent \
-            --show-error \
-            --location \
-            --retry 3 \
-            --retry-delay 5 \
-            "https://www48.myfantasyleague.com/2026/export?TYPE=leagueStandings&L=51036&JSON=1" \
-            --output data/standings.json
+          set -euo pipefail
+
+          download_optional() {
+            local type="$1"
+            local output="$2"
+            local temporary="${output}.tmp"
+
+            echo "Downloading ${type}..."
+
+            if ! curl \
+              --fail \
+              --silent \
+              --show-error \
+              --location \
+              --retry 3 \
+              --retry-delay 5 \
+              "https://www48.myfantasyleague.com/2026/export?TYPE=${type}&L=51036&JSON=1" \
+              --output "${temporary}"
+            then
+              echo "${type} is not available yet."
+
+              if [ -f "${output}" ]; then
+                echo "Keeping the previous ${output} file."
+              else
+                jq -n \
+                  --arg type "${type}" \
+                  --arg updatedAt "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+                  '{
+                    unavailable: true,
+                    exportType: $type,
+                    updatedAt: $updatedAt
+                  }' > "${output}"
+              fi
+
+              rm -f "${temporary}"
+              return
+            fi
+
+            if ! jq empty "${temporary}" > /dev/null 2>&1; then
+              echo "${type} returned invalid JSON."
+
+              if [ -f "${output}" ]; then
+                echo "Keeping the previous ${output} file."
+              else
+                jq -n \
+                  --arg type "${type}" \
+                  --arg updatedAt "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+                  '{
+                    unavailable: true,
+                    exportType: $type,
+                    updatedAt: $updatedAt
+                  }' > "${output}"
+              fi
+
+              rm -f "${temporary}"
+              return
+            fi
+
+            if jq -e '.error' "${temporary}" > /dev/null 2>&1; then
+              echo "${type} is not currently available from MFL:"
+              jq '.' "${temporary}"
+
+              if [ -f "${output}" ]; then
+                echo "Keeping the previous ${output} file."
+              else
+                jq -n \
+                  --arg type "${type}" \
+                  --arg updatedAt "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+                  '{
+                    unavailable: true,
+                    exportType: $type,
+                    updatedAt: $updatedAt
+                  }' > "${output}"
+              fi
+
+              rm -f "${temporary}"
+              return
+            fi
+
+            mv "${temporary}" "${output}"
+          }
+
+          # These feeds may be unavailable before games begin.
+          # The workflow preserves the last working copy instead of failing.
+          download_optional "liveScoring" "data/liveScoring.json"
+          download_optional "playerScores" "data/playerScores.json"
 
       - name: Verify league data
         run: |
@@ -68,12 +169,6 @@ jobs:
         run: |
           jq empty data/standings.json
 
-          if jq -e '.error' data/standings.json > /dev/null 2>&1; then
-            echo "MFL returned an error for the standings export:"
-            jq '.' data/standings.json
-            exit 1
-          fi
-
           STANDINGS_COUNT=$(jq '
             [
               .. |
@@ -94,6 +189,54 @@ jobs:
             exit 1
           fi
 
+      - name: Verify schedule data
+        run: |
+          jq empty data/schedule.json
+
+          SCHEDULE_RECORDS=$(jq '
+            [
+              .. |
+              objects |
+              select(
+                has("matchup") or
+                has("franchise") or
+                has("week")
+              )
+            ]
+            | length
+          ' data/schedule.json)
+
+          echo "Schedule records found: ${SCHEDULE_RECORDS}"
+
+          if [ "${SCHEDULE_RECORDS}" -lt 1 ]; then
+            echo "No schedule records were found."
+            jq '.' data/schedule.json
+            exit 1
+          fi
+
+      - name: Verify roster data
+        run: |
+          jq empty data/rosters.json
+
+          ROSTER_FRANCHISES=$(jq '
+            [
+              .. |
+              objects |
+              .franchise? |
+              if type == "array" then .[] else . end
+            ]
+            | map(select(. != null))
+            | length
+          ' data/rosters.json)
+
+          echo "Roster franchise records found: ${ROSTER_FRANCHISES}"
+
+          if [ "${ROSTER_FRANCHISES}" -lt 1 ]; then
+            echo "No roster franchise records were found."
+            jq '.' data/rosters.json
+            exit 1
+          fi
+
       - name: Create sync information
         run: |
           jq -n \
@@ -107,7 +250,11 @@ jobs:
               source: "MyFantasyLeague",
               files: [
                 "league.json",
-                "standings.json"
+                "standings.json",
+                "schedule.json",
+                "rosters.json",
+                "liveScoring.json",
+                "playerScores.json"
               ]
             }' \
             > data/sync-status.json
@@ -120,6 +267,10 @@ jobs:
           git add \
             data/league.json \
             data/standings.json \
+            data/schedule.json \
+            data/rosters.json \
+            data/liveScoring.json \
+            data/playerScores.json \
             data/sync-status.json
 
           if git diff --cached --quiet; then
@@ -127,5 +278,5 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Update live MFL league and standings data"
+          git commit -m "Update live MFL league data"
           git push
