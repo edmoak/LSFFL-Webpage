@@ -42,7 +42,7 @@
     .central{display:grid;grid-template-columns:repeat(4,minmax(220px,1fr));gap:12px}.action{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center;min-height:92px;padding:13px;border:1px solid rgba(227,170,24,.6);border-radius:8px;background:linear-gradient(180deg,#0a2c4d,#031426);text-decoration:none}.action:hover{filter:brightness(1.14)}.icon{display:grid;width:44px;height:44px;place-items:center;border-radius:50%;background:linear-gradient(180deg,var(--gold2),#bd890d);color:#160d02;font-size:21px}.action b{display:block;text-transform:uppercase;font-size:14px}.action span:last-child{display:block;margin-top:4px;color:var(--muted);font-size:11px;line-height:1.3}
     footer{padding:14px;text-align:center;border-top:1px solid rgba(227,170,24,.35);color:var(--gold);font-size:11px;font-weight:900;font-style:italic;letter-spacing:.18em;text-transform:uppercase}
     @media(max-width:1180px){.grid{grid-template-columns:1fr 1.4fr}.grid>.col:last-child{grid-column:1/-1;grid-template-columns:repeat(3,1fr)}.central{grid-template-columns:repeat(3,1fr)}}
-    @media(max-width:850px){.hero{min-height:0;display:grid}.banner{width:100%}.helmet{position:static;width:min(230px,50%);margin:auto}.identity{width:100%;grid-template-columns:repeat(2,1fr)}.idbox:nth-child(2n){border-right:0}.idbox:last-child{grid-column:1/-1}.grid{grid-template-columns:1fr}.grid>.col:last-child{grid-column:auto;grid-template-columns:1fr}.central{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:850px){.hero{min-height:0;display:grid}.hero-banner{grid-template-columns:24% 52% 24%;height:145px;min-height:145px;padding:0 6px}.hero-helmet{height:130px}.hero-wordmark{height:112px}.hero-logo{height:112px}.identity{width:100%;grid-template-columns:repeat(2,1fr)}.idbox:nth-child(2n){border-right:0}.idbox:last-child{grid-column:1/-1}.grid{grid-template-columns:1fr}.grid>.col:last-child{grid-column:auto;grid-template-columns:1fr}.central{grid-template-columns:repeat(2,1fr)}}
     @media(max-width:620px){.page{padding:5px}.tab{font-size:14px;min-height:50px}.panel{padding:8px}.stats{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2n){border-right:0}.stat:nth-last-child(-n+4){border-bottom:1px solid rgba(255,255,255,.1)}.stat:nth-last-child(-n+2){border-bottom:0}.results{grid-template-columns:repeat(2,1fr)}.result:last-child{grid-column:1/-1}.performers{grid-template-columns:repeat(2,1fr)}.central{grid-template-columns:1fr}.banners{grid-template-columns:repeat(2,1fr)}}
   </style>
 </head>
@@ -50,8 +50,17 @@
   <main class="page">
     <article class="shell">
       <header class="hero">
-        <div class="banner"><img src="../images/banners/Spartans.png" alt="Spartans"></div>
-        <img class="helmet" src="../images/helmets/Spartans%20Helmet.png" alt="Spartans helmet">
+        <div class="hero-banner" aria-label="Spartans team banner">
+          <div class="hero-asset">
+            <img class="hero-helmet" src="../images/helmets/Spartans%20Helmet.png" alt="Spartans helmet">
+          </div>
+          <div class="hero-asset">
+            <img class="hero-wordmark" src="../images/wordmarks/Spartans.png" alt="Spartans">
+          </div>
+          <div class="hero-asset">
+            <img class="hero-logo" src="../images/icons/Spartans%20Secondary%20Logo.png" alt="Spartans secondary logo">
+          </div>
+        </div>
         <div class="identity">
           <div class="idbox"><span class="label">Owner</span><span class="value">Edward Moak</span></div>
           <div class="idbox"><span class="label">Division</span><span class="value">Bulldogs</span></div>
