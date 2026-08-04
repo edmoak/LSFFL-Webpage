@@ -16,14 +16,20 @@
     img{display:block;max-width:100%} a{color:inherit}
     .page{width:min(1600px,100%);margin:auto;padding:10px}
     .shell{overflow:hidden;border:2px solid var(--gold);border-radius:14px;background:linear-gradient(180deg,#061a30,#020b14);box-shadow:0 18px 44px rgba(0,0,0,.45)}
-    .hero{position:relative;min-height:330px;padding:18px;background:radial-gradient(circle at 15% 5%,rgba(255,255,255,.12),transparent 18%),radial-gradient(circle at 85% 5%,rgba(255,255,255,.12),transparent 18%),radial-gradient(circle at 50% 45%,rgba(159,24,33,.22),transparent 42%),linear-gradient(180deg,rgba(1,8,15,.98),rgba(3,20,38,.98));border-bottom:1px solid var(--line);overflow:hidden}
-    .hero:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(159,24,33,.22),transparent 22%,transparent 78%,rgba(159,24,33,.22)),repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0,rgba(255,255,255,.018) 1px,transparent 1px,transparent 4px);pointer-events:none}
-    .hero-banner{position:relative;z-index:2;display:grid;grid-template-columns:18% 64% 18%;align-items:center;width:100%;height:170px;min-height:170px;margin:0 auto;padding:0 12px;border-top:2px solid var(--gold);border-bottom:2px solid var(--gold);background:linear-gradient(90deg,rgba(159,24,33,.72),rgba(3,20,38,.18) 24%,rgba(3,20,38,.18) 76%,rgba(159,24,33,.72)),linear-gradient(180deg,rgba(8,28,49,.94),rgba(1,10,18,.96));box-shadow:0 8px 22px rgba(0,0,0,.45),inset 0 0 30px rgba(255,255,255,.025);overflow:hidden}
-    .hero-asset{display:flex;align-items:center;justify-content:center;min-width:0;height:100%;overflow:hidden}
-    .hero-helmet{display:block;width:100%;height:156px;max-width:100%;max-height:156px;object-fit:contain;filter:drop-shadow(0 12px 12px rgba(0,0,0,.82))}
-    .hero-wordmark{display:block;width:100%;height:142px;max-width:760px;max-height:142px;object-fit:contain;filter:drop-shadow(0 8px 10px rgba(0,0,0,.82))}
-    .hero-logo{display:block;width:100%;height:138px;max-width:100%;max-height:138px;object-fit:contain;filter:drop-shadow(0 10px 12px rgba(0,0,0,.78))}
-    .identity{position:relative;z-index:2;display:grid;grid-template-columns:repeat(5,1fr);width:min(980px,100%);margin:18px auto 0;border-top:1px solid rgba(227,170,24,.35);border-bottom:1px solid rgba(227,170,24,.35)}
+    .hero{position:relative;min-height:330px;padding:18px;background:#01070d;border-bottom:1px solid var(--line);overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;background:
+linear-gradient(90deg,#050505 0%,#17070a 20%,#5b0a12 50%,#17070a 80%,#050505 100%),
+linear-gradient(30deg,rgba(255,255,255,.025) 12%,transparent 12.5%,transparent 87%,rgba(255,255,255,.025) 87.5%),
+linear-gradient(150deg,rgba(255,255,255,.025) 12%,transparent 12.5%,transparent 87%,rgba(255,255,255,.025) 87.5%);
+background-size:auto,24px 42px,24px 42px;
+background-position:0 0,0 0,12px 21px;
+opacity:.95;pointer-events:none}
+.hero-banner{position:relative;z-index:2;display:grid;grid-template-columns:20% 60% 20%;align-items:stretch;width:100%;height:170px;min-height:170px;margin:0 auto;padding:0 6px;border-top:2px solid var(--gold);border-bottom:2px solid var(--gold);background:linear-gradient(90deg,rgba(0,0,0,.28),rgba(91,10,18,.16),rgba(0,0,0,.28));box-shadow:0 8px 22px rgba(0,0,0,.5),inset 0 0 36px rgba(0,0,0,.38);overflow:hidden}
+.hero-asset{display:flex;align-items:center;justify-content:center;min-width:0;height:100%;overflow:hidden}
+.hero-helmet{display:block;width:100%;height:100%;max-width:100%;max-height:none;object-fit:contain;object-position:center center;filter:drop-shadow(0 10px 12px rgba(0,0,0,.82))}
+.hero-wordmark{display:block;width:100%;height:100%;max-width:100%;max-height:none;object-fit:contain;object-position:center center;filter:drop-shadow(0 8px 10px rgba(0,0,0,.82))}
+.hero-logo{display:block;width:100%;height:100%;max-width:100%;max-height:none;object-fit:contain;object-position:center center;filter:drop-shadow(0 10px 12px rgba(0,0,0,.78))}
+.identity{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);width:min(980px,100%);margin:18px auto 0;border-top:1px solid rgba(227,170,24,.35);border-bottom:1px solid rgba(227,170,24,.35)}
     .idbox{padding:14px 10px;text-align:center;border-right:1px solid rgba(227,170,24,.28)}.idbox:last-child{border-right:0}
     .label{display:block;color:var(--gold);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}.value{display:block;margin-top:6px;font-size:clamp(17px,1.6vw,23px);font-weight:900}.sub{display:block;margin-top:4px;color:var(--gold2);font-size:11px;font-weight:800}
     .tabs{display:grid;grid-template-columns:1fr 1fr;background:#010a13;border-bottom:1px solid var(--line)}
@@ -40,13 +46,14 @@
     .stats{display:grid;grid-template-columns:repeat(4,1fr)}.stat{padding:15px 7px;text-align:center;border-right:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1)}.stat:nth-child(4n){border-right:0}.stat:nth-last-child(-n+4){border-bottom:0}.stat small{display:block;min-height:25px;color:var(--muted);font-weight:900;text-transform:uppercase;font-size:9px}.stat b{display:block;margin-top:7px;font-size:25px}.stat em{display:block;margin-top:4px;color:var(--muted);font-style:normal;font-size:10px}.positive{color:var(--green)!important}.warning{color:var(--gold2)!important}
     .results{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:rgba(255,255,255,.1)}.result{padding:10px 5px;text-align:center;background:#02101d}.result small{color:var(--muted);font-weight:900}.result strong{display:block;margin:5px 0;font-size:25px}.win strong{color:var(--green)}.loss strong{color:var(--danger)}
     .performers{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.1)}.performer{padding:10px 5px;text-align:center;background:#02101d}.avatar{width:64px;height:64px;margin:auto;border-radius:50%;border:2px solid var(--gold);background:rgba(255,255,255,.08)}.performer b{display:block;margin-top:6px;font-size:12px}.performer span{display:block;margin-top:3px;color:var(--muted);font-size:10px}.performer strong{display:block;margin-top:6px;color:var(--gold2);font-size:20px}
-    .banners{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.champ{min-height:105px;padding:10px 4px 20px;text-align:center;background:linear-gradient(180deg,var(--gold2),#bd890d);color:#150d02;font-weight:900;clip-path:polygon(0 0,100% 0,100% 80%,50% 100%,0 80%)}
+    .banners{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.champ{min-height:105px;padding:10px 4px 20px;text-align:center;background:linear-gradient(180deg,var(--gold2),#bd890d);color:#150d02;font-weight:900;clip-path:polygon(0 0,100% 0,100% 80%,50% 100%,0 80%)}.division-banners{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.division-champ{min-height:92px;padding:10px 4px 18px;text-align:center;background:linear-gradient(180deg,#8e1722,#5b0a12);color:#fff;font-weight:900;clip-path:polygon(0 0,100% 0,100% 80%,50% 100%,0 80%);border-top:1px solid rgba(227,170,24,.6)}
+.headtohead{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.1)}.h2hstat{padding:12px 6px;text-align:center;background:#02101d}.h2hstat small{display:block;min-height:24px;color:var(--muted);font-size:9px;font-weight:900;text-transform:uppercase}.h2hstat b{display:block;margin-top:6px;font-size:24px}.h2h-note{margin-top:8px;text-align:center;color:var(--gold2);font-size:10px;font-weight:800;text-transform:uppercase}
     table{width:100%;border-collapse:collapse}th,td{padding:7px 5px;border-bottom:1px solid rgba(255,255,255,.1);font-size:11px}th{color:var(--muted);text-transform:uppercase;font-size:9px}td:not(:first-child),th:not(:first-child){text-align:center}.records td:last-child{text-align:right;font-weight:800}
     .link{display:block;width:max-content;margin:10px auto 0;padding:8px 14px;border:1px solid var(--gold);border-radius:4px;color:var(--gold2);font-size:11px;font-weight:900;text-decoration:none;text-transform:uppercase}.link:hover{background:var(--gold2);color:#160d02}
     .central{display:grid;grid-template-columns:repeat(4,minmax(220px,1fr));gap:12px}.action{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center;min-height:92px;padding:13px;border:1px solid rgba(227,170,24,.6);border-radius:8px;background:linear-gradient(180deg,#0a2c4d,#031426);text-decoration:none}.action:hover{filter:brightness(1.14)}.icon{display:grid;width:44px;height:44px;place-items:center;border-radius:50%;background:linear-gradient(180deg,var(--gold2),#bd890d);color:#160d02;font-size:21px}.action b{display:block;text-transform:uppercase;font-size:14px}.action span:last-child{display:block;margin-top:4px;color:var(--muted);font-size:11px;line-height:1.3}
     footer{padding:14px;text-align:center;border-top:1px solid rgba(227,170,24,.35);color:var(--gold);font-size:11px;font-weight:900;font-style:italic;letter-spacing:.18em;text-transform:uppercase}
     @media(max-width:1180px){.grid{grid-template-columns:1fr 1.4fr}.grid>.col:last-child{grid-column:1/-1;grid-template-columns:repeat(3,1fr)}.central{grid-template-columns:repeat(3,1fr)}}
-    @media(max-width:850px){.hero{min-height:0;display:grid}.hero-banner{grid-template-columns:24% 52% 24%;height:145px;min-height:145px;padding:0 6px}.hero-helmet{height:130px}.hero-wordmark{height:112px}.hero-logo{height:112px}.identity{width:100%;grid-template-columns:repeat(2,1fr)}.idbox:nth-child(2n){border-right:0}.idbox:last-child{grid-column:1/-1}.grid{grid-template-columns:1fr}.grid>.col:last-child{grid-column:auto;grid-template-columns:1fr}.central{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:850px){.hero{min-height:0;display:grid}.hero-banner{grid-template-columns:24% 52% 24%;height:145px;min-height:145px;padding:0 4px}.hero-helmet,.hero-wordmark,.hero-logo{height:100%;max-height:none}.identity{width:100%;grid-template-columns:repeat(2,1fr)}.idbox:nth-child(2n){border-right:0}.idbox:last-child{grid-column:1/-1}.grid{grid-template-columns:1fr}.grid>.col:last-child{grid-column:auto;grid-template-columns:1fr}.central{grid-template-columns:repeat(2,1fr)}}
     @media(max-width:620px){.page{padding:5px}.tab{font-size:14px;min-height:50px}.panel{padding:8px}.stats{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2n){border-right:0}.stat:nth-last-child(-n+4){border-bottom:1px solid rgba(255,255,255,.1)}.stat:nth-last-child(-n+2){border-bottom:0}.results{grid-template-columns:repeat(2,1fr)}.result:last-child{grid-column:1/-1}.performers{grid-template-columns:repeat(2,1fr)}.central{grid-template-columns:1fr}.banners{grid-template-columns:repeat(2,1fr)}}
   </style>
 </head>
@@ -59,7 +66,7 @@
             <img class="hero-helmet" src="../images/helmets/Spartans%20Helmet.png" alt="Spartans helmet">
           </div>
           <div class="hero-asset">
-            <img class="hero-wordmark" src="../images/wordmarks/Spartans.png" alt="Spartans">
+            <img class="hero-wordmark" src="../images/wordmarks/Spartans%20Wordmark.png" alt="Spartans">
           </div>
           <div class="hero-asset">
             <img class="hero-logo" src="../images/icons/Spartans%20Secondary%20Logo.png" alt="Spartans secondary logo">
@@ -68,7 +75,6 @@
         <div class="identity">
           <div class="idbox"><span class="label">Owner</span><span class="value">Edward Moak</span></div>
           <div class="idbox"><span class="label">Division</span><span class="value">Bulldogs</span></div>
-          <div class="idbox"><span class="label">Championships</span><span class="value">4</span><span class="sub">2000, 2009, 2010, 2011</span></div>
           <div class="idbox"><span class="label">Record</span><span class="value" id="team-record">0-0-0</span></div>
           <div class="idbox"><span class="label">In League Since</span><span class="value">2000</span><span class="sub">Founder</span></div>
         </div>
@@ -87,7 +93,7 @@
               <div class="body">
                 <div class="week">Week 1</div>
                 <div class="matchup">
-                  <div class="team"><img src="../images/banners/Spartans.png" alt=""><div class="name">Spartans</div><div class="record">0-0</div></div>
+                  <div class="team"><img src="../images/helmets/Spartans%20Helmet.png" alt="Spartans helmet"><div class="name">Spartans</div><div class="record">0-0</div></div>
                   <div class="vs">VS</div>
                   <div class="team"><img src="../images/helmets/Dawgs%20Helmet.png" alt=""><div class="name">Opponent</div><div class="record">0-0</div></div>
                 </div>
@@ -95,6 +101,19 @@
                 <div class="scores"><div class="score fav">0.0</div><div class="score">0.0</div></div>
                 <div class="score-label">Players Yet To Play</div>
                 <div class="players"><span>0 of 9</span><span>0 of 9</span></div>
+              </div>
+            </section>
+
+            <section class="card">
+              <h2>🤝 Head-to-Head Record</h2>
+              <div class="body">
+                <div class="headtohead">
+                  <div class="h2hstat"><small>Spartans Wins</small><b id="h2h-wins">—</b></div>
+                  <div class="h2hstat"><small>Opponent Wins</small><b id="h2h-losses">—</b></div>
+                  <div class="h2hstat"><small>Ties</small><b id="h2h-ties">—</b></div>
+                  <div class="h2hstat"><small>Spartans Win %</small><b id="h2h-pct">—</b></div>
+                </div>
+                <div class="h2h-note">All-time vs current opponent</div>
               </div>
             </section>
 
@@ -152,18 +171,19 @@
                 <a class="link" href="../history.html">View League History</a>
               </div>
             </section>
-
             <section class="card">
-              <h2>⚔ All-Time Series Record</h2>
+              <h2>🛡 Division Championships</h2>
               <div class="body">
-                <table><thead><tr><th>Opponent</th><th>W</th><th>L</th><th>T</th><th>Win %</th></tr></thead><tbody>
-                  <tr><td>Dawgs</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-                  <tr><td>G-Men</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-                  <tr><td>Mustangs</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-                  <tr><td>Saints</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-                  <tr><td>MothaBucca</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-                </tbody></table>
-                <a class="link" href="../history.html">View All Series Records</a>
+                <div class="division-banners">
+                  <div class="division-champ">2006</div>
+                  <div class="division-champ">2008</div>
+                  <div class="division-champ">2011</div>
+                  <div class="division-champ">2014</div>
+                  <div class="division-champ">2015</div>
+                  <div class="division-champ">2019</div>
+                  <div class="division-champ">2020</div>
+                  <div class="division-champ">2021</div>
+                </div>
               </div>
             </section>
 
