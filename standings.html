@@ -584,6 +584,141 @@ img {
       }
     }
 
+  
+    /* =========================================================
+       FINAL TEAM ART SIZING
+       Standings = secondary logos
+       Power Rankings = helmets
+       ========================================================= */
+
+    .lsffl-layout {
+      grid-template-columns: minmax(0, 2.35fr) minmax(430px, 1.15fr);
+    }
+
+    .lsffl-table td {
+      height: 58px;
+    }
+
+    .lsffl-franchise-cell {
+      padding-left: 8px !important;
+      padding-right: 8px !important;
+    }
+
+    .lsffl-standings-franchise {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      padding: 2px 4px;
+    }
+
+    .lsffl-standings-logo {
+      width: 50px;
+      height: 50px;
+      flex: 0 0 50px;
+      object-fit: contain;
+      filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.52));
+    }
+
+    .lsffl-standings-name {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .lsffl-standings-record {
+      font-size: 10px;
+    }
+
+    .lsffl-power-table th:nth-child(1),
+    .lsffl-power-table td:nth-child(1) {
+      width: 48px;
+      min-width: 48px;
+    }
+
+    .lsffl-power-table th:nth-child(2),
+    .lsffl-power-table td:nth-child(2) {
+      width: auto;
+      min-width: 220px;
+    }
+
+    .lsffl-power-table td {
+      min-height: 70px;
+      padding-top: 5px;
+      padding-bottom: 5px;
+    }
+
+    .lsffl-power-franchise {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      text-align: left;
+    }
+
+    .lsffl-power-helmet {
+      width: 64px;
+      height: 64px;
+      flex: 0 0 64px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.72));
+    }
+
+    .lsffl-power-name {
+      font-size: 13px;
+      font-weight: 700;
+      font-style: italic;
+    }
+
+    @media (max-width: 1100px) {
+      .lsffl-layout {
+        grid-template-columns: minmax(0, 2.1fr) minmax(390px, 1fr);
+      }
+
+      .lsffl-standings-logo {
+        width: 46px;
+        height: 46px;
+        flex-basis: 46px;
+      }
+
+      .lsffl-power-helmet {
+        width: 58px;
+        height: 58px;
+        flex-basis: 58px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .lsffl-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .lsffl-standings-logo {
+        width: 42px;
+        height: 42px;
+        flex-basis: 42px;
+      }
+
+      .lsffl-power-helmet {
+        width: 56px;
+        height: 56px;
+        flex-basis: 56px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .lsffl-standings-name {
+        font-size: 12px;
+      }
+
+      .lsffl-standings-record {
+        font-size: 9px;
+      }
+
+      .lsffl-power-name {
+        font-size: 12px;
+      }
+    }
+
   </style>
 </head>
 
@@ -1247,8 +1382,8 @@ img {
       }
 
       function powerRow(team, index) {
-        const localLogo = logoSource(team);
-        const fallbackLogo = escapeHTML(team.icon || "");
+        const localHelmet = helmetSource(team);
+        const fallbackHelmet = escapeHTML(team.icon || "");
 
         return `
           <tr
@@ -1267,12 +1402,12 @@ img {
                 aria-label="Open ${escapeHTML(team.name)} MFL franchise page"
               >
                 <img
-                  class="lsffl-power-logo"
-                  src="${localLogo}"
+                  class="lsffl-power-helmet"
+                  src="${localHelmet}"
                   alt=""
                   onerror="
                     this.onerror=null;
-                    this.src='${fallbackLogo}';
+                    this.src='${fallbackHelmet}';
                   "
                 >
 
