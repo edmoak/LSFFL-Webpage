@@ -183,7 +183,7 @@ img {
     }
 
     .lsffl-table td {
-      height: 62px;
+      height: 44px;
       padding: 5px 7px;
       border-bottom: 1px solid var(--soft-line);
       color: var(--text);
@@ -226,25 +226,40 @@ img {
       text-align: left !important;
     }
 
-    .lsffl-banner {
-      display: block;
-      width: 100%;
-      max-width: none;
-      height: 54px;
-      object-fit: contain;
-      object-position: center center;
-      margin: 0;
-      padding: 0;
-      border: 0;
-      border-radius: 0;
-      outline: 0;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.38);
-    }
-
     .lsffl-team-link {
-      display: block;
       color: inherit;
       text-decoration: none;
+    }
+
+    .lsffl-standings-franchise {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      padding: 2px 4px;
+    }
+
+    .lsffl-standings-logo {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.48));
+    }
+
+    .lsffl-standings-name {
+      overflow: hidden;
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0;
+      line-height: 1.15;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .lsffl-standings-franchise:hover .lsffl-standings-name {
+      color: var(--gold-400);
     }
 
     .lsffl-team-link:focus-visible {
@@ -504,8 +519,14 @@ img {
         font-size: 10px;
       }
 
-      .lsffl-banner {
-        height: 48px;
+      .lsffl-standings-logo {
+        width: 30px;
+        height: 30px;
+        flex-basis: 30px;
+      }
+
+      .lsffl-standings-name {
+        font-size: 11px;
       }
 .lsffl-power-helmet {
         width: 62px;
@@ -1087,13 +1108,17 @@ img {
       }
 
       function teamPage(team) {
-        return encodePath(
-          TEAM_PAGE_BY_ID[team.id] || "#"
+        return (
+          "https://www48.myfantasyleague.com/2026/options" +
+          "?L=51036&O=07&F=" +
+          encodeURIComponent(team.id)
         );
       }
 
       function standingsRow(team, index) {
-        const banner = bannerSource(team);
+        const localHelmet = helmetSource(team);
+        const liveLogo = escapeHTML(team.icon || "");
+        const initialLogo = liveLogo || localHelmet;
 
         return `
           <tr>
@@ -1101,20 +1126,23 @@ img {
 
             <td class="lsffl-franchise-cell">
               <a
-                class="lsffl-team-link"
+                class="lsffl-team-link lsffl-standings-franchise"
                 href="${teamPage(team)}"
-                aria-label="Open ${escapeHTML(team.name)} team page"
+                aria-label="Open ${escapeHTML(team.name)} MFL franchise page"
               >
                 <img
-                  class="lsffl-banner"
-                  src="${banner}"
-                  alt="${escapeHTML(team.name)}"
+                  class="lsffl-standings-logo"
+                  src="${initialLogo}"
+                  alt=""
                   onerror="
                     this.onerror=null;
-                    this.style.display='none';
-                    this.parentElement.textContent='${escapeHTML(team.name)}';
+                    this.src='${localHelmet}';
                   "
                 >
+
+                <span class="lsffl-standings-name">
+                  ${escapeHTML(team.name)}
+                </span>
               </a>
             </td>
 
@@ -1153,7 +1181,7 @@ img {
               <a
                 class="lsffl-team-link lsffl-power-franchise"
                 href="${teamPage(team)}"
-                aria-label="Open ${escapeHTML(team.name)} team page"
+                aria-label="Open ${escapeHTML(team.name)} MFL franchise page"
               >
                 <img
                   class="lsffl-power-helmet"
@@ -1472,12 +1500,13 @@ img {
           event.stopPropagation();
 
           const url = new URL(link.href, window.location.href);
-          const teamFile =
-            url.pathname.split("/").pop().replace(/\.html$/i, "");
+          const franchiseId =
+            url.searchParams.get("F") || "franchise";
 
           const popup = openCenteredPopup(
             url.href,
-            "LSFFL_Team_" + teamFile.replace(/[^a-z0-9]+/gi, "_"),
+            "LSFFL_MFL_Franchise_" +
+              franchiseId.replace(/[^a-z0-9]+/gi, "_"),
             1180,
             820
           );
@@ -1493,3 +1522,4 @@ img {
 
 </body>
 </html>
+LSFFL_Standin
