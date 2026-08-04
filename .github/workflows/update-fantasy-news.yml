@@ -1,0 +1,45 @@
+name: Update LSFFL Fantasy News
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    # Runs at 15 minutes past every hour.
+    - cron: "15 * * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lsffl-fantasy-news
+  cancel-in-progress: false
+
+jobs:
+  update-news:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Build fantasy news feed
+        run: node news/scripts/fetch-news.js
+
+      - name: Commit updated news data
+        run: |
+          if git diff --quiet -- news/data/fantasy-news.json; then
+            echo "No news changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add news/data/fantasy-news.json
+          git commit -m "Update fantasy football news"
+          git push
