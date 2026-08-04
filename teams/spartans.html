@@ -321,6 +321,369 @@
     @media(max-width:1180px){.grid{grid-template-columns:1fr 1fr}.grid>.col:last-child{grid-column:1/-1;grid-template-columns:repeat(3,1fr)}.central{grid-template-columns:repeat(3,1fr)}}
     @media(max-width:850px){.grid{grid-template-columns:1fr}.grid>.col:last-child{grid-column:auto;grid-template-columns:1fr}.central{grid-template-columns:repeat(2,1fr)}}
     @media(max-width:620px){.page{padding:5px}.tab{font-size:14px;min-height:50px}.panel{padding:8px}.stats{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2n){border-right:0}.stat:nth-last-child(-n+4){border-bottom:1px solid rgba(255,255,255,.1)}.stat:nth-last-child(-n+2){border-bottom:0}.results{grid-template-columns:repeat(2,1fr)}.result:last-child{grid-column:1/-1}.performers{grid-template-columns:repeat(2,1fr)}.central{grid-template-columns:1fr}.banners,.division-banners,.expanded-pennants{grid-template-columns:repeat(2,1fr)}}
+  
+    /* =========================================================
+       FINAL POPUP COMPACT LAYOUT
+       ========================================================= */
+
+    .page{
+      width:min(1500px,100%);
+      padding:6px;
+    }
+
+    .shell{
+      border-width:1px;
+      border-radius:10px;
+    }
+
+    /* Shorter banner with a larger logo centered over the slash. */
+    .hero,
+    .team-hero{
+      min-height:108px;
+    }
+
+    .team-hero{
+      grid-template-columns:minmax(0,1fr) 38%;
+    }
+
+    .team-hero-left{
+      padding:15px 24px;
+    }
+
+    .team-name{
+      font-size:clamp(28px,4.2vw,43px);
+      line-height:.92;
+    }
+
+    .team-owner-line{
+      margin-top:9px;
+      gap:5px 9px;
+      font-size:clamp(12px,1.45vw,16px);
+    }
+
+    .team-meta-line{
+      margin-top:5px;
+      gap:4px 8px;
+      font-size:clamp(10px,1.15vw,13px);
+    }
+
+    .team-hero-right{
+      overflow:visible;
+    }
+
+    .team-slash{
+      left:-19px;
+      width:38px;
+      top:-30%;
+      bottom:-30%;
+      box-shadow:
+        0 0 13px rgba(227,170,24,.42),
+        8px 0 18px rgba(0,0,0,.34);
+    }
+
+    .team-hero-logo{
+      left:0;
+      width:116px;
+      height:116px;
+      transform:translate(-50%,-50%);
+    }
+
+    .team-hero-glow{
+      left:0;
+      width:136px;
+      height:136px;
+      transform:translate(-50%,-50%);
+    }
+
+    /* Reduce vertical space throughout the popup. */
+    .tabs{
+      min-height:0;
+    }
+
+    .tab{
+      min-height:36px;
+      font-size:16px;
+    }
+
+    .panel{
+      padding:5px;
+    }
+
+    .grid,
+    .col{
+      gap:4px;
+    }
+
+    .card{
+      border-radius:6px;
+    }
+
+    .card h2{
+      padding:5px 8px;
+      font-size:12px;
+    }
+
+    .body{
+      padding:6px;
+    }
+
+    .week{
+      margin-bottom:4px;
+      padding:3px 10px;
+      font-size:10px;
+    }
+
+    .matchup{
+      gap:7px;
+    }
+
+    .team img{
+      width:54px;
+      height:54px;
+    }
+
+    .name{
+      font-size:13px;
+    }
+
+    .record{
+      margin-top:1px;
+      font-size:10px;
+    }
+
+    .vs{
+      font-size:17px;
+    }
+
+    .score-label{
+      margin:5px 0 3px;
+      font-size:8px;
+    }
+
+    .score{
+      padding:3px;
+      font-size:18px;
+    }
+
+    .players{
+      margin-top:5px;
+      font-size:11px;
+    }
+
+    .next{
+      grid-template-columns:52px 1fr;
+      gap:8px;
+    }
+
+    .next img{
+      width:48px;
+      height:48px;
+    }
+
+    .next strong{
+      font-size:15px;
+    }
+
+    .next-week{
+      margin-top:2px;
+      font-size:9px;
+    }
+
+    .stat{
+      padding:6px 4px;
+    }
+
+    .stat small{
+      min-height:14px;
+      font-size:8px;
+    }
+
+    .stat b{
+      margin-top:2px;
+      font-size:16px;
+    }
+
+    .stat em{
+      margin-top:2px;
+      font-size:8px;
+    }
+
+    .result{
+      padding:5px 3px;
+      font-size:10px;
+    }
+
+    .result strong{
+      margin:2px 0;
+      font-size:16px;
+    }
+
+    .performer{
+      padding:5px 3px;
+    }
+
+    .avatar{
+      width:38px;
+      height:38px;
+    }
+
+    .performer b{
+      margin-top:4px;
+      font-size:10px;
+    }
+
+    .performer span{
+      margin-top:2px;
+      font-size:8px;
+    }
+
+    .performer strong{
+      margin-top:3px;
+      font-size:16px;
+    }
+
+    .headtohead{
+      gap:0;
+    }
+
+    .h2hstat{
+      padding:5px 3px;
+    }
+
+    .h2hstat small{
+      min-height:13px;
+      font-size:8px;
+    }
+
+    .h2hstat b{
+      margin-top:2px;
+      font-size:16px;
+    }
+
+    .h2h-note{
+      margin-top:3px;
+      font-size:8px;
+    }
+
+    th,
+    td{
+      padding:5px 4px;
+      font-size:10px;
+    }
+
+    th{
+      font-size:8px;
+    }
+
+    footer{
+      padding:9px;
+      font-size:9px;
+    }
+
+    /* Trophy dropdowns: four pennants per row instead of one. */
+    .trophy-details{
+      margin-top:7px;
+      border-top:1px solid rgba(227,170,24,.24);
+    }
+
+    .trophy-details summary{
+      padding:6px 4px 2px;
+      color:var(--gold2);
+      font-size:10px;
+      font-weight:900;
+      text-align:center;
+      text-transform:uppercase;
+      cursor:pointer;
+      list-style-position:inside;
+    }
+
+    .expanded-pennants{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:6px;
+      margin-top:6px;
+    }
+
+    .banners,
+    .division-banners{
+      gap:6px;
+    }
+
+    .champ,
+    .division-champ{
+      min-height:68px;
+      padding:8px 4px 16px;
+    }
+
+    .pennant-year{
+      font-size:15px;
+    }
+
+    .pennant-label{
+      margin-top:3px;
+      font-size:7px;
+    }
+
+    @media(max-width:850px){
+      .hero,
+      .team-hero{
+        min-height:100px;
+      }
+
+      .team-hero{
+        grid-template-columns:minmax(0,1fr) 36%;
+      }
+
+      .team-hero-left{
+        padding:13px 18px;
+      }
+
+      .team-name{
+        font-size:clamp(27px,6vw,38px);
+      }
+
+      .team-slash{
+        left:-17px;
+        width:34px;
+      }
+
+      .team-hero-logo{
+        left:0;
+        width:104px;
+        height:104px;
+      }
+
+      .team-hero-glow{
+        left:0;
+        width:122px;
+        height:122px;
+      }
+
+      .expanded-pennants{
+        grid-template-columns:repeat(4,minmax(0,1fr));
+      }
+    }
+
+    @media(max-width:620px){
+      .team-hero{
+        grid-template-columns:minmax(0,1fr) 32%;
+      }
+
+      .team-hero-logo{
+        width:82px;
+        height:82px;
+      }
+
+      .team-hero-glow{
+        width:98px;
+        height:98px;
+      }
+
+      .expanded-pennants{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+    }
+
   </style>
 </head>
 <body>
