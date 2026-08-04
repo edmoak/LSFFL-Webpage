@@ -1026,6 +1026,147 @@
       }
     }
 
+  
+    /* =========================================================
+       FINAL BANNER LOGO + FLAG SPACING CORRECTION
+       ========================================================= */
+
+    /*
+     * Move the Spartans logo to the LEFT side, immediately after
+     * the wording, and size it to 70% of the banner height.
+     */
+    .team-hero{
+      grid-template-columns:minmax(0,1fr) 34% !important;
+    }
+
+    .team-hero-left{
+      padding-right:150px !important;
+    }
+
+    .team-hero-logo{
+      left:auto !important;
+      right:-132px !important;
+      top:50% !important;
+      width:auto !important;
+      height:70% !important;
+      max-width:132px !important;
+      transform:translateY(-50%) !important;
+      object-fit:contain !important;
+      object-position:center !important;
+      z-index:6 !important;
+    }
+
+    .team-hero-glow{
+      left:auto !important;
+      right:-148px !important;
+      top:50% !important;
+      width:154px !important;
+      height:86px !important;
+      transform:translateY(-50%) !important;
+      border-radius:50% !important;
+    }
+
+    /*
+     * Keep the narrow gold slash at the color transition.
+     * The logo is no longer tied to the slash.
+     */
+    .team-slash{
+      left:-15px !important;
+      width:28px !important;
+    }
+
+    /*
+     * Remove wasted space between real banner images.
+     * Championship banners: 3 per row.
+     * Division banners: 3 per row.
+     */
+    .trophy-banner-grid{
+      gap:0 !important;
+      column-gap:0 !important;
+      row-gap:0 !important;
+      justify-items:stretch !important;
+      align-items:start !important;
+    }
+
+    .championship-banner-grid,
+    .division-banner-grid{
+      grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    }
+
+    .trophy-banner-card{
+      margin:0 !important;
+      padding:0 !important;
+      min-width:0 !important;
+    }
+
+    .trophy-banner-card img{
+      width:100% !important;
+      height:138px !important;
+      margin:0 !important;
+      padding:0 !important;
+      object-fit:contain !important;
+      object-position:center top !important;
+      transform:scale(1.08) !important;
+      transform-origin:center top !important;
+    }
+
+    .trophy-banner-card figcaption{
+      bottom:4px !important;
+    }
+
+    .hidden-title-grid{
+      margin-top:4px !important;
+    }
+
+    @media(max-width:850px){
+      .team-hero-left{
+        padding-right:126px !important;
+      }
+
+      .team-hero-logo{
+        right:-112px !important;
+        max-width:112px !important;
+        height:70% !important;
+      }
+
+      .team-hero-glow{
+        right:-126px !important;
+        width:132px !important;
+        height:78px !important;
+      }
+
+      .trophy-banner-card img{
+        height:124px !important;
+      }
+    }
+
+    @media(max-width:620px){
+      .team-hero-left{
+        padding-right:96px !important;
+      }
+
+      .team-hero-logo{
+        right:-86px !important;
+        max-width:86px !important;
+        height:68% !important;
+      }
+
+      .team-hero-glow{
+        right:-98px !important;
+        width:104px !important;
+        height:66px !important;
+      }
+
+      .championship-banner-grid,
+      .division-banner-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+      }
+
+      .trophy-banner-card img{
+        height:112px !important;
+      }
+    }
+
   </style>
 </head>
 <body>
