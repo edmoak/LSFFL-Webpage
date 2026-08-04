@@ -539,6 +539,51 @@ img {
         min-width: 0;
       }
     }
+  
+    .lsffl-standings-copy {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .lsffl-standings-record {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .lsffl-clickable-row {
+      cursor: pointer;
+    }
+
+    .lsffl-clickable-row:focus-visible {
+      outline: 2px solid var(--gold-400);
+      outline-offset: -2px;
+    }
+
+    .lsffl-power-logo {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      object-fit: contain;
+      filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.58));
+    }
+
+    @media (max-width: 720px) {
+      .lsffl-standings-record {
+        font-size: 9px;
+      }
+
+      .lsffl-power-logo {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+      }
+    }
+
   </style>
 </head>
 
@@ -640,6 +685,26 @@ img {
         "0014": "TBM.png",
         "0015": "GOMD.png",
         "0016": "Avalanche.png"
+      };
+
+
+      const LOGO_BY_ID = {
+        "0001": "Spartans Secondary Logo.png",
+        "0002": "Saints Secondary Logo.png",
+        "0003": "G-Men Secondary Logo.png",
+        "0004": "Hambone Hogs Secondary Logo.png",
+        "0005": "Purple Hooters Secondary Logo.png",
+        "0006": "Mustangs Secondary Logo.png",
+        "0007": "Hawky Bears Secondary Logo.png",
+        "0008": "DaBoys Secondary Logo.png",
+        "0009": "Dawgs Secondary Logo.png",
+        "0010": "Camel Toes Secondary Logo.png",
+        "0011": "Cougars Helmet.png",
+        "0012": "Mothabucca Secondary Logo.png",
+        "0013": "Mad Hatters Secondary Logo.png",
+        "0014": "Tiny But Mighty Secondary Logo.png",
+        "0015": "Get Off My Ditka Secondary Logo.png",
+        "0016": "Avalanche Secondary Logo.png"
       };
 
       const HELMET_BY_ID = {
@@ -1100,6 +1165,13 @@ img {
         );
       }
 
+      function logoSource(team) {
+        return encodePath(
+          "images/2ndlogo/" +
+          (LOGO_BY_ID[team.id] || "")
+        );
+      }
+
       function helmetSource(team) {
         return encodePath(
           "images/helmets/" +
@@ -1116,12 +1188,18 @@ img {
       }
 
       function standingsRow(team, index) {
-        const localHelmet = helmetSource(team);
-        const liveLogo = escapeHTML(team.icon || "");
-        const initialLogo = liveLogo || localHelmet;
+        const localLogo = logoSource(team);
+        const fallbackLogo = escapeHTML(team.icon || "");
+        const record = `${team.wins}-${team.losses}-${team.ties}`;
 
         return `
-          <tr>
+          <tr
+            class="lsffl-clickable-row"
+            data-team-url="${teamPage(team)}"
+            tabindex="0"
+            role="link"
+            aria-label="Open ${escapeHTML(team.name)} MFL franchise page"
+          >
             <td class="lsffl-rank-cell">${index + 1}</td>
 
             <td class="lsffl-franchise-cell">
@@ -1132,28 +1210,29 @@ img {
               >
                 <img
                   class="lsffl-standings-logo"
-                  src="${initialLogo}"
+                  src="${localLogo}"
                   alt=""
                   onerror="
                     this.onerror=null;
-                    this.src='${localHelmet}';
+                    this.src='${fallbackLogo}';
                   "
                 >
 
-                <span class="lsffl-standings-name">
-                  ${escapeHTML(team.name)}
+                <span class="lsffl-standings-copy">
+                  <span class="lsffl-standings-name">
+                    ${escapeHTML(team.name)}
+                  </span>
+
+                  <span class="lsffl-standings-record">
+                    ${record}
+                  </span>
                 </span>
               </a>
             </td>
 
-            <td>
-              ${team.wins}-${team.losses}-${team.ties}
-            </td>
-
+            <td>${record}</td>
             <td>${pctDisplay(team.pct)}</td>
-
             <td>${fixed(team.pf)}</td>
-
             <td>${fixed(team.pa)}</td>
 
             <td class="${differentialClass(team.diff)}">
@@ -1161,20 +1240,24 @@ img {
             </td>
 
             <td>${escapeHTML(team.streak)}</td>
-
             <td>${fixed(team.maxPF)}</td>
-
             <td>${fixed(team.minPF)}</td>
           </tr>
         `;
       }
 
       function powerRow(team, index) {
-        const localHelmet = helmetSource(team);
-        const fallbackHelmet = escapeHTML(team.icon);
+        const localLogo = logoSource(team);
+        const fallbackLogo = escapeHTML(team.icon || "");
 
         return `
-          <tr>
+          <tr
+            class="lsffl-clickable-row"
+            data-team-url="${teamPage(team)}"
+            tabindex="0"
+            role="link"
+            aria-label="Open ${escapeHTML(team.name)} MFL franchise page"
+          >
             <td class="lsffl-power-rank">${index + 1}</td>
 
             <td>
@@ -1184,12 +1267,12 @@ img {
                 aria-label="Open ${escapeHTML(team.name)} MFL franchise page"
               >
                 <img
-                  class="lsffl-power-helmet"
-                  src="${localHelmet}"
+                  class="lsffl-power-logo"
+                  src="${localLogo}"
                   alt=""
                   onerror="
                     this.onerror=null;
-                    this.src='${fallbackHelmet}';
+                    this.src='${fallbackLogo}';
                   "
                 >
 
@@ -1199,17 +1282,9 @@ img {
               </a>
             </td>
 
-            <td>
-              ${percent(team.efficiency)}
-            </td>
-
-            <td title="Could Have Won">
-              ${team.couldHaveWon || "0"}
-            </td>
-
-            <td title="Could Have Lost">
-              ${team.couldHaveLost || "0"}
-            </td>
+            <td>${percent(team.efficiency)}</td>
+            <td title="Could Have Won">${team.couldHaveWon || "0"}</td>
+            <td title="Could Have Lost">${team.couldHaveLost || "0"}</td>
           </tr>
         `;
       }
@@ -1476,6 +1551,65 @@ img {
         return popup;
       }
 
+
+      function openTeamRow(row) {
+        const href = row && row.dataset ? row.dataset.teamUrl : "";
+
+        if (!href) {
+          return;
+        }
+
+        const url = new URL(href, window.location.href);
+        const franchiseId =
+          url.searchParams.get("F") || "franchise";
+
+        const popup = openCenteredPopup(
+          url.href,
+          "LSFFL_MFL_Franchise_" +
+            franchiseId.replace(/[^a-z0-9]+/gi, "_"),
+          1180,
+          820
+        );
+
+        if (!popup) {
+          window.location.href = url.href;
+        }
+      }
+
+      document.addEventListener(
+        "click",
+        function (event) {
+          if (event.target.closest("a.lsffl-team-link")) {
+            return;
+          }
+
+          const row = event.target.closest("tr.lsffl-clickable-row");
+
+          if (!row || event.button !== 0) {
+            return;
+          }
+
+          event.preventDefault();
+          openTeamRow(row);
+        },
+        true
+      );
+
+      document.addEventListener(
+        "keydown",
+        function (event) {
+          const row = event.target.closest("tr.lsffl-clickable-row");
+
+          if (!row || (event.key !== "Enter" && event.key !== " ")) {
+            return;
+          }
+
+          event.preventDefault();
+          openTeamRow(row);
+        },
+        true
+      );
+
       document.addEventListener(
         "click",
         function (event) {
@@ -1522,4 +1656,3 @@ img {
 
 </body>
 </html>
-LSFFL_Standin
