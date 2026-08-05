@@ -216,11 +216,26 @@
     });
 
     frame.addEventListener("load", function () {
+      /*
+       * GitHub pages are cross-origin, so their document cannot be inspected
+       * from MFL. Reveal them immediately when the iframe finishes loading.
+       */
+      if (currentType === "github") {
+        revealFrame();
+        return;
+      }
+
       cleanIframe();
       window.setTimeout(cleanIframe, 100);
       window.setTimeout(cleanIframe, 400);
       window.setTimeout(cleanIframe, 900);
       window.setTimeout(cleanIframe, 1600);
+
+      /*
+       * Never leave a successfully loaded page invisible. This also protects
+       * message-board pages when MFL keeps the Read Message link in the DOM.
+       */
+      window.setTimeout(revealFrame, 700);
     });
   }
 
@@ -395,8 +410,144 @@
     }
   }
 
+  function addBaseTag(html, pageUrl) {
+    var baseTag = '<base href="' +
+      String(pageUrl).replace(/&/g, "&amp;").replace(/"/g, "&quot;") +
+      '">';
+
+    if (/<head(?:\s[^>]*)?>/i.test(html)) {
+      return html.replace(/<head(?:\s[^>]*)?>/i, function (match) {
+        return match + baseTag;
+      });
+    }
+
+    return baseTag + html;
+  }
+
+  async function loadGitHubPageIntoFrame(url) {
+    try {
+      var response = await fetch(url, {
+        cache: "no-store",
+        credentials: "omit"
+      });
+
+      if (!response.ok) {
+        throw new Error("GitHub page returned HTTP " + response.status);
+      }
+
+      var html = await response.text();
+      frame.removeAttribute("src");
+      frame.srcdoc = addBaseTag(html, url);
+    } catch (error) {
+      console.warn(
+        "LSFFL Popup Manager could not fetch GitHub page; using direct iframe.",
+        error
+      );
+      frame.removeAttribute("srcdoc");
+      frame.src = url;
+      window.setTimeout(revealFrame, 900);
+    }
+  }
+
+  function cleanSameOriginDocument(doc, win, depth) {
+    if (!doc || !doc.documentElement) {
+      return;
+    }
+
+    var body = doc.body;
+    var head = doc.head || doc.documentElement;
+
+    doc.documentElement.classList.add("lsffl-popup-document");
+
+    if (body) {
+      body.classList.add("lsffl-popup-document");
+    }
+
+    if (head && body) {
+      injectIframeTheme(doc);
+      hideSiteChrome(doc);
+      constrainFranchiseImages(doc);
+
+      if (currentType !== "franchise") {
+        Array.prototype.forEach.call(
+          doc.querySelectorAll(
+            ".reportnavigation," +
+            ".reportnavigationheader," +
+            ".myfantasyleague_tabmenu," +
+            ".homepagetabs," +
+            ".homepage-tabs"
+          ),
+          hideElement
+        );
+      }
+
+      Array.prototype.forEach.call(
+        doc.querySelectorAll("select"),
+        function (select) {
+          var labels = Array.prototype.map.call(
+            select.options || [],
+            function (option) {
+              return (option.textContent || "").trim();
+            }
+          );
+
+          if (
+            currentType !== "franchise" ||
+            labels.indexOf("Main") !== -1
+          ) {
+            hideElement(
+              select.closest("tr") ||
+              select.parentElement ||
+              select
+            );
+          }
+        }
+      );
+    }
+
+    if (currentType === "message" && depth < 4) {
+      Array.prototype.forEach.call(
+        doc.querySelectorAll("iframe,frame"),
+        function (nestedFrame) {
+          function cleanNested() {
+            try {
+              var nestedDoc = nestedFrame.contentDocument;
+              var nestedWin = nestedFrame.contentWindow;
+
+              if (nestedDoc && nestedWin) {
+                cleanSameOriginDocument(
+                  nestedDoc,
+                  nestedWin,
+                  depth + 1
+                );
+              }
+            } catch (error) {
+              /* Cross-origin nested frames are left untouched. */
+            }
+          }
+
+          cleanNested();
+
+          if (!nestedFrame.dataset.lsfflNestedCleanerBound) {
+            nestedFrame.dataset.lsfflNestedCleanerBound = "true";
+            nestedFrame.addEventListener("load", function () {
+              window.setTimeout(cleanNested, 25);
+              window.setTimeout(cleanNested, 180);
+            });
+          }
+        }
+      );
+    }
+  }
+
   function cleanIframe() {
-    if (!frame || !frame.contentDocument || !frame.contentWindow) {
+    if (!frame || !frame.contentWindow) {
+      revealFrame();
+      return;
+    }
+
+    if (!frame.contentDocument) {
+      revealFrame();
       return;
     }
 
@@ -459,49 +610,8 @@
         }
       }
 
-      doc.documentElement.classList.add("lsffl-popup-document");
-      doc.body.classList.add("lsffl-popup-document");
-
-      injectIframeTheme(doc);
-      hideSiteChrome(doc);
-      constrainFranchiseImages(doc);
+      cleanSameOriginDocument(doc, win, 0);
       revealFrame();
-
-      if (currentType !== "franchise") {
-        Array.prototype.forEach.call(
-          doc.querySelectorAll(
-            ".reportnavigation," +
-            ".reportnavigationheader," +
-            ".myfantasyleague_tabmenu," +
-            ".homepagetabs," +
-            ".homepage-tabs"
-          ),
-          hideElement
-        );
-      }
-
-      Array.prototype.forEach.call(
-        doc.querySelectorAll("select"),
-        function (select) {
-          var labels = Array.prototype.map.call(
-            select.options || [],
-            function (option) {
-              return (option.textContent || "").trim();
-            }
-          );
-
-          if (
-            currentType !== "franchise" ||
-            labels.indexOf("Main") !== -1
-          ) {
-            hideElement(
-              select.closest("tr") ||
-              select.parentElement ||
-              select
-            );
-          }
-        }
-      );
 
       if (!doc.documentElement.dataset.lsfflPopupLinksBound) {
         doc.documentElement.dataset.lsfflPopupLinksBound = "true";
@@ -539,7 +649,10 @@
         );
       }
 
-      if (!doc.documentElement.dataset.lsfflPopupObserver) {
+      if (
+        doc.body &&
+        !doc.documentElement.dataset.lsfflPopupObserver
+      ) {
         doc.documentElement.dataset.lsfflPopupObserver = "true";
 
         var queued = false;
@@ -552,7 +665,7 @@
 
           win.requestAnimationFrame(function () {
             queued = false;
-            cleanIframe();
+            cleanSameOriginDocument(doc, win, 0);
           });
         });
 
@@ -577,8 +690,22 @@
     currentType = type || "content";
     titleElement.textContent = title || "LSFFL";
     frame.style.opacity = "0";
-    frame.src = url;
+    frame.removeAttribute("srcdoc");
+
+    if (currentType === "github") {
+      frame.src = "about:blank";
+      loadGitHubPageIntoFrame(url);
+    } else {
+      frame.src = url;
+    }
+
     modal.hidden = false;
+
+    /*
+     * Final safety net: even if a browser blocks iframe inspection or MFL
+     * changes its message-page structure, loaded content will still appear.
+     */
+    window.setTimeout(revealFrame, 1200);
     document.body.classList.add("lsffl-content-popup-open");
 
     window.setTimeout(function () {
@@ -594,6 +721,7 @@
     }
 
     modal.hidden = true;
+    frame.removeAttribute("srcdoc");
     frame.src = "about:blank";
     document.body.classList.remove("lsffl-content-popup-open");
 
