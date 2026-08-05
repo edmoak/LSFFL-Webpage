@@ -1764,5 +1764,64 @@ img {
     })();
   </script>
 
+  <script id="lsffl-franchise-popup-bridge">
+(function () {
+  "use strict";
+
+  function getFranchiseId(value) {
+    try {
+      var url = new URL(value, window.location.href);
+      var id = String(url.searchParams.get("F") || "").replace(/\D/g, "");
+
+      return id ? id.padStart(4, "0").slice(-4) : "";
+    } catch (error) {
+      return "";
+    }
+  }
+
+  document.addEventListener(
+    "click",
+    function (event) {
+      if (
+        event.button !== 0 ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.shiftKey ||
+        event.altKey
+      ) {
+        return;
+      }
+
+      var link = event.target.closest("a[href]");
+      var row = event.target.closest("[data-team-url]");
+      var destination = "";
+
+      if (link) {
+        destination = link.href;
+      } else if (row) {
+        destination = row.getAttribute("data-team-url") || "";
+      }
+
+      var franchiseId = getFranchiseId(destination);
+
+      if (!franchiseId) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      window.parent.postMessage(
+        {
+          type: "LSFFL_OPEN_FRANCHISE",
+          franchiseId: franchiseId
+        },
+        "*"
+      );
+    },
+    true
+  );
+})();
+</script>
 </body>
 </html>
