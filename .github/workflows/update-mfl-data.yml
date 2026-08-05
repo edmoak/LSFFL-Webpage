@@ -42,7 +42,7 @@ jobs:
               --location \
               --retry 3 \
               --retry-delay 5 \
-              "https://www48.myfantasyleague.com/2026/export?TYPE=${type}&L=51036&JSON=1" \
+              "https://www48.myfantasyleague.com/2026/export?TYPE=${type}&L=23135&JSON=1" \
               --output "${output}"
 
             jq empty "${output}"
@@ -78,7 +78,7 @@ jobs:
               --location \
               --retry 3 \
               --retry-delay 5 \
-              "https://www48.myfantasyleague.com/2026/export?TYPE=${type}&L=51036&JSON=1" \
+              "https://www48.myfantasyleague.com/2026/export?TYPE=${type}&L=23135&JSON=1" \
               --output "${temporary}"
             then
               echo "${type} is not available yet."
@@ -241,7 +241,7 @@ jobs:
         run: |
           jq -n \
             --arg season "2026" \
-            --arg leagueId "51036" \
+            --arg leagueId "23135" \
             --arg updatedAt "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
             '{
               season: $season,
