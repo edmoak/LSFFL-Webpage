@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-05T08:09:48.473Z",
+  "generatedAt": "2026-08-05T15:51:32.912Z",
   "articleCount": 30,
   "refreshMinutes": 60,
   "sourceMethod": "Google News RSS",
@@ -7,7 +7,7 @@
     {
       "name": "Fantasy Football",
       "status": "ok",
-      "articleCount": 89,
+      "articleCount": 90,
       "error": null
     },
     {
@@ -19,11 +19,121 @@
     {
       "name": "Draft Advice",
       "status": "ok",
-      "articleCount": 98,
+      "articleCount": 99,
       "error": null
     }
   ],
   "articles": [
+    {
+      "headline": "Updated Fantasy Football 2026 Mock Draft Strategy and Breaking Down Bold Picks",
+      "source": "Bleacher Report",
+      "category": "Draft",
+      "published": "Wed, 05 Aug 2026 15:07:38 GMT",
+      "publishedIso": "2026-08-05T15:07:38.000Z",
+      "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPa0Etd2pORVU5LTVOT0VJQjRGdnJwb3NJZ0JBYk5sMnBQTHlRSjIyQUt5VU1DTm8ySjFMTldJN0c2Y0lfQWlrUVV3a2JWMnd5a3RhcFUzUmlnVDA4RW05a0JHYWNFeFEyNWtwWGhJNGRWZ3RsUVNQYV9mOGpLSXFEZlc1WWtpQVI4VElEX0RFRGdJTVRTbFNVUU5OeHdBMVROSzh5MkhhaVpGVldQejhsVUx1VHFIWF9ielFtZHFDaWU?oc=5",
+      "description": "Updated Fantasy Football 2026 Mock Draft Strategy and Breaking Down Bold Picks &nbsp;&nbsp; Bleacher Report",
+      "feed": "Draft Advice"
+    },
+    {
+      "headline": "Fantasy Football: Able to choose your pick in your draft? Here's Joel Smyth's favorite spots to select from in 2026",
+      "source": "sports.yahoo.com",
+      "category": "Draft",
+      "published": "Wed, 05 Aug 2026 14:16:07 GMT",
+      "publishedIso": "2026-08-05T14:16:07.000Z",
+      "url": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxOLUJqcjVFSkN3aGN0RkJ6THkwakY5c0Z1YWg3N091a21DYUNiV1pKb0E4UG9JZkoxR3hJUjVOdzFMM2d2ZEw1eExpcGJRbW03MWtlMW9ueG00QzU4eEJBamhhdEdSNDFOUTVobWlCUEx2a1JtcWYzVl9iR0xrOUtpUzVjMEpaQklnZmotYnJTYkpvVXFISWVQMGhYZXBWa2NsQl9nMVlySDB3NWRKUS1ZRnFWUExMNWNCMlM2WUNIcmdjcWVoLUhSVE9kc2tWS21UMXFhOUJRTThzMEtXOS1TTlBhTFpSSmVsbkY2QTd5dmswMndXYlB6U1FfSQ?oc=5",
+      "description": "Fantasy Football: Able to choose your pick in your draft? Here's Joel Smyth's favorite spots to select from in 2026 &nbsp;&nbsp; sports.yahoo.com",
+      "feed": "Draft Advice"
+    },
+    {
+      "headline": "Fantasy Football Draft Assistant: Player rankings, recommendations and evaluations",
+      "source": "The New York Times",
+      "category": "Advice",
+      "published": "Wed, 05 Aug 2026 13:18:44 GMT",
+      "publishedIso": "2026-08-05T13:18:44.000Z",
+      "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPQUVaS3ZWaUVzOHBHWnBaN2xNZHNUaWpHZjhPaUx3UURFakxmRVBCdGtjOTFCY0lPOTJCQjNnWHdTTldIRVA1TzBtMVQ2Wk1Zc2EzTzVYLWl3bFRGRFF0VWd2bzgzTVUxakRZNnRWalI0b2xlN3E3VjNwelhHLVpPWkgtYXhPMjRLdUpiZmdBTmNjLTFIYlQ4YzBBQm1kYTJSTm1KOU05NkNJX1AxSm9IQlNFdXlld2x0al9IWEExbw?oc=5",
+      "description": "Fantasy Football Draft Assistant: Player rankings, recommendations and evaluations &nbsp;&nbsp; The New York Times",
+      "feed": "Draft Advice"
+    },
+    {
+      "headline": "Fantasy Football: Dynasty Rookie Mock Draft (2026)",
+      "source": "FantasyPros",
+      "category": "Draft",
+      "published": "Wed, 05 Aug 2026 12:39:20 GMT",
+      "publishedIso": "2026-08-05T12:39:20.000Z",
+      "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOYnVndWxUcmxLZmVfVWpIOWFkdW5OZkdHbmJYV2N0TjFoemhNUkY4bFU3SENSVzZZakxoZHVWbkxDQkF3Z20tZUJLNXhjaE5XSnloR3oxWmRXRTl0VmtwX2NBSHY3UTdDYU54ZlUyQnZ5Ry13ZFd6WFhqMTJNRlJfSDJYNE8yQUNtTnc5VdIBkgFBVV95cUxOaWExZ2kwMjA3akkzVkdaTjFNMjc0RzhuYVUwTUFxOWVTZ1pieE43bDR6cDdWbTF3VDhTQ1hXdkhFNWE3M3JyMkRMWEx0SzFuaUl3T3VjT2pkMk5OY3o3UlZSVk9lY0NUNlVLcE9aZXlKRDZOclJoeklqTW5NT3RxNTREUl9TUm85elh5akExLURxdw?oc=5",
+      "description": "Fantasy Football: Dynasty Rookie Mock Draft (2026) &nbsp;&nbsp; FantasyPros",
+      "feed": "Draft Advice"
+    },
+    {
+      "headline": "20 Fantasy Football Sleepers Experts Love to Draft (2026)",
+      "source": "FantasyPros",
+      "category": "Advice",
+      "published": "Wed, 05 Aug 2026 12:21:43 GMT",
+      "publishedIso": "2026-08-05T12:21:43.000Z",
+      "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxOdFdCcWlsWGVvMVJPVmZFT3pRcTc2U2hHMTJ2X0FuSTN1dG5ZSjJwMGdydGZXZUlwaHhpbG9jaVZ5VGFvR3Z6aS1mZzY4ZWZwZWFzWU5nQ21UZWJUS0k4eURlN2pFQTFrNm0tZ19HdWlPV2RzbU9Fa2lUclE2NFNCbHB0QXp1dE1mNDZyWDg5ZnBOaXREejVWWThTUdIBoAFBVV95cUxOSUlxTXJ6TGhpYk12WE5paUVYQUI4UUZYNUtFWGZoWFJJSFk0ejFjTFE5aEQ2WGZqLVdXeldQS1czRWROR2JVeC14SlkyM2ZzRzJuTWptVTJkcldXUWw5ZXFSVG9VOHVLQTV2OWNhWWl2bndpR29sU1o1Z2RLY3JmUEJEb2ZGVmRNdTBWLWh5NXBGa29KMndiS0FtV0JvdHEt?oc=5",
+      "description": "20 Fantasy Football Sleepers Experts Love to Draft (2026) &nbsp;&nbsp; FantasyPros",
+      "feed": "Draft Advice"
+    },
+    {
+      "headline": "4 Mid-Round Wide Receivers to Draft (2026 Fantasy Football)",
+      "source": "FantasyPros",
+      "category": "Draft",
+      "published": "Wed, 05 Aug 2026 11:29:20 GMT",
+      "publishedIso": "2026-08-05T11:29:20.000Z",
+      "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNdzBuN0J6OGtCLVVMWGJmeDg3R295WFBSS091TTVrQUpWdWU2dzdFRDhmNTFxZV9qZE1wVUkxZ1NueEpMbHZoakd4WlJkU2F2OF9SZ29MWXpkbENKRDd6SXNTTm5YZFU4ZXVrcmVrV1d6ZkswU3pJcDNHSFUwY1BVRFRHaE1panVGQ25nUWhKWTNFV0lMdUZ1eV9B0gGfAUFVX3lxTE5pZjQyczBKQ1A0MEV5QS1QaFo0QnhLUVRaMnM1NXNzM2FidGdjdkd1elowWDhOZ1ZEd1gtNENaR0VHOHUteFNBajhySnpLVl9qc0hZcmRxNnV5NmFTWlNxMEtndTduMWliQ1F4UzZwWWJrWkN5Vk1adkhUY08tTF85a0RtdTloNWFLQjIyMzIwbzhsY2tCd1JxNWQ4MzRmOA?oc=5",
+      "description": "4 Mid-Round Wide Receivers to Draft (2026 Fantasy Football) &nbsp;&nbsp; FantasyPros",
+      "feed": "Draft Advice"
+    },
+    {
+      "headline": "Early-Round Draft Picks Experts Target & Avoid (Fantasy Football)",
+      "source": "FantasyPros",
+      "category": "Draft",
+      "published": "Wed, 05 Aug 2026 11:29:20 GMT",
+      "publishedIso": "2026-08-05T11:29:20.000Z",
+      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQV1BSVVp2UlJNc0lXRG1ZcmJvZGZYbW5HbDBWanJNYmZGYzFWN3JkYW5uUlNfWFgwZHV3cGhQdjNaMWtEb1pIazg3ZTFxcGJnZEdHcHNpZ2hKeDRSTDI3UjNWc1VFOHJPeWxITHkxYUVibC1SaHhRelJfZ1FsOHdQOG9QOFVxTExBTGVPdHhxbVJYSnYtaEUydmxaZE1xTk3SAaQBQVVfeXFMUDJLU0JVQ18tV0VldFA2cU5QcVY0d0lIMUYxbGk2aUphZm8tWU1VTVU3clY2N1pseUk1TzZOZ3M0bExwb2dzMGtGVFNOWmc1ckpvRXZqdGNGX1BiLXl3WTlubEJYMDRfbEVKbHJDYzF5aEVBV1pOM29pYkJqOTdMMjhlUTJBZUwteTM5RWxqMHFjQm8xdHlnODFXdmp0dzR1MUl6Z3U?oc=5",
+      "description": "Early-Round Draft Picks Experts Target & Avoid (Fantasy Football) &nbsp;&nbsp; FantasyPros",
+      "feed": "Draft Advice"
+    },
+    {
+      "headline": "2026 Fantasy Football Draft Guide: Rankings, mock drafts and analysis",
+      "source": "ESPN",
+      "category": "Advice",
+      "published": "Wed, 05 Aug 2026 10:52:00 GMT",
+      "publishedIso": "2026-08-05T10:52:00.000Z",
+      "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxQLVNtWG92NGVtejl5anVPRlpZTWlmbWo0Zzk5eTM0akdXYW1NUFNJQUhzREJIcHZrU09RMUFTN0RxbS12MzNQVll5bXVTM013NVUyTGoySlJRUENqSGd6QlZ5MlBWbXE4Q1BPR0lmS3kwbUtTNENXa0J3anhWLVBiYUhZX3J1VnNoc1VWWGNJcFBzQ3hQMjFWUkhUcWd2QjJsUjY4eFhocGN5QkJxQUNUdFNCeldkU3FUZkhZS2ZkVFpQejk0cTlwdnYtOGlaV0pzUWRSTw?oc=5",
+      "description": "2026 Fantasy Football Draft Guide: Rankings, mock drafts and analysis &nbsp;&nbsp; ESPN",
+      "feed": "Draft Advice"
+    },
+    {
+      "headline": "Have skills, need opportunity: 10 fantasy football picks who just need a chance to shine",
+      "source": "ESPN",
+      "category": "News",
+      "published": "Wed, 05 Aug 2026 10:51:00 GMT",
+      "publishedIso": "2026-08-05T10:51:00.000Z",
+      "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxOLXdCRXJDVHFEWGRGOGk2bXpQc0hfNG9XdGsxNkVjQzlMSlpRVnhaNG1ZaUpwTmZtSUp3SzhPNF9CT09kRU5RWG82RmJKeXhVV293Z01iNmptbmdfQlRkcVFUbnhJLUVyNGJxaGc4NUl0VW55SnFncFRQa3ZNcGNFQ3oyNlVkNlF0Mko5YVpsUGl2Szg5elNKZTVZUVRYMkE1Q1hOTXJuc0FVY28?oc=5",
+      "description": "Have skills, need opportunity: 10 fantasy football picks who just need a chance to shine &nbsp;&nbsp; ESPN",
+      "feed": "Fantasy Football"
+    },
+    {
+      "headline": "Highly Touted Addition To Fantasy Life Crew",
+      "source": "Fantasy Life Newsletter",
+      "category": "News",
+      "published": "Wed, 05 Aug 2026 10:00:00 GMT",
+      "publishedIso": "2026-08-05T10:00:00.000Z",
+      "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxOMFNDVHNSTVlDRGp3ZXZzLUJxTURlSVRnUjlVTFBPaU82Ukt4QWdTRWs4Z2prODY0T0E1a0ZEeVgxeGROXzhJQ2lwZ1YyMHJPVy12UFdocjNnZjJHaGwwaWxKbGFWdXhEX0ZoMGp2MlpUdW9HeGxqMkxvSVF4aTdZc0thcEdIaG5BWVhUZjB0MVpadw?oc=5",
+      "description": "Highly Touted Addition To Fantasy Life Crew &nbsp;&nbsp; Fantasy Life Newsletter",
+      "feed": "Draft Advice"
+    },
+    {
+      "headline": "Fantasy Football Tight End Rankings: Top 30 TE tiers for 2026 drafts",
+      "source": "PFF",
+      "category": "Advice",
+      "published": "Wed, 05 Aug 2026 09:00:00 GMT",
+      "publishedIso": "2026-08-05T09:00:00.000Z",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1rVGRoczlJTmxDY1R4bEJLcVRJUWNVX3BJTVRMSy00RXBQYkcza0tZeTdFRFRETVlVUGVpWFhrRV9idHFldnF0bEZZN0lXU25FYXZuUm53UVktd3ItRGFlbE5zSXBpUXdQRXZUMw?oc=5",
+      "description": "Fantasy Football Tight End Rankings: Top 30 TE tiers for 2026 drafts &nbsp;&nbsp; PFF",
+      "feed": "Fantasy Football"
+    },
     {
       "headline": "Draft Strategy From The 1.07 For 2026 Fantasy Football: Anchoring Around Jonathan Taylor",
       "source": "Fantasy Life Newsletter",
@@ -33,36 +143,6 @@
       "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQZExfeTZlSl9scHVreDhuMUpXejJsbkw4ZWdvR0ZVUnU1NUFZaUoxTXZJMlVDYWdWT0NUNVhuTFZfY201OWh1UjRNNUlHakgwSDBUc0FLT2RDaEVWR0Y3SEU5WWlEUjNaUmY3UENlSlprb0c2WUp4VWxSZ1EzbUkybGFQNmRRd2ladFdndWZZR3o5c0hPN2U2TzVEb3lfQXZUdklpZk5sWWhsNjFL?oc=5",
       "description": "Draft Strategy From The 1.07 For 2026 Fantasy Football: Anchoring Around Jonathan Taylor &nbsp;&nbsp; Fantasy Life Newsletter",
       "feed": "Draft Advice"
-    },
-    {
-      "headline": "Fantasy football rankings 2026: Sleepers from model that nailed De'Von Achane's outstanding season",
-      "source": "CBS Sports",
-      "category": "Advice",
-      "published": "Wed, 05 Aug 2026 06:52:14 GMT",
-      "publishedIso": "2026-08-05T06:52:14.000Z",
-      "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxPdHFONE1lVlEzUGRkMG94YXlZQ1AxbHVMUkRxZTE1QW5lVkxsSjN2VU8wMTItcm9CUEpjOWM0ZDl6NXduUkpqTnZkcFd6Z0hnODl6aXR4cEJSMlByZWVSSTB4YUhGNFhjMlNGekcyYWZqQ2N0ZnlCZlUwakdUOVdiMkhuMkpvRWtlaFdWb2lsUXhfT3VIclF3N3BlUzJXUC1KQ3lLeFFVWkJXOGtPcUZCclRESWJpZ2FSRW1SSE5feXZXWTZSU19HNnByQUhVNEttMDRUeWxheHpwaHFL?oc=5",
-      "description": "Fantasy football rankings 2026: Sleepers from model that nailed De'Von Achane's outstanding season &nbsp;&nbsp; CBS Sports",
-      "feed": "Draft Advice"
-    },
-    {
-      "headline": "Field Yates' fantasy football PPR rankings: Top 160 for 2026",
-      "source": "ESPN",
-      "category": "Advice",
-      "published": "Wed, 05 Aug 2026 05:37:43 GMT",
-      "publishedIso": "2026-08-05T05:37:43.000Z",
-      "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxPMkFHS2JwYzlRWl9nRFBTN3R1R2t3Z0FoaENDal9IN1dLcHk1YVRuaEY5aW9mV0dWTEtUbjdvQ05xZTZ4Nm5ocDNZRWo0Q0ZvdjZpZTFDLWk2WVUyWkJmQkhBRWc5TWZUNjZSM2poa0FpRG16ZUZPZGk2eXlla3hydXlqSmJRcnJueHhnYnJEQ1ZoUU44aXN3Ykhabkk0MFBsQ3ZXWk5nRQ?oc=5",
-      "description": "Field Yates' fantasy football PPR rankings: Top 160 for 2026 &nbsp;&nbsp; ESPN",
-      "feed": "Draft Advice"
-    },
-    {
-      "headline": "2026 Fantasy Football Draft Guide: Rankings, mock drafts and analysis",
-      "source": "ESPN",
-      "category": "Advice",
-      "published": "Wed, 05 Aug 2026 01:26:33 GMT",
-      "publishedIso": "2026-08-05T01:26:33.000Z",
-      "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxOZXJOX2ZsajRSd0FHVE90LU5Zald0dWxRc3VqNnM4ckpSYWg1NFBvdlU3ZkhiclNPUW9Ca1NlQWZqS09kLTUyZ01kNWRtZmJZVXJuZnQ2T0poRzhpR1BlMDZsdFcxVTBINnRkUXRwZ1RFVmhYV3JDZ2Y2Y3U5VE1VaElEcHFjcGxKSjJhTmVRVkVUWFdCYTZUZ0VMblA4MUV4bS1TRnpManBRWUdTRzhRVWl3aTFXNVNKM3BTUWtUWHBwOS1IYTBpcF9Idm5tOWIxb3I0eFV2MUs?oc=5",
-      "description": "2026 Fantasy Football Draft Guide: Rankings, mock drafts and analysis &nbsp;&nbsp; ESPN",
-      "feed": "Fantasy Football"
     },
     {
       "headline": "Fantasy football rankings 2026: Busts from the model that nailed Terry McLaurin's down season",
@@ -85,16 +165,6 @@
       "feed": "Fantasy Football"
     },
     {
-      "headline": "Ranking 5 College Fantasy Football Sleepers for 2026: Landen Chambers Leads the Value Board",
-      "source": "Yahoo Sports",
-      "category": "Advice",
-      "published": "Tue, 04 Aug 2026 22:00:06 GMT",
-      "publishedIso": "2026-08-04T22:00:06.000Z",
-      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxOQ0doTmw5NngxZ3lNODh1cENwVmxQNnBYZzBURV9aNWY4Nk4wYVhCTnpldExMR0FrWFliTjZiNklScmNjSFZGdmNpNDZoV1RZS2pEWlhyc0dteVlweXkySE1mcndXRU9ucTdjNVRLSXlLVTN6M3RRYnVMMmx6MWJaVHprMVZaYmtEcWlv?oc=5",
-      "description": "Ranking 5 College Fantasy Football Sleepers for 2026: Landen Chambers Leads the Value Board &nbsp;&nbsp; Yahoo Sports",
-      "feed": "Draft Advice"
-    },
-    {
       "headline": "2026 Fantasy Football Draft Kit: Strategy, cheat sheets, mock drafts, rankings — everything you need to win your league",
       "source": "Yahoo News Singapore",
       "category": "Advice",
@@ -106,12 +176,12 @@
     },
     {
       "headline": "Josh Norris' 2026 Fantasy Football Full PPR Rankings Hub",
-      "source": "Yahoo Sports",
+      "source": "sports.yahoo.com",
       "category": "Advice",
       "published": "Tue, 04 Aug 2026 19:45:58 GMT",
       "publishedIso": "2026-08-04T19:45:58.000Z",
       "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQblZSalRWdDJKelpmZHh2NzNMRUo0QkEyc2RkaHBqSXFLOEhOM09xOU5LQ2w5V011em53WU1oRGRtZE83bmc1T0cwMGRFU19aa0Npd1FzYjFycF9McEI3NTl5d0s3WGNQNm92UXlFbjgyNXlQaWdiRVQ0RkFrNzdPcFRRSmozdFZBLWdPUFEwYk1pck55RTB6RUMtY0Z6RF82cmN5RQ?oc=5",
-      "description": "Josh Norris' 2026 Fantasy Football Full PPR Rankings Hub &nbsp;&nbsp; Yahoo Sports",
+      "description": "Josh Norris' 2026 Fantasy Football Full PPR Rankings Hub &nbsp;&nbsp; sports.yahoo.com",
       "feed": "Draft Advice"
     },
     {
@@ -146,12 +216,12 @@
     },
     {
       "headline": "2026 Fantasy Football Full PPR Rankings: Consensus top running backs",
-      "source": "Yahoo Sports",
+      "source": "sports.yahoo.com",
       "category": "Advice",
       "published": "Tue, 04 Aug 2026 18:08:11 GMT",
       "publishedIso": "2026-08-04T18:08:11.000Z",
       "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPVDN5ZUF6eHpoZE1wOGRQNUxDcURiVEtHbkNGdFF3c3hrQl9UV0lUMnF6T05pWmxIeWdHZ0pZUF9UdzVzMUlReERpbmVCM25BZGM2Rzltak9sTHRpQlc0UmIyaksyZ0FCdjVpTHB2elVXMDZyYVNtTncyTlBaVkF4a1ZpLTVyQ2gzYTFmMG5xQUR5Z0xTcGQzRkEySDlHR3ByejVqOGh5cHdubHFRVzNZajJZNzBpTkoyTktPbC1faTE?oc=5",
-      "description": "2026 Fantasy Football Full PPR Rankings: Consensus top running backs &nbsp;&nbsp; Yahoo Sports",
+      "description": "2026 Fantasy Football Full PPR Rankings: Consensus top running backs &nbsp;&nbsp; sports.yahoo.com",
       "feed": "Draft Advice"
     },
     {
@@ -175,13 +245,23 @@
       "feed": "Draft Advice"
     },
     {
+      "headline": "2026 Fantasy Football Rankings: Justin Boone's top kickers",
+      "source": "sports.yahoo.com",
+      "category": "Advice",
+      "published": "Tue, 04 Aug 2026 15:20:38 GMT",
+      "publishedIso": "2026-08-04T15:20:38.000Z",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPV05xY3hsd19VSlJuc3NzRllsdkZsX1VubEUxdXV0UEZZdUlrbjI2elVWYTd4T3hrZkVnelUzaG1JUXpPZGEyc3FGQldEbXBvNU16MGJUQklJYlZVNzFxQThkV0loQkx2SFE2Y2pkd1hCS0pHU1JNQ2pyaDRmQnBZbllacnVTU0tMZV85dEpNMUFoa05YRTgyT09iTWJTS0V4SkZVLWUwdlRWdVZEOTVveXZn?oc=5",
+      "description": "2026 Fantasy Football Rankings: Justin Boone's top kickers &nbsp;&nbsp; sports.yahoo.com",
+      "feed": "Draft Advice"
+    },
+    {
       "headline": "Cyrus Allen leads 2026 NFL rookies already generating fantasy football buzz in training camps",
-      "source": "Yahoo Sports",
+      "source": "sports.yahoo.com",
       "category": "Draft",
       "published": "Tue, 04 Aug 2026 14:58:43 GMT",
       "publishedIso": "2026-08-04T14:58:43.000Z",
       "url": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxQRnpGalJFQnhCRWlPN0QwSWViQ2o4YjZCbnQ4R1g3Mm05OFJHNEJEbHkxMkFXZkVRNVR0TlhIb2dtR0VMaHZMcmdMZXdMbXVRTmdwOGhwOW80dGlTUm4xV3lsektCSUlacHdLckJKaGZ2aWNES1ViRXNwRWZ3NS1HVWt2WmEyV1dZbFZjckotN2d6WHRfLUpzUy16ZVFHRldXcVdxWFAzaVlwcXotblBTcTBIZ29KR2dmdjRZNXMweE1ITjh5VnF4dTRKN0x4VXBDNUlQeHpPT2ttLUltVkRadnJ4Yw?oc=5",
-      "description": "Cyrus Allen leads 2026 NFL rookies already generating fantasy football buzz in training camps &nbsp;&nbsp; Yahoo Sports",
+      "description": "Cyrus Allen leads 2026 NFL rookies already generating fantasy football buzz in training camps &nbsp;&nbsp; sports.yahoo.com",
       "feed": "Draft Advice"
     },
     {
@@ -196,22 +276,12 @@
     },
     {
       "headline": "The Guru's 2026 Fantasy Football Draft Plan",
-      "source": "fantasypoints.com",
+      "source": "Fantasy Points",
       "category": "Draft",
       "published": "Tue, 04 Aug 2026 14:28:00 GMT",
       "publishedIso": "2026-08-04T14:28:00.000Z",
-      "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNS0ZQdFI2bjAtaW9GX1RVMlJCcHB1b0RYWjZjYkxySVZHd0dabGNTR05CcWw0UnJ1cGJJdS1NdHZ1V1FzZ3lYdGlvaXJHdFdqRFlCRlJHaWdTcURNSVJCa3pHYUJuZ2xvZ05idTBGbGdhaWxtaFZJdmFHWFp6dW1OcXViU3V4anpZUFBVc0hQaw?oc=5",
-      "description": "The Guru's 2026 Fantasy Football Draft Plan &nbsp;&nbsp; fantasypoints.com",
-      "feed": "Draft Advice"
-    },
-    {
-      "headline": "Scott Barrett's 2026 Fantasy Football Draft Guide",
-      "source": "fantasypoints.com",
-      "category": "Draft",
-      "published": "Tue, 04 Aug 2026 14:09:00 GMT",
-      "publishedIso": "2026-08-04T14:09:00.000Z",
-      "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxOXzNTS3l1TGVOdnFMbmtzdEstVWVtSW5tSWxXMHJRUUV0WUg5amtoWnFXOGdUVnoyYUNJQmxLZDRDYnkwR1AyRkFQbWtJcGJDOVIxVkRZRTZJU3MxTDJFc3Jibmc1OVZ6UlVyVlBPZlpSV0RzX19YbnNwclA2dU5UYlBTYXRvdW50QVJMTUVTNENzZ2J6eTRRcEVVc2RKdw?oc=5",
-      "description": "Scott Barrett's 2026 Fantasy Football Draft Guide &nbsp;&nbsp; fantasypoints.com",
+      "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxNbFZOOVdiREI3dWNrU0pjQU5wcHdaOUZ1VE5qVzQ1ZkprWGdWd3J3YW9HbXFZWmdnMHpDandvVWR1M3FoZVJHMWVWLTZlenQ5RGpwY2ZwV2NLQ2h2dno5dXFNQVpETlBoZFc2WWdtNEpQclZBU0c5N2FGT25rSTBSMG93LWxrOEk2dWdJeVUzX09zX1gwaHc?oc=5",
+      "description": "The Guru's 2026 Fantasy Football Draft Plan &nbsp;&nbsp; Fantasy Points",
       "feed": "Draft Advice"
     },
     {
@@ -232,7 +302,7 @@
       "publishedIso": "2026-08-04T13:49:00.000Z",
       "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxNNGZ2Vjg3UmstTXh4aG5HckRILURpY2dBckZZRGNXYUdZcHZ3bHRwTldNUkV0OWNhRzAwUDJ4MG40b2RqWWRwNVVyMHkxZUwwY2FYSl92WkxvM1E2QTNQbmpwa2pYb3c5YXpJc2lld082eWptcExNNllLWWxEVXVqWENRbE05V2pFc2RmTzV0d0IyblJmR1QtQzFtNmZ3dXItU2NFMVFvS3hYUGFlYVdfbXVUbU9pLTBzRWNsRnZXZmlTTzR2dHFz?oc=5",
       "description": "Fantasy football draft rankings 2026: Wide receiver &nbsp;&nbsp; ESPN",
-      "feed": "Draft Advice"
+      "feed": "NFL Player News"
     },
     {
       "headline": "2026 fantasy football draft rankings: PPR leagues",
@@ -253,76 +323,6 @@
       "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxQSk5rajdQU3hId1ZKRGhuQnkySngwcVNoRW5Gd25NQkpUV1VWYzNGOFlMRjJoMzZIbGVaaUY0TXlvSnBfYVdKV1ZvM1VLTHVuTGNadUtNSDVSUTJLaXFBUk10Sjh2UjMySlJJcTNKVUZOVmlFVnRYZVhvdUR1anlxQWlrZTFWZ9IBiwFBVV95cUxOY3h5VzVUbzlHVW14Zlg4TXAxX3N6ZzNyRGJPZGdHanF2SW9SOTZiTm5iNnBzSWFpS1VwQkNHMTRYRGVBVG5mUkJNV0d2VnFFczRQMmhib1UySGp5LV9HS2dZZHA0OUswVVVxa2VkNzkybmJ6S1c0OWVMVURRZEJCalZuS3FEWnJZbHVN?oc=5",
       "description": "Top 20 Devy Fantasy Football Rankings (2026) &nbsp;&nbsp; FantasyPros",
       "feed": "Fantasy Football"
-    },
-    {
-      "headline": "2026 NFL fantasy football: 7 riskiest players to draft | Latest NFL News, Analysis & Updates",
-      "source": "NFL.com",
-      "category": "Draft",
-      "published": "Tue, 04 Aug 2026 12:05:16 GMT",
-      "publishedIso": "2026-08-04T12:05:16.000Z",
-      "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxOVHk2Y3RFcjkxY1BJemhsclVrM1I4ZjNTMjg2bUdKVVAwcmJfbU14SV9aNnREOHVKZ0xDU0E4UllxTFQwUHRkOVp6Z2dEVEwySHE1SERJVnNpb1pubm03bjNGU3VwaHNiVC05V2VUUTU3OUFJclR1VDNHSm1ibTJfX3ViR1piUk9Gd3c?oc=5",
-      "description": "2026 NFL fantasy football: 7 riskiest players to draft | Latest NFL News, Analysis & Updates &nbsp;&nbsp; NFL.com",
-      "feed": "Fantasy Football"
-    },
-    {
-      "headline": "Dave Richard makes it known: There are the nine players you must avoid in 2026 Fantasy Football drafts at ADP",
-      "source": "CBS Sports",
-      "category": "Advice",
-      "published": "Tue, 04 Aug 2026 12:00:43 GMT",
-      "publishedIso": "2026-08-04T12:00:43.000Z",
-      "url": "https://news.google.com/rss/articles/CBMi7gFBVV95cUxNY18zcHFlU2xYbTd0RUh2YmI0bngyT2pYTThnLS1wQUFOV3FaVGRFV3JRd09VbWg1VTBxS3hPWU5KWVlOZllsaXRKLTNSajNTcFRrM05zUks2dGR3b2RURC1KNS1Fem5QNmxKbXZlMkxzbFFnYkxMRldydDhoNTlGY0FUMmk3MUZwM3NWN1liSDQ4Z0FoZndlbU9ZcU5YUXpDek5GQ0FCLWxva1g2NXM0T2gtT3hoaEI0QWk1Zmh3eXBzYWo2czhwd2xJLUxhMHplOWc0Zks5Q21VbWN1ZkFHUEllOTBQSjBBXzNUdU1R?oc=5",
-      "description": "Dave Richard makes it known: There are the nine players you must avoid in 2026 Fantasy Football drafts at ADP &nbsp;&nbsp; CBS Sports",
-      "feed": "Draft Advice"
-    },
-    {
-      "headline": "Fantasy Football Mock Draft: 12-Team, PPR (2026)",
-      "source": "FantasyPros",
-      "category": "Draft",
-      "published": "Tue, 04 Aug 2026 11:31:36 GMT",
-      "publishedIso": "2026-08-04T11:31:36.000Z",
-      "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxPN2xqVmhna1IwbVNZcS10NWwyLWJxNEswbFlqcGd5QUhrNnU5SkpqUk1xNWpBV0NGeVpKU2hxLXF6NTRIZUVZX2tlSGdTREFNNHpGSDBtUlRGLTlDMzJVZUJNeW10TUJwdnBfa0hpWnF5a0FhLUtEZTFPWC1VQ0VsRjlFVkRET19iR05XZHVqQzY4R1d4bHfSAZsBQVVfeXFMT1l1QUdndXlaWWNBN3c1T2RaZGkzMVNrdDBrQmV5LWlWOUx6eTg0cnoydExWWnZtZ3dQMUpzNEdSRW1MYjVHYjZBSTdLRlNldkFxbTc3MjM0SGlSMDdUSTg4OV9nWF9iX29heHh3aGFZT0xWQUduUkF6MWI3VTVBQkVLTlJCMldoT0lCMDg2dW1odVg1eUZYeXhudGc?oc=5",
-      "description": "Fantasy Football Mock Draft: 12-Team, PPR (2026) &nbsp;&nbsp; FantasyPros",
-      "feed": "Fantasy Football"
-    },
-    {
-      "headline": "3 Players Experts Avoid (2026 Fantasy Football)",
-      "source": "FantasyPros",
-      "category": "News",
-      "published": "Tue, 04 Aug 2026 11:31:36 GMT",
-      "publishedIso": "2026-08-04T11:31:36.000Z",
-      "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxPMWtWbk5PWWxtSkNWaF9KNEJOcWdWZ0RJdmx2ZlFBRS1MY1FZaE53VEtoRnFScWpQTXN4cVhBSzdDQS1tS2FiWXZFLXo4RTNnQXhCZWZxUkM1THJzT1ZKa0RIUUF1RU1iSHJHRHBPZG14Z2ZjT244SHdlOTNLSzM4OG5IT1l4QnNoRWfSAY8BQVVfeXFMUDdaclRWYlMxTHFuRVA0dzJfMzA4dzB6MEJmanU1c29CT0Z6MU51d0pCNG5hOHpnR2UwMTZ6cHhZdEFyUWxDbEhaV1YzU19YclY3Skc0a0FEc0I2em93N1JNY1dLWEpIV3hNQWxvcXVCdDBkZHZFTUR3SnFITnNHcm1aeXpTb3A2U2ZXZjNmWFE?oc=5",
-      "description": "3 Players Experts Avoid (2026 Fantasy Football) &nbsp;&nbsp; FantasyPros",
-      "feed": "Draft Advice"
-    },
-    {
-      "headline": "One-man, first-round PPR fantasy football 2026 mock draft: From Jahmyr Gibbs to CMC",
-      "source": "The New York Times",
-      "category": "Draft",
-      "published": "Tue, 04 Aug 2026 10:20:37 GMT",
-      "publishedIso": "2026-08-04T10:20:37.000Z",
-      "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxQRmp6NXY3TklVMi1RdVJ1SDFYaHliOTRXanBrdlQxMHNzZ041NG42WFhLT2lJLVlmeWM3YU1LWFFqcV95VW13ejhscU1kMFNwMHlSVkFfYVlWbGV0YjJubTIxc0lOSG9zYzBZQXdLR3N4YVRnREg0LXlzWklYNEhUa1RNcXJmSWR4MzE5NTlFcS1SVlo2bWtmeTFocTZlam92dXZWcnYtenRIUjQ?oc=5",
-      "description": "One-man, first-round PPR fantasy football 2026 mock draft: From Jahmyr Gibbs to CMC &nbsp;&nbsp; The New York Times",
-      "feed": "Draft Advice"
-    },
-    {
-      "headline": "2026 Fantasy Football Rankings: Standard top 200 for drafts",
-      "source": "PFF",
-      "category": "Advice",
-      "published": "Tue, 04 Aug 2026 09:00:00 GMT",
-      "publishedIso": "2026-08-04T09:00:00.000Z",
-      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxOSFB4TjFpLV90aTNsN2pJZnl3UWNuYTJXVWQ5TjMzNXplamx4dTc5NEsxZlZldndxTE1HYkpBNVpTbXl0T3lzeWVVR1dkcUpXSkg1b2pOcmY2UWtrakJoVTFFRmtDMEY3clViamtUdjBzb0w2SDRoQlZPSkdveEtydl9CbVBpVEtxZFI0?oc=5",
-      "description": "2026 Fantasy Football Rankings: Standard top 200 for drafts &nbsp;&nbsp; PFF",
-      "feed": "Fantasy Football"
-    },
-    {
-      "headline": "Superflex Fantasy Football Draft Rankings & Tiers (2026)",
-      "source": "FantasyPros",
-      "category": "Advice",
-      "published": "Tue, 04 Aug 2026 08:16:03 GMT",
-      "publishedIso": "2026-08-04T08:16:03.000Z",
-      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPbVpxNjZJZmx2azdSNFZSMFVSLVA4Mk1BUjBiTXBCWU1sazBRQWhEMUl6N0w5VmZEMXIyc2VNZWdYUXVWekFzM3c4Tjd6YlY0Y3dDQnBQdE9RcVBCWnNDaWhfaElwbklHbWUwTENOaDJGX1hRNFN3azNscFJhclIwVElYdEgtMVVfYy1BSGNSTnlvTldlbmdYdHZXNGJaOU1xQ2tr0gGoAUFVX3lxTFBZekJmOGlLamFyTzFhcVV6OGNoQkFxZ2V0YnRsLXI3WGdpNUJmM2o3dHdRV0dJdXVlMVhWUEtDdmo1aUd2TXNFU1k1OXMzdldFNVhqYjhzSzM3VnpLc1RjRWJ3TUFCSERoTGMxMldwaXhGXzdBQWtybmQxclR0V3ZrSjYwb3R4c2xGbUN2UVlCd0hoWXA1SFcyTWM1dW1fTm95emtzYnZmZQ?oc=5",
-      "description": "Superflex Fantasy Football Draft Rankings & Tiers (2026) &nbsp;&nbsp; FantasyPros",
-      "feed": "Draft Advice"
     }
   ]
 }
