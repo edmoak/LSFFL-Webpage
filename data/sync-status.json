@@ -1,10 +1,14 @@
 {
   "season": "2026",
-  "leagueId": "51036",
-  "updatedAt": "2026-08-04T20:57:23Z",
+  "leagueId": "23135",
+  "updatedAt": "2026-08-05T06:14:17Z",
   "source": "MyFantasyLeague",
   "files": [
     "league.json",
-    "standings.json"
+    "standings.json",
+    "schedule.json",
+    "rosters.json",
+    "liveScoring.json",
+    "playerScores.json"
   ]
 }
