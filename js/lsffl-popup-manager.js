@@ -47,8 +47,41 @@
     );
   }
 
+  function githubPageTitle(url) {
+    var fileName = String(url.pathname || "")
+      .split("/")
+      .pop()
+      .replace(/\.html?$/i, "")
+      .replace(/[-_]+/g, " ")
+      .trim();
+
+    if (!fileName || fileName.toLowerCase() === "index") {
+      return "LSFFL";
+    }
+
+    return fileName.replace(/\b\w/g, function (letter) {
+      return letter.toUpperCase();
+    });
+  }
+
+  function isLsfflGitHubPage(url) {
+    return Boolean(
+      url &&
+      url.hostname === "edmoak.github.io" &&
+      url.pathname.indexOf("/LSFFL-Webpage/") === 0
+    );
+  }
+
   function classifyContentURL(value) {
     var url = makeAbsoluteURL(value);
+
+    if (isLsfflGitHubPage(url)) {
+      return {
+        type: "github",
+        title: githubPageTitle(url),
+        url: url.href
+      };
+    }
 
     if (!isMfl2026URL(url)) {
       return null;
@@ -190,7 +223,7 @@
     element.style.setProperty("pointer-events", "none", "important");
   }
 
-  function findRealMessageLinkInDocument(doc, baseHref) {
+  function findReadMessageTarget(doc, baseHref) {
     var links = Array.prototype.slice.call(
       doc.querySelectorAll("a[href]")
     );
@@ -199,12 +232,29 @@
       var link = links[index];
       var url = makeAbsoluteURL(link.getAttribute("href"), baseHref);
 
+      var label = (
+        link.textContent ||
+        link.getAttribute("title") ||
+        link.getAttribute("aria-label") ||
+        ""
+      )
+        .replace(/\s+/g, " ")
+        .trim();
+
       if (
         url &&
         /\/mb\/topic_show\.pl$/i.test(url.pathname) &&
-        url.searchParams.get("pid")
+        url.searchParams.get("pid") &&
+        (
+          /read message/i.test(label) ||
+          /#pid\d+$/i.test(url.hash) ||
+          link.querySelector("img")
+        )
       ) {
-        return url.href;
+        return {
+          link: link,
+          url: url
+        };
       }
     }
 
@@ -225,7 +275,7 @@
           continue;
         }
 
-        var nestedResult = findRealMessageLinkInDocument(
+        var nestedResult = findReadMessageTarget(
           nestedDocument,
           nestedWindow.location.href
         );
@@ -239,6 +289,58 @@
     }
 
     return null;
+  }
+
+  function markLargeFranchiseImage(image) {
+    if (
+      !image ||
+      image.dataset.lsfflFranchiseImageChecked === "true"
+    ) {
+      return;
+    }
+
+    image.dataset.lsfflFranchiseImageChecked = "true";
+
+    function applyLimit() {
+      var renderedWidth = image.getBoundingClientRect().width;
+      var renderedHeight = image.getBoundingClientRect().height;
+      var naturalWidth = image.naturalWidth || 0;
+      var naturalHeight = image.naturalHeight || 0;
+
+      if (
+        naturalWidth >= 650 ||
+        naturalHeight >= 500 ||
+        renderedWidth >= 650 ||
+        renderedHeight >= 500
+      ) {
+        image.classList.add(
+          "lsffl-popup-large-franchise-image"
+        );
+      }
+    }
+
+    if (image.complete) {
+      applyLimit();
+    } else {
+      image.addEventListener(
+        "load",
+        applyLimit,
+        { once: true }
+      );
+    }
+  }
+
+  function constrainFranchiseImages(doc) {
+    if (currentType !== "franchise") {
+      return;
+    }
+
+    doc.body.classList.add("lsffl-popup-franchise");
+
+    Array.prototype.forEach.call(
+      doc.querySelectorAll("img"),
+      markLargeFranchiseImage
+    );
   }
 
   function hideSiteChrome(doc) {
@@ -280,6 +382,7 @@
       "html.lsffl-popup-document body{padding:10px!important;box-sizing:border-box!important;}",
       "html.lsffl-popup-document #container-wrap,html.lsffl-popup-document #body_options_01,html.lsffl-popup-document #body_options_73,html.lsffl-popup-document .pagebody,html.lsffl-popup-document .report,html.lsffl-popup-document .module{max-width:100%!important;width:100%!important;margin:0 auto!important;box-sizing:border-box!important;}",
       "html.lsffl-popup-document img{max-width:100%!important;height:auto!important;}",
+      "html.lsffl-popup-document body.lsffl-popup-franchise img.lsffl-popup-large-franchise-image{display:block!important;width:auto!important;height:auto!important;max-width:min(720px,88%)!important;max-height:440px!important;margin:18px auto!important;object-fit:contain!important;object-position:center!important;}",
       "html.lsffl-popup-document a{cursor:pointer!important;}"
     ].join("");
 
@@ -287,7 +390,11 @@
   }
 
   function cleanIframe() {
-    if (!frame || !frame.contentDocument || !frame.contentWindow) {
+    if (
+      !frame ||
+      !frame.contentDocument ||
+      !frame.contentWindow
+    ) {
       return;
     }
 
@@ -298,31 +405,71 @@
 
       if (currentType === "message") {
         var currentUrl = makeAbsoluteURL(currentHref);
+        var readTarget = findReadMessageTarget(
+          doc,
+          currentHref
+        );
 
-        if (
-          !currentUrl ||
-          !(
-            /\/mb\/topic_show\.pl$/i.test(currentUrl.pathname) &&
-            currentUrl.searchParams.get("pid")
-          )
-        ) {
-          var realMessageURL = findRealMessageLinkInDocument(
-            doc,
-            currentHref
-          );
+        if (readTarget) {
+          var currentPid =
+            currentUrl &&
+            currentUrl.searchParams.get("pid");
 
-          if (realMessageURL) {
-            win.location.replace(realMessageURL);
+          var targetPid =
+            readTarget.url.searchParams.get("pid");
+
+          /*
+           * MFL sometimes serves the giant yellow Read Message page
+           * at the same PID URL. Redirecting to the same URL does
+           * nothing, so activate the actual Read Message link.
+           */
+          if (
+            currentPid &&
+            targetPid &&
+            currentPid === targetPid
+          ) {
+            if (
+              readTarget.url.hash &&
+              readTarget.url.hash !== win.location.hash
+            ) {
+              win.location.hash = readTarget.url.hash;
+            }
+
+            if (
+              !doc.documentElement.dataset
+                .lsfflReadMessageClicked
+            ) {
+              doc.documentElement.dataset
+                .lsfflReadMessageClicked = "true";
+
+              window.setTimeout(function () {
+                try {
+                  readTarget.link.click();
+                } catch (error) {
+                  win.location.href = readTarget.url.href;
+                }
+              }, 40);
+            }
+
             return;
           }
+
+          win.location.replace(readTarget.url.href);
+          return;
         }
       }
 
-      doc.documentElement.classList.add("lsffl-popup-document");
-      doc.body.classList.add("lsffl-popup-document");
+      doc.documentElement.classList.add(
+        "lsffl-popup-document"
+      );
+
+      doc.body.classList.add(
+        "lsffl-popup-document"
+      );
 
       injectIframeTheme(doc);
       hideSiteChrome(doc);
+      constrainFranchiseImages(doc);
 
       if (currentType !== "franchise") {
         Array.prototype.forEach.call(
@@ -343,7 +490,9 @@
           var labels = Array.prototype.map.call(
             select.options || [],
             function (option) {
-              return (option.textContent || "").trim();
+              return (
+                option.textContent || ""
+              ).trim();
             }
           );
 
@@ -360,8 +509,12 @@
         }
       );
 
-      if (!doc.documentElement.dataset.lsfflPopupLinksBound) {
-        doc.documentElement.dataset.lsfflPopupLinksBound = "true";
+      if (
+        !doc.documentElement.dataset
+          .lsfflPopupLinksBound
+      ) {
+        doc.documentElement.dataset
+          .lsfflPopupLinksBound = "true";
 
         doc.addEventListener(
           "click",
@@ -396,23 +549,29 @@
         );
       }
 
-      if (!doc.documentElement.dataset.lsfflPopupObserver) {
-        doc.documentElement.dataset.lsfflPopupObserver = "true";
+      if (
+        !doc.documentElement.dataset
+          .lsfflPopupObserver
+      ) {
+        doc.documentElement.dataset
+          .lsfflPopupObserver = "true";
 
         var queued = false;
 
-        var observer = new win.MutationObserver(function () {
-          if (queued) {
-            return;
+        var observer = new win.MutationObserver(
+          function () {
+            if (queued) {
+              return;
+            }
+
+            queued = true;
+
+            win.requestAnimationFrame(function () {
+              queued = false;
+              cleanIframe();
+            });
           }
-
-          queued = true;
-
-          win.requestAnimationFrame(function () {
-            queued = false;
-            cleanIframe();
-          });
-        });
+        );
 
         observer.observe(doc.body, {
           childList: true,
@@ -420,10 +579,17 @@
         });
       }
     } catch (error) {
-      console.warn(
-        "LSFFL Popup Manager could not clean popup content.",
-        error
-      );
+      /*
+       * GitHub pages are cross-origin from MFL, so their internal
+       * document cannot be restyled here. They still display cleanly
+       * inside the LSFFL modal without browser-window chrome.
+       */
+      if (currentType !== "github") {
+        console.warn(
+          "LSFFL Popup Manager could not clean popup content.",
+          error
+        );
+      }
     }
   }
 
@@ -435,7 +601,10 @@
     titleElement.textContent = title || "LSFFL";
     frame.src = url;
     modal.hidden = false;
-    document.body.classList.add("lsffl-content-popup-open");
+
+    document.body.classList.add(
+      "lsffl-content-popup-open"
+    );
 
     window.setTimeout(function () {
       closeButton.focus();
@@ -451,7 +620,10 @@
 
     modal.hidden = true;
     frame.src = "about:blank";
-    document.body.classList.remove("lsffl-content-popup-open");
+
+    document.body.classList.remove(
+      "lsffl-content-popup-open"
+    );
 
     if (
       previousFocus &&
@@ -461,7 +633,12 @@
     }
   }
 
-  function openCenteredToolPopup(url, name, width, height) {
+  function openCenteredToolPopup(
+    url,
+    name,
+    width,
+    height
+  ) {
     var screenLeft =
       window.screenLeft !== undefined
         ? window.screenLeft
@@ -484,12 +661,14 @@
 
     var left = Math.max(
       0,
-      screenLeft + Math.round((viewportWidth - width) / 2)
+      screenLeft +
+        Math.round((viewportWidth - width) / 2)
     );
 
     var top = Math.max(
       0,
-      screenTop + Math.round((viewportHeight - height) / 2)
+      screenTop +
+        Math.round((viewportHeight - height) / 2)
     );
 
     var features = [
@@ -506,7 +685,11 @@
       "top=" + top
     ].join(",");
 
-    var popup = nativeWindowOpen(url, name, features);
+    var popup = nativeWindowOpen(
+      url,
+      name,
+      features
+    );
 
     if (popup) {
       popup.focus();
@@ -517,7 +700,9 @@
 
   function popupName(link) {
     var label =
-      (link.querySelector(".svg-text") || {}).textContent ||
+      (
+        link.querySelector(".svg-text") || {}
+      ).textContent ||
       link.getAttribute("title") ||
       "LSFFL Tool";
 
@@ -544,7 +729,8 @@
         return;
       }
 
-      var contentMatch = classifyContentURL(link.href);
+      var contentMatch =
+        classifyContentURL(link.href);
 
       if (contentMatch) {
         event.preventDefault();
@@ -560,7 +746,9 @@
       }
 
       if (
-        link.matches(".banner-rightside a.svg-iconlink") &&
+        link.matches(
+          ".banner-rightside a.svg-iconlink"
+        ) &&
         !link.classList.contains("icon-chat") &&
         !link.getAttribute("onclick")
       ) {
@@ -582,36 +770,53 @@
     true
   );
 
-  document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape" && modal && !modal.hidden) {
-      closeModal();
+  document.addEventListener(
+    "keydown",
+    function (event) {
+      if (
+        event.key === "Escape" &&
+        modal &&
+        !modal.hidden
+      ) {
+        closeModal();
+      }
     }
-  });
+  );
 
-  window.addEventListener("message", function (event) {
-    var data = event.data;
+  window.addEventListener(
+    "message",
+    function (event) {
+      var data = event.data;
 
-    if (!data || data.type !== "LSFFL_OPEN_FRANCHISE") {
-      return;
+      if (
+        !data ||
+        data.type !== "LSFFL_OPEN_FRANCHISE"
+      ) {
+        return;
+      }
+
+      var franchiseId =
+        normalizeFranchiseId(data.franchiseId);
+
+      if (!franchiseId) {
+        return;
+      }
+
+      openContentPopup(
+        "https://www48.myfantasyleague.com/2026/options" +
+          "?L=23135&F=" +
+          encodeURIComponent(franchiseId) +
+          "&O=01",
+        "franchise",
+        "Franchise Center"
+      );
     }
+  );
 
-    var franchiseId = normalizeFranchiseId(data.franchiseId);
-
-    if (!franchiseId) {
-      return;
-    }
-
-    openContentPopup(
-      "https://www48.myfantasyleague.com/2026/options" +
-        "?L=23135&F=" +
-        encodeURIComponent(franchiseId) +
-        "&O=01",
-      "franchise",
-      "Franchise Center"
-    );
-  });
-
-  window.lsfflOpenContentPopup = function (url, title) {
+  window.lsfflOpenContentPopup = function (
+    url,
+    title
+  ) {
     var match = classifyContentURL(url);
 
     if (!match) {
