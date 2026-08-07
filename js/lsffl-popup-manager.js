@@ -1,6 +1,6 @@
 /*
  * ============================================================
- * LSFFL POPUP MANAGER — POP-UP 4.0
+ * LSFFL POPUP MANAGER — POP-UP 4.1
  * ============================================================
  * File:
  *   js/lsffl-popup-manager.js
@@ -46,10 +46,10 @@
   var messageGateAttempts = 0;
 
   var ANNOUNCEMENT_SESSION_KEY =
-    "lsffl-popup40-auto-shown-2026-23135";
+    "lsffl-popup41-auto-shown-2026-23135";
 
   var ANNOUNCEMENT_DISMISS_KEY =
-    "lsffl-popup40-dismissed-until";
+    "lsffl-popup41-dismissed-until";
 
 
   /* ============================================================
@@ -104,46 +104,29 @@
      ============================================================ */
 
   function classifyMflUrl(value) {
-    var url =
-      absoluteUrl(value);
+    var url = absoluteUrl(value);
 
     if (!isMfl2026(url)) {
       return null;
     }
 
-    var option =
-      String(
-        url.searchParams.get("O") || ""
-      ).replace(/^0+/, "");
+    var option = String(
+      url.searchParams.get("O") || ""
+    ).replace(/^0+/, "");
 
-    var franchiseId =
-      normalizeFranchiseId(
-        url.searchParams.get("F")
-      );
+    var franchiseId = normalizeFranchiseId(
+      url.searchParams.get("F")
+    );
 
-
-    /* ---------- Franchise ---------- */
-
-    if (
-      franchiseId &&
-      /\/options\/?$/i.test(
-        url.pathname
-      )
-    ) {
-      return {
-        type: "franchise",
-        title: "Franchise Center",
-        url: url.href
-      };
-    }
-
-
-    /* ---------- Commissioner Article ---------- */
+    /*
+     * IMPORTANT: classify the report FIRST. MFL often includes F=0001
+     * on message-board and article URLs. If franchise detection runs first,
+     * those links are incorrectly treated as franchise pages and the
+     * message/article handlers never run.
+     */
 
     if (
-      /\/options\/?$/i.test(
-        url.pathname
-      ) &&
+      /\/options\/?$/i.test(url.pathname) &&
       option === "73"
     ) {
       return {
@@ -153,19 +136,12 @@
       };
     }
 
-
-    /* ---------- Message Board ---------- */
-
     if (
       (
-        /\/options\/?$/i.test(
-          url.pathname
-        ) &&
+        /\/options\/?$/i.test(url.pathname) &&
         option === "28"
       ) ||
-      /\/mb\/(?:board_show|topic_show)\.pl$/i.test(
-        url.pathname
-      )
+      /\/mb\/(?:board_show|topic_show)\.pl$/i.test(url.pathname)
     ) {
       return {
         type: "message",
@@ -174,6 +150,16 @@
       };
     }
 
+    if (
+      franchiseId &&
+      /\/options\/?$/i.test(url.pathname)
+    ) {
+      return {
+        type: "franchise",
+        title: "Franchise Center",
+        url: url.href
+      };
+    }
 
     return null;
   }
@@ -186,7 +172,7 @@
   function injectModalStyles() {
     if (
       document.getElementById(
-        "lsffl-popup40-modal-styles"
+        "lsffl-popup41-modal-styles"
       )
     ) {
       return;
@@ -198,21 +184,21 @@
       );
 
     style.id =
-      "lsffl-popup40-modal-styles";
+      "lsffl-popup41-modal-styles";
 
     style.textContent = [
 
-      "body.lsffl-popup40-open{" +
+      "body.lsffl-popup41-open{" +
         "overflow:hidden!important;" +
       "}",
 
 
-      "#lsffl-popup40-modal[hidden]{" +
+      "#lsffl-popup41-modal[hidden]{" +
         "display:none!important;" +
       "}",
 
 
-      "#lsffl-popup40-modal{" +
+      "#lsffl-popup41-modal{" +
         "position:fixed;" +
         "inset:0;" +
         "z-index:2147483000;" +
@@ -226,7 +212,7 @@
       "}",
 
 
-      "#lsffl-popup40-dialog{" +
+      "#lsffl-popup41-dialog{" +
         "width:min(1180px,96vw);" +
         "height:min(850px,94vh);" +
         "display:flex;" +
@@ -239,7 +225,7 @@
       "}",
 
 
-      "#lsffl-popup40-bar{" +
+      "#lsffl-popup41-bar{" +
         "min-height:48px;" +
         "display:flex;" +
         "align-items:center;" +
@@ -251,7 +237,7 @@
       "}",
 
 
-      "#lsffl-popup40-title{" +
+      "#lsffl-popup41-title{" +
         "min-width:0;" +
         "overflow:hidden;" +
         "color:#fff;" +
@@ -266,7 +252,7 @@
       "}",
 
 
-      "#lsffl-popup40-close{" +
+      "#lsffl-popup41-close{" +
         "width:34px!important;" +
         "min-width:34px!important;" +
         "height:34px!important;" +
@@ -283,13 +269,13 @@
       "}",
 
 
-      "#lsffl-popup40-close:hover{" +
+      "#lsffl-popup41-close:hover{" +
         "background:#c9a227!important;" +
         "color:#061426!important;" +
       "}",
 
 
-      "#lsffl-popup40-frame{" +
+      "#lsffl-popup41-frame{" +
         "width:100%;" +
         "height:100%;" +
         "flex:1 1 auto;" +
@@ -302,17 +288,17 @@
 
       "@media(max-width:700px){" +
 
-        "#lsffl-popup40-modal{" +
+        "#lsffl-popup41-modal{" +
           "padding:7px;" +
         "}" +
 
-        "#lsffl-popup40-dialog{" +
+        "#lsffl-popup41-dialog{" +
           "width:100%;" +
           "height:96vh;" +
           "border-radius:8px;" +
         "}" +
 
-        "#lsffl-popup40-title{" +
+        "#lsffl-popup41-title{" +
           "font-size:16px;" +
         "}" +
 
@@ -344,7 +330,7 @@
       );
 
     modal.id =
-      "lsffl-popup40-modal";
+      "lsffl-popup41-modal";
 
     modal.hidden =
       true;
@@ -366,7 +352,7 @@
       );
 
     modalDialog.id =
-      "lsffl-popup40-dialog";
+      "lsffl-popup41-dialog";
 
 
     var bar =
@@ -375,7 +361,7 @@
       );
 
     bar.id =
-      "lsffl-popup40-bar";
+      "lsffl-popup41-bar";
 
 
     modalTitle =
@@ -384,7 +370,7 @@
       );
 
     modalTitle.id =
-      "lsffl-popup40-title";
+      "lsffl-popup41-title";
 
     modalTitle.textContent =
       "LSFFL";
@@ -396,7 +382,7 @@
       );
 
     modalClose.id =
-      "lsffl-popup40-close";
+      "lsffl-popup41-close";
 
     modalClose.type =
       "button";
@@ -416,7 +402,7 @@
       );
 
     modalFrame.id =
-      "lsffl-popup40-frame";
+      "lsffl-popup41-frame";
 
     modalFrame.title =
       "LSFFL content";
@@ -741,7 +727,7 @@
 
     if (
       doc.getElementById(
-        "lsffl-popup40-frame-style"
+        "lsffl-popup41-frame-style"
       )
     ) {
       return;
@@ -754,13 +740,13 @@
       );
 
     style.id =
-      "lsffl-popup40-frame-style";
+      "lsffl-popup41-frame-style";
 
 
     style.textContent = [
 
-      "html.lsffl-popup40-doc," +
-      "html.lsffl-popup40-doc body{" +
+      "html.lsffl-popup41-doc," +
+      "html.lsffl-popup41-doc body{" +
 
         "margin:0!important;" +
         "padding:0!important;" +
@@ -780,16 +766,16 @@
       "}",
 
 
-      "html.lsffl-popup40-doc body{" +
+      "html.lsffl-popup41-doc body{" +
         "padding:10px!important;" +
         "box-sizing:border-box!important;" +
       "}",
 
 
-      "html.lsffl-popup40-doc #container-wrap," +
-      "html.lsffl-popup40-doc .pagebody," +
-      "html.lsffl-popup40-doc .report," +
-      "html.lsffl-popup40-doc .module{" +
+      "html.lsffl-popup41-doc #container-wrap," +
+      "html.lsffl-popup41-doc .pagebody," +
+      "html.lsffl-popup41-doc .report," +
+      "html.lsffl-popup41-doc .module{" +
 
         "max-width:100%!important;" +
         "width:100%!important;" +
@@ -799,7 +785,7 @@
       "}",
 
 
-      "html.lsffl-popup40-doc img{" +
+      "html.lsffl-popup41-doc img{" +
         "max-width:100%!important;" +
         "height:auto!important;" +
       "}",
@@ -807,9 +793,9 @@
 
       /* Franchise logo */
 
-      "html.lsffl-popup40-doc " +
-      "body.lsffl-popup40-franchise " +
-      "img.lsffl-popup40-team-logo{" +
+      "html.lsffl-popup41-doc " +
+      "body.lsffl-popup41-franchise " +
+      "img.lsffl-popup41-team-logo{" +
 
         "display:block!important;" +
         "width:auto!important;" +
@@ -824,8 +810,8 @@
 
       /* Franchise name */
 
-      "html.lsffl-popup40-doc " +
-      ".lsffl-popup40-team-brand{" +
+      "html.lsffl-popup41-doc " +
+      ".lsffl-popup41-team-brand{" +
 
         "width:min(700px,92%)!important;" +
         "margin:18px auto 0!important;" +
@@ -834,8 +820,8 @@
       "}",
 
 
-      "html.lsffl-popup40-doc " +
-      ".lsffl-popup40-team-name{" +
+      "html.lsffl-popup41-doc " +
+      ".lsffl-popup41-team-name{" +
 
         "color:#fff!important;" +
 
@@ -852,8 +838,8 @@
       "}",
 
 
-      "html.lsffl-popup40-doc " +
-      ".lsffl-popup40-team-line{" +
+      "html.lsffl-popup41-doc " +
+      ".lsffl-popup41-team-line{" +
 
         "width:130px!important;" +
         "height:3px!important;" +
@@ -1004,12 +990,12 @@
     }
 
     doc.body.classList.add(
-      "lsffl-popup40-franchise"
+      "lsffl-popup41-franchise"
     );
 
     if (
       doc.getElementById(
-        "lsffl-popup40-team-brand"
+        "lsffl-popup41-team-brand"
       )
     ) {
       return;
@@ -1019,6 +1005,11 @@
 
     if (!name) {
       return;
+    }
+
+    /* Always surface the franchise name in our own popup title bar. */
+    if (modalTitle) {
+      modalTitle.textContent = "Franchise Center — " + name;
     }
 
     var images = Array.prototype.slice.call(
@@ -1078,19 +1069,19 @@
     }
 
     logo.classList.add(
-      "lsffl-popup40-team-logo"
+      "lsffl-popup41-team-logo"
     );
 
     var brand = doc.createElement("div");
-    brand.id = "lsffl-popup40-team-brand";
-    brand.className = "lsffl-popup40-team-brand";
+    brand.id = "lsffl-popup41-team-brand";
+    brand.className = "lsffl-popup41-team-brand";
 
     var nameElement = doc.createElement("div");
-    nameElement.className = "lsffl-popup40-team-name";
+    nameElement.className = "lsffl-popup41-team-name";
     nameElement.textContent = name;
 
     var line = doc.createElement("div");
-    line.className = "lsffl-popup40-team-line";
+    line.className = "lsffl-popup41-team-line";
 
     brand.appendChild(nameElement);
     brand.appendChild(line);
@@ -1252,11 +1243,7 @@
   }
 
 
-  function bypassMessageGate(
-    doc,
-    win
-  ) {
-
+  function bypassMessageGate(doc, win) {
     if (
       modalType !== "message" ||
       !doc ||
@@ -1275,44 +1262,66 @@
       return false;
     }
 
-    /*
-     * MFL's unread-message screen sometimes requires the Read Message
-     * action more than once before it serves the real post. Automate the
-     * same click/reload cycle the owner was having to do manually.
-     */
-    messageGateAttempts += 1;
+    var currentUrl = absoluteUrl(win.location.href);
+    var currentPid = currentUrl && currentUrl.searchParams.get("pid");
+    var targetPid = target.url.searchParams.get("pid");
 
-    try {
-      target.link.click();
-    } catch (error) {
+    /*
+     * If we are still on O=28 (or another wrapper), replace the outer
+     * iframe with the real PID URL immediately.
+     */
+    if (!currentPid || !targetPid || currentPid !== targetPid) {
       try {
-        win.location.href = target.url.href;
-      } catch (ignore) {}
+        win.location.replace(target.url.href);
+      } catch (error) {
+        modalFrame.src = target.url.href;
+      }
+      return true;
     }
 
-    if (messageGateAttempts <= 4) {
+    /*
+     * MFL sometimes serves the yellow Read Message gate at the SAME PID URL.
+     * In that case, activate the actual link, then reload only if the gate
+     * is still present. This mirrors the manual click/reload behavior that
+     * previously worked, but keeps it bounded.
+     */
+    if (
+      doc.documentElement.dataset.lsfflPopup41ReadClicked !== "1"
+    ) {
+      doc.documentElement.dataset.lsfflPopup41ReadClicked = "1";
+      messageGateAttempts += 1;
+
       window.setTimeout(function () {
         try {
-          if (
-            modalType === "message" &&
-            modalFrame &&
-            !modal.hidden
-          ) {
-            modalFrame.contentWindow.location.reload();
-          }
+          target.link.click();
         } catch (error) {
           try {
-            modalFrame.src = target.url.href;
+            win.location.href = target.url.href;
           } catch (ignore) {}
         }
-      }, 450);
-    } else {
-      /* Safety net: never leave the user staring at an invisible frame. */
-      window.setTimeout(function () {
-        if (modalFrame) {
-          modalFrame.style.opacity = "1";
-        }
-      }, 300);
+      }, 40);
+
+      if (messageGateAttempts <= 3) {
+        window.setTimeout(function () {
+          try {
+            var stillBlocked = findReadMessageTarget(
+              doc,
+              win.location.href,
+              0
+            );
+
+            if (stillBlocked) {
+              win.location.reload();
+            }
+          } catch (error) {
+            try {
+              modalFrame.src = target.url.href;
+            } catch (ignore) {}
+          }
+        }, 300);
+      } else {
+        modalFrame.style.opacity = "1";
+      }
     }
 
     return true;
@@ -1339,16 +1348,25 @@
     }
 
     doc.documentElement.classList.add(
-      "lsffl-popup40-doc"
+      "lsffl-popup41-doc"
     );
 
     doc.body.classList.add(
-      "lsffl-popup40-doc"
+      "lsffl-popup41-doc"
     );
 
     injectFrameTheme(doc);
     hideMflChrome(doc);
     decorateFranchise(doc);
+
+    if (modalType === "franchise") {
+      window.setTimeout(function () {
+        try { decorateFranchise(doc); } catch (error) {}
+      }, 250);
+      window.setTimeout(function () {
+        try { decorateFranchise(doc); } catch (error) {}
+      }, 700);
+    }
 
     var frames = Array.prototype.slice.call(
       doc.querySelectorAll("iframe,frame")
@@ -1369,10 +1387,10 @@
 
         if (
           !nestedFrame.dataset
-            .lsfflPopup40Cleaner
+            .lsfflPopup41Cleaner
         ) {
           nestedFrame.dataset
-            .lsfflPopup40Cleaner = "1";
+            .lsfflPopup41Cleaner = "1";
 
           nestedFrame.addEventListener(
             "load",
@@ -1488,7 +1506,7 @@
 
 
     document.body.classList.add(
-      "lsffl-popup40-open"
+      "lsffl-popup41-open"
     );
 
 
@@ -1527,7 +1545,7 @@
 
 
     document.body.classList.remove(
-      "lsffl-popup40-open"
+      "lsffl-popup41-open"
     );
 
 
@@ -2192,7 +2210,7 @@
 
     if (
       document.getElementById(
-        "lsffl-popup40-announcement-styles"
+        "lsffl-popup41-announcement-styles"
       )
     ) {
       return;
@@ -2206,17 +2224,17 @@
 
 
     style.id =
-      "lsffl-popup40-announcement-styles";
+      "lsffl-popup41-announcement-styles";
 
 
     style.textContent = [
 
-      "#lsffl-popup40-announcement[hidden]{" +
+      "#lsffl-popup41-announcement[hidden]{" +
         "display:none!important;" +
       "}",
 
 
-      "#lsffl-popup40-announcement{" +
+      "#lsffl-popup41-announcement{" +
         "position:fixed;" +
         "inset:0;" +
         "z-index:2147483100;" +
@@ -2230,7 +2248,7 @@
       "}",
 
 
-      "#lsffl-popup40-announcement-card{" +
+      "#lsffl-popup41-announcement-card{" +
         "width:min(760px,96vw);" +
         "max-height:94vh;" +
         "overflow:auto;" +
@@ -2242,7 +2260,7 @@
       "}",
 
 
-      "#lsffl-popup40-announcement-head{" +
+      "#lsffl-popup41-announcement-head{" +
         "display:flex;" +
         "justify-content:space-between;" +
         "gap:16px;" +
@@ -2251,7 +2269,7 @@
       "}",
 
 
-      "#lsffl-popup40-announcement-eyebrow{" +
+      "#lsffl-popup41-announcement-eyebrow{" +
         "margin-bottom:5px;" +
         "color:#e1c45a;" +
         "font-family:'Barlow Condensed',Arial,sans-serif;" +
@@ -2262,7 +2280,7 @@
       "}",
 
 
-      "#lsffl-popup40-announcement-title{" +
+      "#lsffl-popup41-announcement-title{" +
         "margin:0;" +
         "color:#fff;" +
         "font-family:'Oswald','Barlow Condensed',Arial,sans-serif;" +
@@ -2273,7 +2291,7 @@
       "}",
 
 
-      "#lsffl-popup40-announcement-close{" +
+      "#lsffl-popup41-announcement-close{" +
         "width:38px!important;" +
         "min-width:38px!important;" +
         "height:38px!important;" +
@@ -2287,7 +2305,7 @@
       "}",
 
 
-      "#lsffl-popup40-announcement-body{" +
+      "#lsffl-popup41-announcement-body{" +
         "padding:12px 22px 8px;" +
         "color:#eef4fb;" +
         "font-family:Arial,sans-serif;" +
@@ -2296,7 +2314,7 @@
       "}",
 
 
-      "#lsffl-popup40-announcement-meta{" +
+      "#lsffl-popup41-announcement-meta{" +
         "margin-top:12px;" +
         "color:#aebdcd;" +
         "font-size:13px;" +
@@ -2304,13 +2322,13 @@
       "}",
 
 
-      "#lsffl-popup40-announcement-actions{" +
+      "#lsffl-popup41-announcement-actions{" +
         "display:flex;" +
         "padding:14px 22px 12px;" +
       "}",
 
 
-      "#lsffl-popup40-announcement-open{" +
+      "#lsffl-popup41-announcement-open{" +
         "display:none;" +
         "align-items:center;" +
         "justify-content:center;" +
@@ -2328,7 +2346,7 @@
       "}",
 
 
-      "#lsffl-popup40-announcement-nav{" +
+      "#lsffl-popup41-announcement-nav{" +
         "display:flex;" +
         "align-items:center;" +
         "justify-content:space-between;" +
@@ -2339,7 +2357,7 @@
       "}",
 
 
-      ".lsffl-popup40-announcement-navbtn{" +
+      ".lsffl-popup41-announcement-navbtn{" +
         "min-width:86px!important;" +
         "min-height:36px!important;" +
         "padding:7px 12px!important;" +
@@ -2355,13 +2373,13 @@
       "}",
 
 
-      ".lsffl-popup40-announcement-navbtn:disabled{" +
+      ".lsffl-popup41-announcement-navbtn:disabled{" +
         "opacity:.35;" +
         "cursor:default!important;" +
       "}",
 
 
-      "#lsffl-popup40-announcement-counter{" +
+      "#lsffl-popup41-announcement-counter{" +
         "color:#e1c45a;" +
         "font-family:'Barlow Condensed',Arial,sans-serif;" +
         "font-size:14px;" +
@@ -2369,7 +2387,7 @@
       "}",
 
 
-      "#lsffl-popup40-announcement-footer{" +
+      "#lsffl-popup41-announcement-footer{" +
         "display:flex;" +
         "align-items:center;" +
         "justify-content:space-between;" +
@@ -2381,14 +2399,14 @@
       "}",
 
 
-      "#lsffl-popup40-announcement-footer label{" +
+      "#lsffl-popup41-announcement-footer label{" +
         "display:flex;" +
         "align-items:center;" +
         "gap:7px;" +
       "}",
 
 
-      "#lsffl-popup40-announcement-footer input{" +
+      "#lsffl-popup41-announcement-footer input{" +
         "width:16px;" +
         "height:16px;" +
         "accent-color:#c9a227;" +
@@ -2424,7 +2442,7 @@
 
 
     announcementModal.id =
-      "lsffl-popup40-announcement";
+      "lsffl-popup41-announcement";
 
 
     announcementModal.hidden =
@@ -2433,17 +2451,17 @@
 
     announcementModal.innerHTML =
 
-      '<div id="lsffl-popup40-announcement-card">' +
+      '<div id="lsffl-popup41-announcement-card">' +
 
-        '<div id="lsffl-popup40-announcement-head">' +
+        '<div id="lsffl-popup41-announcement-head">' +
 
           '<div>' +
 
-            '<div id="lsffl-popup40-announcement-eyebrow">' +
+            '<div id="lsffl-popup41-announcement-eyebrow">' +
               'LSFFL' +
             '</div>' +
 
-            '<h2 id="lsffl-popup40-announcement-title">' +
+            '<h2 id="lsffl-popup41-announcement-title">' +
               'League Update' +
             '</h2>' +
 
@@ -2451,7 +2469,7 @@
 
 
           '<button ' +
-            'id="lsffl-popup40-announcement-close" ' +
+            'id="lsffl-popup41-announcement-close" ' +
             'type="button" ' +
             'aria-label="Close announcement">' +
             '×' +
@@ -2460,19 +2478,19 @@
         '</div>' +
 
 
-        '<div id="lsffl-popup40-announcement-body">' +
+        '<div id="lsffl-popup41-announcement-body">' +
 
-          '<div id="lsffl-popup40-announcement-text"></div>' +
+          '<div id="lsffl-popup41-announcement-text"></div>' +
 
-          '<div id="lsffl-popup40-announcement-meta"></div>' +
+          '<div id="lsffl-popup41-announcement-meta"></div>' +
 
         '</div>' +
 
 
-        '<div id="lsffl-popup40-announcement-actions">' +
+        '<div id="lsffl-popup41-announcement-actions">' +
 
           '<a ' +
-            'id="lsffl-popup40-announcement-open" ' +
+            'id="lsffl-popup41-announcement-open" ' +
             'href="#">' +
             'Read More' +
           '</a>' +
@@ -2480,24 +2498,24 @@
         '</div>' +
 
 
-        '<div id="lsffl-popup40-announcement-nav">' +
+        '<div id="lsffl-popup41-announcement-nav">' +
 
           '<button ' +
-            'class="lsffl-popup40-announcement-navbtn" ' +
-            'id="lsffl-popup40-announcement-prev" ' +
+            'class="lsffl-popup41-announcement-navbtn" ' +
+            'id="lsffl-popup41-announcement-prev" ' +
             'type="button">' +
             'Previous' +
           '</button>' +
 
 
-          '<span id="lsffl-popup40-announcement-counter">' +
+          '<span id="lsffl-popup41-announcement-counter">' +
             '1 / 1' +
           '</span>' +
 
 
           '<button ' +
-            'class="lsffl-popup40-announcement-navbtn" ' +
-            'id="lsffl-popup40-announcement-next" ' +
+            'class="lsffl-popup41-announcement-navbtn" ' +
+            'id="lsffl-popup41-announcement-next" ' +
             'type="button">' +
             'Next' +
           '</button>' +
@@ -2505,12 +2523,12 @@
         '</div>' +
 
 
-        '<div id="lsffl-popup40-announcement-footer">' +
+        '<div id="lsffl-popup41-announcement-footer">' +
 
           '<label>' +
 
             '<input ' +
-              'id="lsffl-popup40-announcement-dontshow" ' +
+              'id="lsffl-popup41-announcement-dontshow" ' +
               'type="checkbox">' +
 
             ' Don\'t show announcements again for 24 hours' +
@@ -2519,7 +2537,7 @@
 
 
           '<span>' +
-            'NAVY TIMES • LSFFL 4.0' +
+            'NAVY TIMES • LSFFL 4.1' +
           '</span>' +
 
         '</div>' +
@@ -2533,7 +2551,7 @@
 
 
     document.getElementById(
-      "lsffl-popup40-announcement-close"
+      "lsffl-popup41-announcement-close"
     ).addEventListener(
       "click",
       closeAnnouncement
@@ -2541,7 +2559,7 @@
 
 
     document.getElementById(
-      "lsffl-popup40-announcement-prev"
+      "lsffl-popup41-announcement-prev"
     ).addEventListener(
       "click",
       function () {
@@ -2555,7 +2573,7 @@
 
 
     document.getElementById(
-      "lsffl-popup40-announcement-next"
+      "lsffl-popup41-announcement-next"
     ).addEventListener(
       "click",
       function () {
@@ -2569,7 +2587,7 @@
 
 
     document.getElementById(
-      "lsffl-popup40-announcement-open"
+      "lsffl-popup41-announcement-open"
     ).addEventListener(
 
       "click",
@@ -2675,28 +2693,28 @@
 
 
     document.getElementById(
-      "lsffl-popup40-announcement-eyebrow"
+      "lsffl-popup41-announcement-eyebrow"
     ).textContent =
       item.eyebrow ||
       "LSFFL";
 
 
     document.getElementById(
-      "lsffl-popup40-announcement-title"
+      "lsffl-popup41-announcement-title"
     ).textContent =
       item.title ||
       "League Update";
 
 
     document.getElementById(
-      "lsffl-popup40-announcement-text"
+      "lsffl-popup41-announcement-text"
     ).textContent =
       item.body ||
       "";
 
 
     document.getElementById(
-      "lsffl-popup40-announcement-meta"
+      "lsffl-popup41-announcement-meta"
     ).textContent =
       item.meta ||
       "";
@@ -2704,7 +2722,7 @@
 
     var open =
       document.getElementById(
-        "lsffl-popup40-announcement-open"
+        "lsffl-popup41-announcement-open"
       );
 
 
@@ -2735,7 +2753,7 @@
 
 
     document.getElementById(
-      "lsffl-popup40-announcement-counter"
+      "lsffl-popup41-announcement-counter"
     ).textContent =
       (
         announcementIndex + 1
@@ -2745,13 +2763,13 @@
 
 
     document.getElementById(
-      "lsffl-popup40-announcement-prev"
+      "lsffl-popup41-announcement-prev"
     ).disabled =
       announcementIndex === 0;
 
 
     document.getElementById(
-      "lsffl-popup40-announcement-next"
+      "lsffl-popup41-announcement-next"
     ).disabled =
       announcementIndex ===
       announcementItems.length - 1;
@@ -2779,7 +2797,7 @@
 
 
     document.getElementById(
-      "lsffl-popup40-announcement-dontshow"
+      "lsffl-popup41-announcement-dontshow"
     ).checked =
       false;
 
@@ -2826,7 +2844,7 @@
 
     var dontShow =
       document.getElementById(
-        "lsffl-popup40-announcement-dontshow"
+        "lsffl-popup41-announcement-dontshow"
       );
 
 
@@ -2989,7 +3007,7 @@
 
 
   /* ============================================================
-     PUBLIC POP-UP 4.0 API
+     PUBLIC POP-UP 4.1 API
      ============================================================ */
 
   window.lsfflPopup3 = {
