@@ -1395,7 +1395,7 @@
         '<div id="lsffl-popup3-announcement-footer">' +
           '<label>' +
             '<input id="lsffl-popup3-announcement-dontshow" type="checkbox"> ' +
-            'Don\\'t show announcements again for 24 hours' +
+            'Don\'t show announcements again for 24 hours' +
           '</label>' +
 
           '<span>NAVY TIMES • LSFFL 3.0</span>' +
