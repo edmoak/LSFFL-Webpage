@@ -1,5 +1,5 @@
 /*
- * LSFFL POPUP MANAGER — POP-UP 2.1
+ * LSFFL POPUP MANAGER — POP-UP 2.2
  * File location: js/lsffl-popup-manager.js
  *
  * Owns all custom popup behavior for:
@@ -24,6 +24,7 @@
   var closeButton = null;
   var previousFocus = null;
   var currentType = "content";
+  var messageReadRetries = 0;
   var nativeWindowOpen = window.open.bind(window);
 
   function normalizeFranchiseId(value) {
@@ -149,7 +150,6 @@
 
     var style = document.createElement("style");
     style.id = "lsffl-popup-manager-styles";
-
     style.textContent = [
       "body.lsffl-content-popup-open{overflow:hidden!important;}",
       "#lsffl-content-popup[hidden]{display:none!important;}",
@@ -162,7 +162,6 @@
       "#lsffl-content-popup-frame{width:100%;height:100%;flex:1 1 auto;border:0;background:#061426;opacity:0;transition:opacity .12s ease;}",
       "@media(max-width:700px){#lsffl-content-popup{padding:7px;}#lsffl-content-popup-dialog{width:100%;height:96vh;border-radius:8px;}#lsffl-content-popup-bar{min-height:44px;padding-left:11px;}#lsffl-content-popup-title{font-size:16px;}}"
     ].join("");
-
     document.head.appendChild(style);
   }
 
@@ -218,6 +217,10 @@
     });
 
     frame.addEventListener("load", function () {
+      /*
+       * GitHub pages are cross-origin, so their document cannot be inspected
+       * from MFL. Reveal them immediately when the iframe finishes loading.
+       */
       if (currentType === "github") {
         revealFrame();
         return;
@@ -229,6 +232,10 @@
       window.setTimeout(cleanIframe, 900);
       window.setTimeout(cleanIframe, 1600);
 
+      /*
+       * Do not reveal message pages until the intermediate Read Message page
+       * has been replaced and the real topic page has been cleaned.
+       */
       if (currentType !== "message") {
         window.setTimeout(revealFrame, 700);
       }
@@ -281,11 +288,7 @@
       doc.querySelectorAll("iframe,frame")
     );
 
-    for (
-      var frameIndex = 0;
-      frameIndex < nestedFrames.length;
-      frameIndex += 1
-    ) {
+    for (var frameIndex = 0; frameIndex < nestedFrames.length; frameIndex += 1) {
       try {
         var nestedWindow = nestedFrames[frameIndex].contentWindow;
         var nestedDocument = nestedFrames[frameIndex].contentDocument;
@@ -303,7 +306,7 @@
           return nestedResult;
         }
       } catch (error) {
-        /* Retry later. */
+        /* Retry after the nested page finishes loading. */
       }
     }
 
@@ -311,10 +314,7 @@
   }
 
   function markLargeFranchiseImage(image) {
-    if (
-      !image ||
-      image.dataset.lsfflFranchiseImageChecked === "true"
-    ) {
+    if (!image || image.dataset.lsfflFranchiseImageChecked === "true") {
       return;
     }
 
@@ -332,18 +332,20 @@
         renderedWidth >= 650 ||
         renderedHeight >= 500
       ) {
-        image.classList.add(
-          "lsffl-popup-large-franchise-image"
-        );
+        image.classList.add("lsffl-popup-large-franchise-image");
+
+        try {
+          decorateFranchiseLogo(image.ownerDocument || document);
+        } catch (error) {
+          /* Branding is cosmetic; never block the franchise page. */
+        }
       }
     }
 
     if (image.complete) {
       applyLimit();
     } else {
-      image.addEventListener("load", applyLimit, {
-        once: true
-      });
+      image.addEventListener("load", applyLimit, { once: true });
     }
   }
 
@@ -357,6 +359,96 @@
     Array.prototype.forEach.call(
       doc.querySelectorAll("img"),
       markLargeFranchiseImage
+    );
+
+    decorateFranchiseLogo(doc);
+  }
+
+  function getFranchiseName(doc) {
+    if (!doc || !doc.body) {
+      return "";
+    }
+
+    /*
+     * MFL's franchise navigation normally includes text such as
+     * "Cougars: Main | Roster | ...". That is the cleanest source because
+     * it is generated from MFL's real franchise name and requires no hard-code.
+     */
+    var bodyText = String(doc.body.innerText || doc.body.textContent || "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    var navMatch = bodyText.match(
+      /(?:^|\s)([A-Za-z0-9][A-Za-z0-9'’&. \/_-]{1,45}?):\s*Main\b/i
+    );
+
+    if (navMatch && navMatch[1]) {
+      return navMatch[1].replace(/\s+/g, " ").trim();
+    }
+
+    /*
+     * Fallback for skins that place the franchise name in a module heading.
+     */
+    var candidates = Array.prototype.slice.call(
+      doc.querySelectorAll(
+        ".modulehead, .moduleheader, h1, h2, h3, caption, th"
+      )
+    );
+
+    for (var index = 0; index < candidates.length; index += 1) {
+      var text = String(candidates[index].textContent || "")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      if (
+        text.length >= 2 &&
+        text.length <= 45 &&
+        !/^(main|roster|roster w\/?stats|scoring history|transactions|schedule|accounting|series records|box score|my options|franchise center)$/i.test(text)
+      ) {
+        return text.replace(/:\s*main.*$/i, "").trim();
+      }
+    }
+
+    return "";
+  }
+
+  function decorateFranchiseLogo(doc) {
+    if (currentType !== "franchise" || !doc || !doc.body) {
+      return;
+    }
+
+    var franchiseName = getFranchiseName(doc);
+
+    if (!franchiseName) {
+      return;
+    }
+
+    Array.prototype.forEach.call(
+      doc.querySelectorAll("img.lsffl-popup-large-franchise-image"),
+      function (image) {
+        if (image.dataset.lsfflFranchiseBrandAdded === "true") {
+          return;
+        }
+
+        image.dataset.lsfflFranchiseBrandAdded = "true";
+
+        var brand = doc.createElement("div");
+        brand.className = "lsffl-popup-franchise-brand";
+
+        var name = doc.createElement("div");
+        name.className = "lsffl-popup-franchise-brand-name";
+        name.textContent = franchiseName;
+
+        var line = doc.createElement("div");
+        line.className = "lsffl-popup-franchise-brand-line";
+
+        brand.appendChild(name);
+        brand.appendChild(line);
+
+        if (image.parentNode) {
+          image.parentNode.insertBefore(brand, image);
+        }
+      }
     );
   }
 
@@ -393,9 +485,7 @@
   }
 
   function injectIframeTheme(doc) {
-    if (
-      doc.getElementById("lsffl-popup-clean-style")
-    ) {
+    if (doc.getElementById("lsffl-popup-clean-style")) {
       return;
     }
 
@@ -404,11 +494,25 @@
 
     style.textContent = [
       "html.lsffl-popup-document,html.lsffl-popup-document body{margin:0!important;padding:0!important;min-height:100%!important;background:#061426!important;background-image:url('https://github.com/edmoak/LSFFL-Webpage/blob/main/images/backgrounds/lsfflbackground.png?raw=true')!important;background-position:center top!important;background-size:cover!important;background-attachment:fixed!important;color:#fff!important;overflow-x:hidden!important;}",
+
       "html.lsffl-popup-document body{padding:10px!important;box-sizing:border-box!important;}",
+
       "html.lsffl-popup-document #container-wrap,html.lsffl-popup-document #body_options_01,html.lsffl-popup-document #body_options_73,html.lsffl-popup-document .pagebody,html.lsffl-popup-document .report,html.lsffl-popup-document .module{max-width:100%!important;width:100%!important;margin:0 auto!important;box-sizing:border-box!important;}",
+
       "html.lsffl-popup-document img{max-width:100%!important;height:auto!important;}",
+
       "html.lsffl-popup-document body.lsffl-popup-franchise img.lsffl-popup-large-franchise-image{display:block!important;width:auto!important;height:auto!important;max-width:min(612px,75%)!important;max-height:374px!important;margin:18px auto!important;object-fit:contain!important;object-position:center!important;}",
+
+      "html.lsffl-popup-document body.lsffl-popup-franchise .lsffl-popup-franchise-brand{display:block!important;width:min(700px,92%)!important;margin:18px auto 4px!important;padding:0 10px!important;text-align:center!important;background:transparent!important;border:0!important;box-shadow:none!important;}",
+
+      "html.lsffl-popup-document body.lsffl-popup-franchise .lsffl-popup-franchise-brand-name{margin:0!important;padding:0!important;color:#fff!important;font-family:'Oswald','Barlow Condensed','Arial Narrow',Arial,sans-serif!important;font-size:clamp(28px,4vw,42px)!important;line-height:1.05!important;font-weight:800!important;letter-spacing:1.2px!important;text-transform:uppercase!important;text-shadow:0 3px 8px rgba(0,0,0,.55)!important;}",
+
+      "html.lsffl-popup-document body.lsffl-popup-franchise .lsffl-popup-franchise-brand-line{width:130px!important;height:3px!important;margin:10px auto 0!important;background:linear-gradient(90deg,transparent,#c9a227,#e1c45a,#c9a227,transparent)!important;border:0!important;}",
+
+      "html.lsffl-popup-document body.lsffl-popup-franchise .lsffl-popup-franchise-brand + img.lsffl-popup-large-franchise-image{margin-top:10px!important;}",
+
       "html.lsffl-popup-document body.lsffl-popup-message .myfantasyleague_menu,html.lsffl-popup-document body.lsffl-popup-message .banner-container,html.lsffl-popup-document body.lsffl-popup-message .banner-container-wrap,html.lsffl-popup-document body.lsffl-popup-message .banner-leftside,html.lsffl-popup-document body.lsffl-popup-message .banner-rightside,html.lsffl-popup-document body.lsffl-popup-message .bannerlinkicons,html.lsffl-popup-document body.lsffl-popup-message .icon-bar,html.lsffl-popup-document body.lsffl-popup-message #MFLBoxWrapper{display:none!important;visibility:hidden!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important;overflow:hidden!important;}",
+
       "html.lsffl-popup-document a{cursor:pointer!important;}"
     ].join("");
 
@@ -450,8 +554,7 @@
 
       if (!response.ok) {
         throw new Error(
-          "GitHub page returned HTTP " +
-            response.status
+          "GitHub page returned HTTP " + response.status
         );
       }
 
@@ -480,17 +583,13 @@
     var body = doc.body;
     var head = doc.head || doc.documentElement;
 
-    doc.documentElement.classList.add(
-      "lsffl-popup-document"
-    );
+    doc.documentElement.classList.add("lsffl-popup-document");
 
     if (body) {
       body.classList.add("lsffl-popup-document");
 
       if (currentType === "message") {
-        body.classList.add(
-          "lsffl-popup-message"
-        );
+        body.classList.add("lsffl-popup-message");
       }
     }
 
@@ -562,18 +661,18 @@
                 );
               }
             } catch (error) {
-              /* Cross-origin nested frame. */
+              /*
+               * Cross-origin nested frames are left untouched.
+               */
             }
           }
 
           cleanNested();
 
           if (
-            !nestedFrame.dataset
-              .lsfflNestedCleanerBound
+            !nestedFrame.dataset.lsfflNestedCleanerBound
           ) {
-            nestedFrame.dataset
-              .lsfflNestedCleanerBound =
+            nestedFrame.dataset.lsfflNestedCleanerBound =
               "true";
 
             nestedFrame.addEventListener(
@@ -597,10 +696,7 @@
   }
 
   function cleanIframe() {
-    if (
-      !frame ||
-      !frame.contentWindow
-    ) {
+    if (!frame || !frame.contentWindow) {
       revealFrame();
       return;
     }
@@ -611,17 +707,18 @@
     }
 
     try {
-      var doc =
-        frame.contentDocument;
+      var doc = frame.contentDocument;
+      var win = frame.contentWindow;
+      var currentHref = String(
+        win.location.href || ""
+      );
 
-      var win =
-        frame.contentWindow;
-
-      var currentHref =
-        String(
-          win.location.href || ""
-        );
-
+      /*
+       * MFL's O=28 page embeds a large "Read Message" graphic,
+       * sometimes inside another iframe. Find the real PID link
+       * recursively and replace the outer popup iframe with the
+       * actual message page.
+       */
       if (currentType === "message") {
         var currentUrl =
           makeAbsoluteURL(currentHref);
@@ -640,10 +737,15 @@
             );
 
           var targetPid =
-            readTarget.url
-              .searchParams
-              .get("pid");
+            readTarget.url.searchParams.get(
+              "pid"
+            );
 
+          /*
+           * MFL sometimes serves the giant yellow "Read Message"
+           * page at the same PID URL. A normal redirect changes
+           * nothing, so activate the actual Read Message link.
+           */
           if (
             currentPid &&
             targetPid &&
@@ -659,26 +761,65 @@
             }
 
             if (
-              !doc.documentElement
-                .dataset
+              !doc.documentElement.dataset
                 .lsfflReadMessageClicked
             ) {
-              doc.documentElement
-                .dataset
+              doc.documentElement.dataset
                 .lsfflReadMessageClicked =
                 "true";
+
+              messageReadRetries += 1;
 
               window.setTimeout(
                 function () {
                   try {
                     readTarget.link.click();
                   } catch (error) {
-                    win.location.href =
-                      readTarget.url.href;
+                    /*
+                     * MFL sometimes uses the same PID URL
+                     * for the Read Message gate.
+                     */
                   }
                 },
                 40
               );
+
+              /*
+               * Clicking MFL's yellow Read Message link may
+               * only mark the post read and leave the gate.
+               *
+               * Automatically reload the PID once or twice
+               * so the real message replaces the intermediary.
+               */
+              if (messageReadRetries <= 2) {
+                window.setTimeout(
+                  function () {
+                    try {
+                      var stillBlocked =
+                        findReadMessageTarget(
+                          doc,
+                          win.location.href
+                        );
+
+                      if (stillBlocked) {
+                        win.location.reload();
+                      }
+                    } catch (error) {
+                      win.location.href =
+                        readTarget.url.href;
+                    }
+                  },
+                  220
+                );
+              } else {
+                /*
+                 * Safety net: never leave an invisible frame.
+                 */
+                window.setTimeout(
+                  revealFrame,
+                  350
+                );
+              }
             }
 
             return;
@@ -725,12 +866,10 @@
       revealFrame();
 
       if (
-        !doc.documentElement
-          .dataset
+        !doc.documentElement.dataset
           .lsfflPopupLinksBound
       ) {
-        doc.documentElement
-          .dataset
+        doc.documentElement.dataset
           .lsfflPopupLinksBound =
           "true";
 
@@ -783,12 +922,10 @@
 
       if (
         doc.body &&
-        !doc.documentElement
-          .dataset
+        !doc.documentElement.dataset
           .lsfflPopupObserver
       ) {
-        doc.documentElement
-          .dataset
+        doc.documentElement.dataset
           .lsfflPopupObserver =
           "true";
 
@@ -852,6 +989,12 @@
     currentType =
       type || "content";
 
+    /*
+     * Reset the special Message Board gate counter
+     * every time a new popup is opened.
+     */
+    messageReadRetries = 0;
+
     titleElement.textContent =
       title || "LSFFL";
 
@@ -860,6 +1003,7 @@
 
     if (currentType === "github") {
       frame.src = "about:blank";
+
       loadGitHubPageIntoFrame(url);
     } else {
       frame.src = url;
@@ -867,6 +1011,11 @@
 
     modal.hidden = false;
 
+    /*
+     * Final safety net: even if a browser blocks iframe
+     * inspection or MFL changes its message-page structure,
+     * loaded content will still appear.
+     */
     if (
       currentType !== "message"
     ) {
@@ -904,7 +1053,8 @@
       "srcdoc"
     );
 
-    frame.src = "about:blank";
+    frame.src =
+      "about:blank";
 
     document.body.classList.remove(
       "lsffl-content-popup-open"
@@ -951,8 +1101,7 @@
       0,
       screenLeft +
         Math.round(
-          (viewportWidth - width) /
-            2
+          (viewportWidth - width) / 2
         )
     );
 
@@ -960,8 +1109,7 @@
       0,
       screenTop +
         Math.round(
-          (viewportHeight - height) /
-            2
+          (viewportHeight - height) / 2
         )
     );
 
@@ -1185,108 +1333,96 @@
       );
     };
 
-  /*
-   * ============================================================
-   * LSFFL POP-UP 2.1 ANNOUNCEMENT CENTER
-   * ============================================================
-   *
-   * This layer reads league information directly from the
-   * MFL homepage DOM.
-   *
-   * It does NOT require Cloudflare for Commissioner Articles
-   * or Message Board topics.
-   * ============================================================
-   */
+
+  /* =========================================================
+     LSFFL POP-UP 2.2 — NATIVE MFL ANNOUNCEMENT CENTER
+     ========================================================= */
 
   var POPUP2_CONFIG = {
     enabled: true,
+    autoOpen: true,
 
     /*
-     * Time before the popup automatically opens after
-     * the homepage is ready.
+     * Delay after the homepage data is ready.
      */
-    autoOpenDelayMs: 900,
+    autoOpenDelayMs: 1200,
 
     /*
-     * How long we wait for MFL's native article/message
-     * summary tables to appear.
+     * "Don't show announcements again" duration.
+     */
+    dismissHours: 24,
+
+    leagueId: "23135",
+    year: "2026",
+
+    maxBodyLength: 900,
+
+    /*
+     * How long Pop-Up 2.2 waits for the native MFL
+     * article and message-board tables.
      */
     sourceWaitMs: 20000,
     sourceRetryMs: 250,
 
     /*
-     * "Don't show again today" duration.
+     * Manual commissioner announcements can be
+     * added here later without changing the
+     * MFL article/message-board system.
      */
-    dismissHours: 24,
+    manualAnnouncements: [
+      {
+        id: "welcome-2026",
+        priority: "normal",
+        eyebrow: "COMMISSIONER'S DESK",
+        title: "Welcome to the 2026 LSFFL Season",
 
-    /*
-     * Prevent excessively long text from overflowing the card.
-     */
-    maxBodyLength: 700,
+        body:
+          "The Lamad Squad Fantasy Football League is back. " +
+          "Check Navy Times and League Central throughout the season " +
+          "for commissioner updates, league news, message-board activity, " +
+          "and everything happening around the LSFFL.",
 
-    /*
-     * Manual announcements can be added here.
-     *
-     * Example:
-     *
-     * {
-     *   id: "draft-2026",
-     *   priority: "priority",
-     *   eyebrow: "DRAFT ALERT",
-     *   title: "2026 LSFFL Draft",
-     *   body: "The draft begins August 23 at 1800 EST.",
-     *   meta: "Commissioner Notice",
-     *   countdownTo: "2026-08-23T18:00:00-04:00",
-     *   countdownLabel: "DRAFT BEGINS IN",
-     *   buttonText: "Open Draft Room",
-     *   buttonUrl: "https://www48.myfantasyleague.com/2026/options?L=23135&O=17"
-     * }
-     */
-    manualAnnouncements: []
+        buttonText: "",
+        buttonUrl: "",
+
+        start:
+          "2026-08-01T00:00:00-04:00",
+
+        end:
+          "2026-09-15T23:59:59-04:00"
+      }
+    ]
   };
 
   var popup2 = null;
   var popup2Dialog = null;
-  var popup2Close = null;
-  var popup2Eyebrow = null;
   var popup2Title = null;
+  var popup2Eyebrow = null;
   var popup2Body = null;
   var popup2Meta = null;
   var popup2Image = null;
-  var popup2Countdown = null;
   var popup2Action = null;
-  var popup2Counter = null;
   var popup2Prev = null;
   var popup2Next = null;
+  var popup2Counter = null;
   var popup2DontShow = null;
+  var popup2Close = null;
 
   var popup2Announcements = [];
   var popup2Index = 0;
   var popup2PreviousFocus = null;
   var popup2CountdownTimer = null;
 
-  function popup2Escape(value) {
-    return String(
-      value == null
-        ? ""
-        : value
-    );
-  }
-
   function popup2StorageKey() {
-    return (
-      "lsffl_popup2_dismissed_" +
-      String(
-        window.location.pathname ||
-          "home"
-      )
-    );
+    return "lsffl-popup2-dismissed-until";
   }
 
   function popup2SeenKey(id) {
     return (
-      "lsffl_popup2_seen_" +
-      String(id || "")
+      "lsffl-popup2-seen-" +
+      String(
+        id || "announcement"
+      )
     );
   }
 
@@ -1294,8 +1430,9 @@
     key
   ) {
     try {
-      return window.localStorage
-        .getItem(key);
+      return window.localStorage.getItem(
+        key
+      );
     } catch (error) {
       return null;
     }
@@ -1311,17 +1448,17 @@
         value
       );
     } catch (error) {
-      /* Storage unavailable. */
+      /*
+       * Storage unavailable.
+       */
     }
   }
 
-  function popup2IsPriority(item) {
-    return (
-      item &&
-      String(
-        item.priority || ""
-      ).toLowerCase() ===
-        "priority"
+  function popup2Escape(value) {
+    return String(
+      value == null
+        ? ""
+        : value
     );
   }
 
@@ -1333,18 +1470,26 @@
       return false;
     }
 
+    var start =
+      item.start
+        ? Date.parse(item.start)
+        : NaN;
+
+    var end =
+      item.end
+        ? Date.parse(item.end)
+        : NaN;
+
     if (
-      item.startAt &&
-      Date.parse(item.startAt) >
-        now
+      !isNaN(start) &&
+      now < start
     ) {
       return false;
     }
 
     if (
-      item.endAt &&
-      Date.parse(item.endAt) <
-        now
+      !isNaN(end) &&
+      now > end
     ) {
       return false;
     }
@@ -1352,26 +1497,15 @@
     return true;
   }
 
-  function popup2HasUnseenPriority(
-    items
+  function popup2IsPriority(
+    item
   ) {
-    return items.some(
-      function (item) {
-        if (
-          !popup2IsPriority(item)
-        ) {
-          return false;
-        }
-
-        var seen =
-          popup2SafeStorageGet(
-            popup2SeenKey(
-              item.id
-            )
-          );
-
-        return !seen;
-      }
+    return Boolean(
+      item &&
+      String(
+        item.priority || ""
+      ).toLowerCase() ===
+        "priority"
     );
   }
 
@@ -1379,21 +1513,34 @@
     items
   ) {
     if (
-      !items ||
+      !POPUP2_CONFIG.enabled ||
+      !POPUP2_CONFIG.autoOpen ||
       !items.length
     ) {
       return false;
     }
 
     /*
-     * Priority announcements can bypass the normal
-     * 24-hour dismissal if they have not been seen.
+     * Unseen priority announcements override
+     * a normal 24-hour dismissal.
      */
-    if (
-      popup2HasUnseenPriority(
-        items
-      )
-    ) {
+    var priorityItem =
+      items.some(
+        function (item) {
+          return (
+            popup2IsPriority(
+              item
+            ) &&
+            !popup2SafeStorageGet(
+              popup2SeenKey(
+                item.id
+              )
+            )
+          );
+        }
+      );
+
+    if (priorityItem) {
       return true;
     }
 
@@ -1405,8 +1552,9 @@
       );
 
     return (
-      Date.now() >
-      dismissedUntil
+      !dismissedUntil ||
+      Date.now() >=
+        dismissedUntil
     );
   }
 
@@ -1434,65 +1582,59 @@
 
       "#lsffl-popup2,#lsffl-popup2 *{box-sizing:border-box;}",
 
-      "#lsffl-popup2{position:fixed;inset:0;z-index:2147483100;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(0,6,16,.88);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}",
+      "#lsffl-popup2{position:fixed;inset:0;z-index:2147483100;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(0,7,18,.88);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);font-family:'Barlow Condensed','Roboto Condensed','Arial Narrow',Arial,sans-serif;}",
 
-      "#lsffl-popup2-dialog{position:relative;width:min(920px,96vw);max-height:min(760px,94vh);overflow:hidden;border:2px solid #c9a227;border-radius:14px;background:linear-gradient(145deg,#0b2949 0%,#061426 48%,#020b18 100%);box-shadow:0 26px 80px rgba(0,0,0,.78),0 0 28px rgba(201,162,39,.12);color:#fff;}",
+      "#lsffl-popup2-dialog{position:relative;width:min(760px,96vw);max-height:min(780px,94vh);display:flex;flex-direction:column;overflow:hidden;border:2px solid #c9a227;border-radius:14px;background:linear-gradient(180deg,#0c2846 0%,#061426 52%,#02091a 100%);color:#fff;box-shadow:0 24px 90px rgba(0,0,0,.78);}",
 
-      "#lsffl-popup2-topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:54px;padding:8px 10px 8px 18px;border-bottom:2px solid #c9a227;background:linear-gradient(180deg,#153f64 0%,#071a2f 100%);}",
+      "#lsffl-popup2-topline{height:6px;flex:0 0 6px;background:linear-gradient(90deg,#c9a227,#f0d776,#c9a227);}",
 
-      "#lsffl-popup2-brand{min-width:0;display:flex;align-items:center;gap:10px;font-family:'Oswald','Barlow Condensed','Arial Narrow',Arial,sans-serif;font-size:20px;line-height:1;font-weight:700;letter-spacing:.8px;text-transform:uppercase;}",
+      "#lsffl-popup2-header{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:22px 22px 10px;}",
 
-      "#lsffl-popup2-brand-mark{color:#e1c45a;font-size:20px;}",
+      "#lsffl-popup2-heading{min-width:0;}",
 
-      "#lsffl-popup2-close{width:36px!important;min-width:36px!important;height:36px!important;min-height:36px!important;padding:0!important;display:grid!important;place-items:center!important;border:1px solid #e1c45a!important;border-radius:6px!important;background:#061426!important;color:#fff!important;font-family:Arial,sans-serif!important;font-size:26px!important;line-height:26px!important;font-weight:400!important;cursor:pointer!important;}",
+      "#lsffl-popup2-eyebrow{margin:0 0 5px;color:#e1c45a;font-size:13px;font-weight:900;letter-spacing:1.7px;text-transform:uppercase;}",
+
+      "#lsffl-popup2-title{margin:0;color:#fff;font-size:clamp(25px,4vw,36px);line-height:1.03;font-weight:900;letter-spacing:.4px;text-transform:uppercase;}",
+
+      "#lsffl-popup2-close{width:38px!important;min-width:38px!important;height:38px!important;padding:0!important;display:grid!important;place-items:center!important;border:1px solid rgba(225,196,90,.8)!important;border-radius:8px!important;background:#061426!important;color:#fff!important;font:400 28px/1 Arial,sans-serif!important;cursor:pointer!important;}",
 
       "#lsffl-popup2-close:hover{background:#c9a227!important;color:#061426!important;}",
 
-      "#lsffl-popup2-content{max-height:calc(min(760px,94vh) - 54px);overflow-y:auto;padding:28px 30px 24px;scrollbar-width:thin;scrollbar-color:#c9a227 #061426;}",
+      "#lsffl-popup2-media{padding:4px 22px 0;}",
 
-      "#lsffl-popup2-content::-webkit-scrollbar{width:9px;}",
+      "#lsffl-popup2-image{display:none;width:100%;max-height:285px;object-fit:contain;border:1px solid rgba(201,162,39,.36);border-radius:10px;background:rgba(0,0,0,.2);}",
 
-      "#lsffl-popup2-content::-webkit-scrollbar-track{background:#061426;}",
+      "#lsffl-popup2-content{overflow:auto;padding:14px 22px 8px;}",
 
-      "#lsffl-popup2-content::-webkit-scrollbar-thumb{background:#c9a227;border:2px solid #061426;border-radius:8px;}",
+      "#lsffl-popup2-meta{margin:0 0 11px;color:#aebdcd;font-size:14px;font-weight:700;letter-spacing:.3px;}",
 
-      "#lsffl-popup2-eyebrow{margin:0 0 8px;color:#e1c45a;font-family:'Oswald','Barlow Condensed',Arial,sans-serif;font-size:15px;line-height:1.1;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;}",
+      "#lsffl-popup2-body{margin:0;color:#eef4fb;font-family:Arial,sans-serif;font-size:17px;line-height:1.58;white-space:pre-line;}",
 
-      "#lsffl-popup2-title{margin:0;color:#fff;font-family:'Oswald','Barlow Condensed','Arial Narrow',Arial,sans-serif;font-size:clamp(30px,5vw,48px);line-height:1.05;font-weight:700;letter-spacing:.2px;text-transform:uppercase;text-shadow:0 3px 8px rgba(0,0,0,.5);}",
+      "#lsffl-popup2-countdown{display:none;margin:18px 0 2px;padding:12px 14px;border:1px solid rgba(201,162,39,.45);border-radius:9px;background:rgba(201,162,39,.09);color:#e1c45a;text-align:center;font-size:19px;font-weight:900;letter-spacing:.5px;}",
 
-      "#lsffl-popup2-divider{width:110px;height:3px;margin:16px 0 18px;background:linear-gradient(90deg,#e1c45a,#c9a227,transparent);}",
+      "#lsffl-popup2-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:16px 22px 12px;}",
 
-      "#lsffl-popup2-image{display:none;width:100%;max-height:330px;margin:0 0 20px;border:1px solid rgba(225,196,90,.65);border-radius:9px;object-fit:contain;background:#020b18;}",
+      "#lsffl-popup2-action{display:none;align-items:center;justify-content:center;min-height:42px;padding:9px 18px;border:1px solid #e1c45a;border-radius:8px;background:#c9a227;color:#061426!important;text-decoration:none!important;font-size:16px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;}",
 
-      "#lsffl-popup2-body{margin:0;color:#f4f7fb;font-family:Arial,sans-serif;font-size:16px;line-height:1.6;white-space:pre-line;}",
+      "#lsffl-popup2-action:hover{background:#e1c45a;}",
 
-      "#lsffl-popup2-meta{display:none;margin:16px 0 0;color:#aebdcd;font-family:Arial,sans-serif;font-size:13px;line-height:1.4;}",
+      "#lsffl-popup2-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 22px;border-top:1px solid rgba(201,162,39,.3);background:rgba(0,0,0,.18);}",
 
-      "#lsffl-popup2-countdown{display:none;margin:20px 0 0;padding:13px 14px;border:1px solid rgba(225,196,90,.75);border-radius:7px;background:rgba(2,12,26,.72);color:#e1c45a;font-family:'Oswald','Barlow Condensed',Arial,sans-serif;font-size:18px;line-height:1.2;font-weight:700;letter-spacing:.6px;text-align:center;text-transform:uppercase;}",
+      ".lsffl-popup2-navbtn{min-width:86px!important;min-height:36px!important;padding:7px 12px!important;border:1px solid rgba(225,196,90,.7)!important;border-radius:7px!important;background:#071a2f!important;color:#fff!important;font-size:14px!important;font-weight:900!important;letter-spacing:.45px!important;text-transform:uppercase!important;cursor:pointer!important;}",
 
-      "#lsffl-popup2-action-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:22px;}",
+      ".lsffl-popup2-navbtn:disabled{opacity:.35;cursor:default!important;}",
 
-      "#lsffl-popup2-action{display:none;align-items:center;justify-content:center;min-height:42px;padding:9px 18px;border:1px solid #e1c45a;border-radius:6px;background:linear-gradient(180deg,#e1c45a,#c9a227);color:#061426!important;font-family:'Barlow Condensed',Arial,sans-serif;font-size:16px;font-weight:800;letter-spacing:.4px;text-decoration:none!important;text-transform:uppercase;box-shadow:0 5px 16px rgba(0,0,0,.28);}",
+      "#lsffl-popup2-counter{color:#e1c45a;font-size:14px;font-weight:900;letter-spacing:.8px;}",
 
-      "#lsffl-popup2-action:hover{filter:brightness(1.08);}",
+      "#lsffl-popup2-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 22px 14px;color:#aebdcd;font-family:Arial,sans-serif;font-size:12px;}",
 
-      "#lsffl-popup2-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:26px;padding-top:16px;border-top:1px solid rgba(201,162,39,.35);}",
+      "#lsffl-popup2-dontshow{display:flex;align-items:center;gap:7px;cursor:pointer;}",
 
-      "#lsffl-popup2-nav{display:flex;align-items:center;gap:8px;}",
+      "#lsffl-popup2-dontshow input{width:16px;height:16px;accent-color:#c9a227;}",
 
-      ".lsffl-popup2-nav-btn{min-width:82px!important;min-height:36px!important;padding:6px 11px!important;border:1px solid #c9a227!important;border-radius:5px!important;background:#061426!important;color:#fff!important;font-family:'Barlow Condensed',Arial,sans-serif!important;font-size:14px!important;font-weight:800!important;text-transform:uppercase!important;cursor:pointer!important;}",
+      "#lsffl-popup2-brand{font-weight:700;letter-spacing:.3px;}",
 
-      ".lsffl-popup2-nav-btn:hover:not(:disabled){background:#c9a227!important;color:#061426!important;}",
-
-      ".lsffl-popup2-nav-btn:disabled{opacity:.35!important;cursor:default!important;}",
-
-      "#lsffl-popup2-counter{min-width:48px;color:#e1c45a;font-family:'Oswald',Arial,sans-serif;font-size:14px;text-align:center;}",
-
-      "#lsffl-popup2-dismiss{display:flex;align-items:center;gap:8px;color:#d8e0ea;font-family:Arial,sans-serif;font-size:13px;cursor:pointer;}",
-
-      "#lsffl-popup2-dismiss input{width:16px;height:16px;accent-color:#c9a227;}",
-
-      "@media(max-width:700px){#lsffl-popup2{padding:7px;}#lsffl-popup2-dialog{width:100%;max-height:96vh;border-radius:9px;}#lsffl-popup2-content{padding:20px 16px 18px;max-height:calc(96vh - 50px);}#lsffl-popup2-topbar{min-height:50px;padding-left:12px;}#lsffl-popup2-brand{font-size:17px;}#lsffl-popup2-body{font-size:15px;}#lsffl-popup2-controls{align-items:flex-start;flex-direction:column;}#lsffl-popup2-nav{width:100%;justify-content:space-between;}.lsffl-popup2-nav-btn{flex:1;}#lsffl-popup2-counter{min-width:52px;}}"
+      "@media(max-width:600px){#lsffl-popup2{padding:8px;}#lsffl-popup2-dialog{width:100%;max-height:96vh;border-radius:10px;}#lsffl-popup2-header{padding:17px 15px 8px;}#lsffl-popup2-media,#lsffl-popup2-content,#lsffl-popup2-actions{padding-left:15px;padding-right:15px;}#lsffl-popup2-nav,#lsffl-popup2-footer{padding-left:15px;padding-right:15px;}#lsffl-popup2-body{font-size:16px;}#lsffl-popup2-footer{align-items:flex-start;flex-direction:column;}}"
     ].join("");
 
     document.head.appendChild(
@@ -1532,326 +1674,132 @@
       "lsffl-popup2-title"
     );
 
-    popup2Dialog =
-      document.createElement(
-        "div"
-      );
+    popup2.innerHTML =
+      '' +
 
-    popup2Dialog.id =
-      "lsffl-popup2-dialog";
+      '<div id="lsffl-popup2-dialog">' +
 
-    var topBar =
-      document.createElement(
-        "div"
-      );
+        '<div id="lsffl-popup2-topline"></div>' +
 
-    topBar.id =
-      "lsffl-popup2-topbar";
+        '<header id="lsffl-popup2-header">' +
 
-    var brand =
-      document.createElement(
-        "div"
-      );
+          '<div id="lsffl-popup2-heading">' +
+            '<div id="lsffl-popup2-eyebrow">LSFFL</div>' +
+            '<h2 id="lsffl-popup2-title">League Update</h2>' +
+          '</div>' +
 
-    brand.id =
-      "lsffl-popup2-brand";
+          '<button id="lsffl-popup2-close" type="button" aria-label="Close announcement">×</button>' +
 
-    var brandMark =
-      document.createElement(
-        "span"
-      );
+        '</header>' +
 
-    brandMark.id =
-      "lsffl-popup2-brand-mark";
+        '<div id="lsffl-popup2-media">' +
+          '<img id="lsffl-popup2-image" alt="">' +
+        '</div>' +
 
-    brandMark.textContent =
-      "★";
+        '<div id="lsffl-popup2-content">' +
+          '<div id="lsffl-popup2-meta"></div>' +
+          '<p id="lsffl-popup2-body"></p>' +
+          '<div id="lsffl-popup2-countdown"></div>' +
+        '</div>' +
 
-    var brandText =
-      document.createElement(
-        "span"
-      );
+        '<div id="lsffl-popup2-actions">' +
+          '<a id="lsffl-popup2-action" href="#">Read More</a>' +
+        '</div>' +
 
-    brandText.textContent =
-      "Navy Times • LSFFL Announcement Center";
+        '<div id="lsffl-popup2-nav">' +
 
-    brand.appendChild(
-      brandMark
-    );
-
-    brand.appendChild(
-      brandText
-    );
+          '<button class="lsffl-popup2-navbtn" id="lsffl-popup2-prev" type="button">' +
+            'Previous' +
+          '</button>' +
 
-    popup2Close =
-      document.createElement(
-        "button"
-      );
+          '<span id="lsffl-popup2-counter">' +
+            '1 / 1' +
+          '</span>' +
 
-    popup2Close.id =
-      "lsffl-popup2-close";
+          '<button class="lsffl-popup2-navbtn" id="lsffl-popup2-next" type="button">' +
+            'Next' +
+          '</button>' +
 
-    popup2Close.type =
-      "button";
+        '</div>' +
 
-    popup2Close.setAttribute(
-      "aria-label",
-      "Close announcement"
-    );
+        '<div id="lsffl-popup2-footer">' +
 
-    popup2Close.textContent =
-      "×";
-
-    topBar.appendChild(
-      brand
-    );
+          '<label id="lsffl-popup2-dontshow">' +
+            '<input type="checkbox"> ' +
+            'Don\\'t show announcements again for 24 hours' +
+          '</label>' +
 
-    topBar.appendChild(
-      popup2Close
-    );
-
-    var content =
-      document.createElement(
-        "div"
-      );
+          '<span id="lsffl-popup2-brand">' +
+            'NAVY TIMES • LSFFL 2.2' +
+          '</span>' +
 
-    content.id =
-      "lsffl-popup2-content";
-
-    popup2Eyebrow =
-      document.createElement(
-        "div"
-      );
+        '</div>' +
 
-    popup2Eyebrow.id =
-      "lsffl-popup2-eyebrow";
-
-    popup2Title =
-      document.createElement(
-        "h2"
-      );
-
-    popup2Title.id =
-      "lsffl-popup2-title";
-
-    var divider =
-      document.createElement(
-        "div"
-      );
-
-    divider.id =
-      "lsffl-popup2-divider";
-
-    popup2Image =
-      document.createElement(
-        "img"
-      );
-
-    popup2Image.id =
-      "lsffl-popup2-image";
-
-    popup2Body =
-      document.createElement(
-        "p"
-      );
-
-    popup2Body.id =
-      "lsffl-popup2-body";
-
-    popup2Meta =
-      document.createElement(
-        "div"
-      );
-
-    popup2Meta.id =
-      "lsffl-popup2-meta";
-
-    popup2Countdown =
-      document.createElement(
-        "div"
-      );
-
-    popup2Countdown.id =
-      "lsffl-popup2-countdown";
-
-    var actionRow =
-      document.createElement(
-        "div"
-      );
-
-    actionRow.id =
-      "lsffl-popup2-action-row";
-
-    popup2Action =
-      document.createElement(
-        "a"
-      );
-
-    popup2Action.id =
-      "lsffl-popup2-action";
-
-    popup2Action.href =
-      "#";
-
-    actionRow.appendChild(
-      popup2Action
-    );
-
-    var controls =
-      document.createElement(
-        "div"
-      );
-
-    controls.id =
-      "lsffl-popup2-controls";
-
-    var nav =
-      document.createElement(
-        "div"
-      );
-
-    nav.id =
-      "lsffl-popup2-nav";
-
-    popup2Prev =
-      document.createElement(
-        "button"
-      );
-
-    popup2Prev.type =
-      "button";
-
-    popup2Prev.className =
-      "lsffl-popup2-nav-btn";
-
-    popup2Prev.textContent =
-      "Previous";
-
-    popup2Counter =
-      document.createElement(
-        "span"
-      );
-
-    popup2Counter.id =
-      "lsffl-popup2-counter";
-
-    popup2Next =
-      document.createElement(
-        "button"
-      );
-
-    popup2Next.type =
-      "button";
-
-    popup2Next.className =
-      "lsffl-popup2-nav-btn";
-
-    popup2Next.textContent =
-      "Next";
-
-    nav.appendChild(
-      popup2Prev
-    );
-
-    nav.appendChild(
-      popup2Counter
-    );
-
-    nav.appendChild(
-      popup2Next
-    );
-
-    var dismissLabel =
-      document.createElement(
-        "label"
-      );
-
-    dismissLabel.id =
-      "lsffl-popup2-dismiss";
-
-    popup2DontShow =
-      document.createElement(
-        "input"
-      );
-
-    popup2DontShow.type =
-      "checkbox";
-
-    var dismissText =
-      document.createElement(
-        "span"
-      );
-
-    dismissText.textContent =
-      "Don't show again today";
-
-    dismissLabel.appendChild(
-      popup2DontShow
-    );
-
-    dismissLabel.appendChild(
-      dismissText
-    );
-
-    controls.appendChild(
-      nav
-    );
-
-    controls.appendChild(
-      dismissLabel
-    );
-
-    content.appendChild(
-      popup2Eyebrow
-    );
-
-    content.appendChild(
-      popup2Title
-    );
-
-    content.appendChild(
-      divider
-    );
-
-    content.appendChild(
-      popup2Image
-    );
-
-    content.appendChild(
-      popup2Body
-    );
-
-    content.appendChild(
-      popup2Meta
-    );
-
-    content.appendChild(
-      popup2Countdown
-    );
-
-    content.appendChild(
-      actionRow
-    );
-
-    content.appendChild(
-      controls
-    );
-
-    popup2Dialog.appendChild(
-      topBar
-    );
-
-    popup2Dialog.appendChild(
-      content
-    );
-
-    popup2.appendChild(
-      popup2Dialog
-    );
+      '</div>';
 
     document.body.appendChild(
       popup2
     );
+
+    popup2Dialog =
+      document.getElementById(
+        "lsffl-popup2-dialog"
+      );
+
+    popup2Title =
+      document.getElementById(
+        "lsffl-popup2-title"
+      );
+
+    popup2Eyebrow =
+      document.getElementById(
+        "lsffl-popup2-eyebrow"
+      );
+
+    popup2Body =
+      document.getElementById(
+        "lsffl-popup2-body"
+      );
+
+    popup2Meta =
+      document.getElementById(
+        "lsffl-popup2-meta"
+      );
+
+    popup2Image =
+      document.getElementById(
+        "lsffl-popup2-image"
+      );
+
+    popup2Action =
+      document.getElementById(
+        "lsffl-popup2-action"
+      );
+
+    popup2Prev =
+      document.getElementById(
+        "lsffl-popup2-prev"
+      );
+
+    popup2Next =
+      document.getElementById(
+        "lsffl-popup2-next"
+      );
+
+    popup2Counter =
+      document.getElementById(
+        "lsffl-popup2-counter"
+      );
+
+    popup2DontShow =
+      document.querySelector(
+        "#lsffl-popup2-dontshow input"
+      );
+
+    popup2Close =
+      document.getElementById(
+        "lsffl-popup2-close"
+      );
 
     popup2Close.addEventListener(
       "click",
@@ -1886,40 +1834,6 @@
         }
       }
     );
-
-    popup2Action.addEventListener(
-      "click",
-      function (event) {
-        var item =
-          popup2Announcements[
-            popup2Index
-          ];
-
-        if (
-          !item ||
-          !item.buttonUrl
-        ) {
-          return;
-        }
-
-        var match =
-          classifyContentURL(
-            item.buttonUrl
-          );
-
-        if (match) {
-          event.preventDefault();
-
-          popup2CloseModal();
-
-          openContentPopup(
-            match.url,
-            match.type,
-            match.title
-          );
-        }
-      }
-    );
   }
 
   function popup2CleanText(value) {
@@ -1932,7 +1846,9 @@
 
   function popup2TrimBody(value) {
     var body =
-      popup2CleanText(value);
+      popup2CleanText(
+        value
+      );
 
     if (
       body.length >
@@ -1974,7 +1890,7 @@
   ) {
     /*
      * First preference:
-     * the cleaned copy already placed inside League Central.
+     * the cleaned copy already sitting in League Central.
      */
     var moduleTable =
       document.querySelector(
@@ -1992,7 +1908,7 @@
 
     /*
      * Fallback:
-     * native MFL source table rendered elsewhere on the page.
+     * MFL's original native table elsewhere on the page.
      */
     var tables =
       document.querySelectorAll(
@@ -2059,13 +1975,16 @@
       );
 
     var rows =
-      popup2UsableRows(table);
+      popup2UsableRows(
+        table
+      );
 
     if (!rows.length) {
       return null;
     }
 
-    var row = rows[0];
+    var row =
+      rows[0];
 
     var link =
       row.querySelector(
@@ -2121,22 +2040,26 @@
           )
           .toLowerCase(),
 
-      priority: "normal",
+      priority:
+        "normal",
 
       eyebrow:
         "COMMISSIONER ARTICLE",
 
-      title: title,
+      title:
+        title,
 
       body:
         "A new Commissioner Article is available in League Central. Open the full article for the complete update.",
 
-      meta: date,
+      meta:
+        date,
 
       buttonText:
         "Open Full Article",
 
-      buttonUrl: url
+      buttonUrl:
+        url
     };
   }
 
@@ -2148,13 +2071,16 @@
       );
 
     var rows =
-      popup2UsableRows(table);
+      popup2UsableRows(
+        table
+      );
 
     if (!rows.length) {
       return null;
     }
 
-    var row = rows[0];
+    var row =
+      rows[0];
 
     var link =
       row.querySelector(
@@ -2194,7 +2120,9 @@
           part
         ) === -1
       ) {
-        metaParts.push(part);
+        metaParts.push(
+          part
+        );
       }
     }
 
@@ -2223,12 +2151,14 @@
           )
           .toLowerCase(),
 
-      priority: "normal",
+      priority:
+        "normal",
 
       eyebrow:
         "MESSAGE BOARD",
 
-      title: title,
+      title:
+        title,
 
       body:
         "There is a new LSFFL message-board topic. Open the full message to read the discussion and reply.",
@@ -2241,7 +2171,8 @@
       buttonText:
         "Open Full Message",
 
-      buttonUrl: url
+      buttonUrl:
+        url
     };
   }
 
@@ -2270,7 +2201,8 @@
   }
 
   function popup2LoadAnnouncements() {
-    var now = Date.now();
+    var now =
+      Date.now();
 
     var manual =
       (
@@ -2301,7 +2233,8 @@
             return;
           }
 
-          finished = true;
+          finished =
+            true;
 
           var combined =
             manual.concat(
@@ -2381,7 +2314,10 @@
               POPUP2_CONFIG
                 .sourceWaitMs
           ) {
-            finish(nativeItems);
+            finish(
+              nativeItems
+            );
+
             return;
           }
 
@@ -2552,9 +2488,7 @@
 
     popup2Body.textContent =
       popup2Escape(
-        popup2TrimBody(
-          item.body || ""
-        )
+        item.body || ""
       );
 
     popup2Meta.textContent =
@@ -2611,16 +2545,14 @@
         popup2Index + 1
       ) +
       " / " +
-      popup2Announcements
-        .length;
+      popup2Announcements.length;
 
     popup2Prev.disabled =
       popup2Index === 0;
 
     popup2Next.disabled =
       popup2Index ===
-      popup2Announcements
-        .length - 1;
+      popup2Announcements.length - 1;
 
     popup2RenderCountdown(
       item
@@ -2739,10 +2671,115 @@
     }
   }
 
+  /*
+   * ==========================================================
+   * HOME-PAGE-ONLY / ONCE-PER-SESSION AUTO OPEN
+   * ==========================================================
+   */
+
+  function popup2IsLeagueHomepage() {
+    var path =
+      String(
+        window.location.pathname ||
+        ""
+      );
+
+    var league =
+      String(
+        new URLSearchParams(
+          window.location.search ||
+          ""
+        ).get("L") ||
+        ""
+      );
+
+    /*
+     * Standard live LSFFL homepage:
+     *
+     * /2026/home/23135
+     */
+    if (
+      /\/2026\/home\/23135\/?$/i.test(
+        path
+      )
+    ) {
+      return true;
+    }
+
+    /*
+     * Compatibility with an alternate MFL home route
+     * that passes the league as ?L=23135.
+     */
+    return (
+      /\/2026\/home\/?$/i.test(
+        path
+      ) &&
+      league === "23135"
+    );
+  }
+
+  function popup2SessionShownKey() {
+    return (
+      "lsffl-popup2-auto-shown-2026-23135"
+    );
+  }
+
+  function popup2WasAutoShownThisSession() {
+    try {
+      return (
+        window.sessionStorage.getItem(
+          popup2SessionShownKey()
+        ) === "1"
+      );
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function popup2MarkAutoShownThisSession() {
+    try {
+      window.sessionStorage.setItem(
+        popup2SessionShownKey(),
+        "1"
+      );
+    } catch (error) {
+      /*
+       * Session storage unavailable.
+       */
+    }
+  }
+
   function popup2Boot() {
     if (
       !POPUP2_CONFIG.enabled ||
       window.top !== window.self
+    ) {
+      return;
+    }
+
+    /*
+     * IMPORTANT:
+     *
+     * The Announcement Center auto-opens ONLY
+     * from the LSFFL league homepage.
+     *
+     * The normal popup manager remains active on
+     * every MFL page so article/franchise/message
+     * links still open in our LSFFL modal.
+     */
+    if (
+      !popup2IsLeagueHomepage()
+    ) {
+      return;
+    }
+
+    /*
+     * Do not replay the Announcement Center when
+     * the owner navigates away and comes back
+     * during the same browser session.
+     */
+    if (
+      popup2WasAutoShownThisSession()
     ) {
       return;
     }
@@ -2758,6 +2795,14 @@
             return;
           }
 
+          /*
+           * Mark it BEFORE opening.
+           *
+           * That protects us if MFL changes the page
+           * while the popup is being displayed.
+           */
+          popup2MarkAutoShownThisSession();
+
           window.setTimeout(
             function () {
               popup2Open(
@@ -2772,11 +2817,18 @@
       );
   }
 
+  /*
+   * Public controls.
+   *
+   * This lets us manually reopen the Announcement
+   * Center later from another LSFFL button if desired:
+   *
+   * window.lsfflPopup2.open()
+   */
   window.lsfflPopup2 = {
     open: function () {
       if (
-        popup2Announcements
-          .length
+        popup2Announcements.length
       ) {
         return popup2Open(
           popup2Announcements,
@@ -2805,12 +2857,14 @@
       POPUP2_CONFIG
   };
 
+  /*
+   * Announcement Center keyboard controls.
+   */
   document.addEventListener(
     "keydown",
     function (event) {
       if (
-        event.key ===
-          "Escape" &&
+        event.key === "Escape" &&
         popup2 &&
         !popup2.hidden
       ) {
@@ -2844,6 +2898,9 @@
     }
   );
 
+  /*
+   * Start Pop-Up 2.2.
+   */
   if (
     document.readyState ===
     "loading"
@@ -2859,6 +2916,10 @@
     popup2Boot();
   }
 
+  /*
+   * Preserve original public close function.
+   */
   window.lsfflCloseContentPopup =
     closeModal;
+
 })();
