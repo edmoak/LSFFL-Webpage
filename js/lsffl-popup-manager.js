@@ -10,9 +10,9 @@
  *
  * Owns ONLY:
  *   - Commissioner Article popups
- *   - Franchise popups
+ * *   - Franchise popups
  *   - Homepage Announcement Center
- *   - Trade-offer notices in the Announcement Center
+ *   - Temporary 2026 Draft Room launch button
  *
  * DOES NOT own:
  *   - Standings page
@@ -43,13 +43,11 @@
 
   var modalType = "content";
   var previousFocus = null;
-  var messageGateAttempts = 0;
-
   var ANNOUNCEMENT_SESSION_KEY =
-    "lsffl-popup42-auto-shown-2026-23135";
+    "lsffl-popup41-auto-shown-2026-23135";
 
   var ANNOUNCEMENT_DISMISS_KEY =
-    "lsffl-popup42-dismissed-until";
+    "lsffl-popup41-dismissed-until";
 
 
   /* ============================================================
@@ -117,15 +115,7 @@
     var franchiseId = normalizeFranchiseId(
       url.searchParams.get("F")
     );
-
-    /*
-     * IMPORTANT: classify the report FIRST. MFL often includes F=0001
-     * on message-board and article URLs. If franchise detection runs first,
-     * those links are incorrectly treated as franchise pages and the
-     * message/article handlers never run.
-     */
-
-    if (
+if (
       /\/options\/?$/i.test(url.pathname) &&
       option === "73"
     ) {
@@ -135,7 +125,7 @@
         url: url.href
       };
     }
-    if (
+if (
       franchiseId &&
       /\/options\/?$/i.test(url.pathname)
     ) {
@@ -157,7 +147,7 @@
   function injectModalStyles() {
     if (
       document.getElementById(
-        "lsffl-popup42-modal-styles"
+        "lsffl-popup41-modal-styles"
       )
     ) {
       return;
@@ -169,21 +159,21 @@
       );
 
     style.id =
-      "lsffl-popup42-modal-styles";
+      "lsffl-popup41-modal-styles";
 
     style.textContent = [
 
-      "body.lsffl-popup42-open{" +
+      "body.lsffl-popup41-open{" +
         "overflow:hidden!important;" +
       "}",
 
 
-      "#lsffl-popup42-modal[hidden]{" +
+      "#lsffl-popup41-modal[hidden]{" +
         "display:none!important;" +
       "}",
 
 
-      "#lsffl-popup42-modal{" +
+      "#lsffl-popup41-modal{" +
         "position:fixed;" +
         "inset:0;" +
         "z-index:2147483000;" +
@@ -197,7 +187,7 @@
       "}",
 
 
-      "#lsffl-popup42-dialog{" +
+      "#lsffl-popup41-dialog{" +
         "width:min(1180px,96vw);" +
         "height:min(850px,94vh);" +
         "display:flex;" +
@@ -210,7 +200,7 @@
       "}",
 
 
-      "#lsffl-popup42-bar{" +
+      "#lsffl-popup41-bar{" +
         "min-height:48px;" +
         "display:flex;" +
         "align-items:center;" +
@@ -222,7 +212,7 @@
       "}",
 
 
-      "#lsffl-popup42-title{" +
+      "#lsffl-popup41-title{" +
         "min-width:0;" +
         "overflow:hidden;" +
         "color:#fff;" +
@@ -237,7 +227,7 @@
       "}",
 
 
-      "#lsffl-popup42-close{" +
+      "#lsffl-popup41-close{" +
         "width:34px!important;" +
         "min-width:34px!important;" +
         "height:34px!important;" +
@@ -254,13 +244,13 @@
       "}",
 
 
-      "#lsffl-popup42-close:hover{" +
+      "#lsffl-popup41-close:hover{" +
         "background:#c9a227!important;" +
         "color:#061426!important;" +
       "}",
 
 
-      "#lsffl-popup42-frame{" +
+      "#lsffl-popup41-frame{" +
         "width:100%;" +
         "height:100%;" +
         "flex:1 1 auto;" +
@@ -273,17 +263,17 @@
 
       "@media(max-width:700px){" +
 
-        "#lsffl-popup42-modal{" +
+        "#lsffl-popup41-modal{" +
           "padding:7px;" +
         "}" +
 
-        "#lsffl-popup42-dialog{" +
+        "#lsffl-popup41-dialog{" +
           "width:100%;" +
           "height:96vh;" +
           "border-radius:8px;" +
         "}" +
 
-        "#lsffl-popup42-title{" +
+        "#lsffl-popup41-title{" +
           "font-size:16px;" +
         "}" +
 
@@ -315,7 +305,7 @@
       );
 
     modal.id =
-      "lsffl-popup42-modal";
+      "lsffl-popup41-modal";
 
     modal.hidden =
       true;
@@ -337,7 +327,7 @@
       );
 
     modalDialog.id =
-      "lsffl-popup42-dialog";
+      "lsffl-popup41-dialog";
 
 
     var bar =
@@ -346,7 +336,7 @@
       );
 
     bar.id =
-      "lsffl-popup42-bar";
+      "lsffl-popup41-bar";
 
 
     modalTitle =
@@ -355,7 +345,7 @@
       );
 
     modalTitle.id =
-      "lsffl-popup42-title";
+      "lsffl-popup41-title";
 
     modalTitle.textContent =
       "LSFFL";
@@ -367,7 +357,7 @@
       );
 
     modalClose.id =
-      "lsffl-popup42-close";
+      "lsffl-popup41-close";
 
     modalClose.type =
       "button";
@@ -387,7 +377,7 @@
       );
 
     modalFrame.id =
-      "lsffl-popup42-frame";
+      "lsffl-popup41-frame";
 
     modalFrame.title =
       "LSFFL content";
@@ -712,7 +702,7 @@
 
     if (
       doc.getElementById(
-        "lsffl-popup42-frame-style"
+        "lsffl-popup41-frame-style"
       )
     ) {
       return;
@@ -725,13 +715,13 @@
       );
 
     style.id =
-      "lsffl-popup42-frame-style";
+      "lsffl-popup41-frame-style";
 
 
     style.textContent = [
 
-      "html.lsffl-popup42-doc," +
-      "html.lsffl-popup42-doc body{" +
+      "html.lsffl-popup41-doc," +
+      "html.lsffl-popup41-doc body{" +
 
         "margin:0!important;" +
         "padding:0!important;" +
@@ -751,16 +741,16 @@
       "}",
 
 
-      "html.lsffl-popup42-doc body{" +
+      "html.lsffl-popup41-doc body{" +
         "padding:10px!important;" +
         "box-sizing:border-box!important;" +
       "}",
 
 
-      "html.lsffl-popup42-doc #container-wrap," +
-      "html.lsffl-popup42-doc .pagebody," +
-      "html.lsffl-popup42-doc .report," +
-      "html.lsffl-popup42-doc .module{" +
+      "html.lsffl-popup41-doc #container-wrap," +
+      "html.lsffl-popup41-doc .pagebody," +
+      "html.lsffl-popup41-doc .report," +
+      "html.lsffl-popup41-doc .module{" +
 
         "max-width:100%!important;" +
         "width:100%!important;" +
@@ -770,7 +760,7 @@
       "}",
 
 
-      "html.lsffl-popup42-doc img{" +
+      "html.lsffl-popup41-doc img{" +
         "max-width:100%!important;" +
         "height:auto!important;" +
       "}",
@@ -778,9 +768,9 @@
 
       /* Franchise logo */
 
-      "html.lsffl-popup42-doc " +
-      "body.lsffl-popup42-franchise " +
-      "img.lsffl-popup42-team-logo{" +
+      "html.lsffl-popup41-doc " +
+      "body.lsffl-popup41-franchise " +
+      "img.lsffl-popup41-team-logo{" +
 
         "display:block!important;" +
         "width:auto!important;" +
@@ -795,8 +785,8 @@
 
       /* Franchise name */
 
-      "html.lsffl-popup42-doc " +
-      ".lsffl-popup42-team-brand{" +
+      "html.lsffl-popup41-doc " +
+      ".lsffl-popup41-team-brand{" +
 
         "width:min(700px,92%)!important;" +
         "margin:18px auto 0!important;" +
@@ -805,8 +795,8 @@
       "}",
 
 
-      "html.lsffl-popup42-doc " +
-      ".lsffl-popup42-team-name{" +
+      "html.lsffl-popup41-doc " +
+      ".lsffl-popup41-team-name{" +
 
         "color:#fff!important;" +
 
@@ -823,8 +813,8 @@
       "}",
 
 
-      "html.lsffl-popup42-doc " +
-      ".lsffl-popup42-team-line{" +
+      "html.lsffl-popup41-doc " +
+      ".lsffl-popup41-team-line{" +
 
         "width:130px!important;" +
         "height:3px!important;" +
@@ -975,12 +965,12 @@
     }
 
     doc.body.classList.add(
-      "lsffl-popup42-franchise"
+      "lsffl-popup41-franchise"
     );
 
     if (
       doc.getElementById(
-        "lsffl-popup42-team-brand"
+        "lsffl-popup41-team-brand"
       )
     ) {
       return;
@@ -1054,19 +1044,19 @@
     }
 
     logo.classList.add(
-      "lsffl-popup42-team-logo"
+      "lsffl-popup41-team-logo"
     );
 
     var brand = doc.createElement("div");
-    brand.id = "lsffl-popup42-team-brand";
-    brand.className = "lsffl-popup42-team-brand";
+    brand.id = "lsffl-popup41-team-brand";
+    brand.className = "lsffl-popup41-team-brand";
 
     var nameElement = doc.createElement("div");
-    nameElement.className = "lsffl-popup42-team-name";
+    nameElement.className = "lsffl-popup41-team-name";
     nameElement.textContent = name;
 
     var line = doc.createElement("div");
-    line.className = "lsffl-popup42-team-line";
+    line.className = "lsffl-popup41-team-line";
 
     brand.appendChild(nameElement);
     brand.appendChild(line);
@@ -1080,237 +1070,6 @@
   }
 
 
-  /* ============================================================
-     MESSAGE BOARD READ-MESSAGE GATE
-     ============================================================ */
-
-  function findReadMessageTarget(
-    doc,
-    baseHref,
-    depth
-  ) {
-
-    depth =
-      depth || 0;
-
-
-    if (
-      !doc ||
-      depth > 4
-    ) {
-      return null;
-    }
-
-
-    var links =
-      Array.prototype.slice.call(
-        doc.querySelectorAll(
-          "a[href]"
-        )
-      );
-
-
-    for (
-      var i = 0;
-      i < links.length;
-      i += 1
-    ) {
-
-      var link =
-        links[i];
-
-
-      var url =
-        absoluteUrl(
-          link.getAttribute(
-            "href"
-          ),
-          baseHref
-        );
-
-
-      if (
-        !url ||
-        !/\/mb\/topic_show\.pl$/i.test(
-          url.pathname
-        ) ||
-        !url.searchParams.get(
-          "pid"
-        )
-      ) {
-        continue;
-      }
-
-
-      var label =
-        String(
-          link.textContent ||
-          link.getAttribute(
-            "title"
-          ) ||
-          link.getAttribute(
-            "aria-label"
-          ) ||
-          ""
-        )
-          .replace(/\s+/g, " ")
-          .trim();
-
-
-      if (
-        /read message/i.test(
-          label
-        ) ||
-        link.querySelector(
-          "img"
-        )
-      ) {
-        return {
-          link: link,
-          url: url
-        };
-      }
-    }
-
-
-    var frames =
-      Array.prototype.slice.call(
-        doc.querySelectorAll(
-          "iframe,frame"
-        )
-      );
-
-
-    for (
-      var j = 0;
-      j < frames.length;
-      j += 1
-    ) {
-
-      try {
-
-        var nestedDoc =
-          frames[j]
-            .contentDocument;
-
-        var nestedWin =
-          frames[j]
-            .contentWindow;
-
-
-        if (
-          !nestedDoc ||
-          !nestedWin
-        ) {
-          continue;
-        }
-
-
-        var found =
-          findReadMessageTarget(
-            nestedDoc,
-            nestedWin.location.href,
-            depth + 1
-          );
-
-
-        if (found) {
-          return found;
-        }
-
-      } catch (error) {
-        /* Ignore inaccessible nested frames. */
-      }
-    }
-
-
-    return null;
-  }
-
-
-  function bypassMessageGate(doc, win) {
-    if (
-      modalType !== "message" ||
-      !doc ||
-      !win
-    ) {
-      return false;
-    }
-
-    var target = findReadMessageTarget(
-      doc,
-      win.location.href,
-      0
-    );
-
-    if (!target) {
-      return false;
-    }
-
-    var currentUrl = absoluteUrl(win.location.href);
-    var currentPid = currentUrl && currentUrl.searchParams.get("pid");
-    var targetPid = target.url.searchParams.get("pid");
-
-    /*
-     * If we are still on O=28 (or another wrapper), replace the outer
-     * iframe with the real PID URL immediately.
-     */
-    if (!currentPid || !targetPid || currentPid !== targetPid) {
-      try {
-        win.location.replace(target.url.href);
-      } catch (error) {
-        modalFrame.src = target.url.href;
-      }
-      return true;
-    }
-
-    /*
-     * MFL sometimes serves the yellow Read Message gate at the SAME PID URL.
-     * In that case, activate the actual link, then reload only if the gate
-     * is still present. This mirrors the manual click/reload behavior that
-     * previously worked, but keeps it bounded.
-     */
-    if (
-      doc.documentElement.dataset.lsfflPopup41ReadClicked !== "1"
-    ) {
-      doc.documentElement.dataset.lsfflPopup41ReadClicked = "1";
-      messageGateAttempts += 1;
-
-      window.setTimeout(function () {
-        try {
-          target.link.click();
-        } catch (error) {
-          try {
-            win.location.href = target.url.href;
-          } catch (ignore) {}
-        }
-      }, 40);
-
-      if (messageGateAttempts <= 3) {
-        window.setTimeout(function () {
-          try {
-            var stillBlocked = findReadMessageTarget(
-              doc,
-              win.location.href,
-              0
-            );
-
-            if (stillBlocked) {
-              win.location.reload();
-            }
-          } catch (error) {
-            try {
-              modalFrame.src = target.url.href;
-            } catch (ignore) {}
-          }
-        }, 300);
-      } else {
-        modalFrame.style.opacity = "1";
-      }
-    }
-
-    return true;
-  }
 
 
   /* ============================================================
@@ -1333,11 +1092,11 @@
     }
 
     doc.documentElement.classList.add(
-      "lsffl-popup42-doc"
+      "lsffl-popup41-doc"
     );
 
     doc.body.classList.add(
-      "lsffl-popup42-doc"
+      "lsffl-popup41-doc"
     );
 
     injectFrameTheme(doc);
@@ -1427,22 +1186,7 @@
         win,
         0
       );
-
-      if (
-        bypassMessageGate(
-          doc,
-          win
-        )
-      ) {
-        return;
-      }
-
-      /* Once the gate is gone, reset the counter for the next message. */
-      if (modalType === "message") {
-        messageGateAttempts = 0;
-      }
-
-      modalFrame.style.opacity = "1";
+modalFrame.style.opacity = "1";
 
     } catch (error) {
       modalFrame.style.opacity = "1";
@@ -1469,11 +1213,6 @@
 
     modalType =
       type || "content";
-
-
-    messageGateAttempts = 0;
-
-
     modalTitle.textContent =
       title || "LSFFL";
 
@@ -1491,7 +1230,7 @@
 
 
     document.body.classList.add(
-      "lsffl-popup42-open"
+      "lsffl-popup41-open"
     );
 
 
@@ -1530,7 +1269,7 @@
 
 
     document.body.classList.remove(
-      "lsffl-popup42-open"
+      "lsffl-popup41-open"
     );
 
 
@@ -1589,7 +1328,7 @@
   /* ============================================================
      TOP-LEVEL MFL LINK INTERCEPTION
 
-     ONLY article/franchise URLs.
+     ONLY commissioner-article and franchise URLs.
      GitHub links are ignored.
      ============================================================ */
 
@@ -1919,7 +1658,7 @@
 
 
       if (
-        /view all articles|write new article|post new topic|new messages|view message board/i.test(
+        /view all articles|write new article/i.test(
           text
         )
       ) {
@@ -2045,166 +1784,6 @@
   }
 
 
-  /* ============================================================
-     TRADE OFFER ANNOUNCEMENT
-     ============================================================ */
-
-  function extractTradeOfferAnnouncement() {
-
-    var tradePattern =
-      /\b(?:trade offer|trade proposal|trade proposed|pending trade|incoming trade|new trade|review trade|respond to trade|trade awaiting|trade received)\b/i;
-
-    var rejectPattern =
-      /^(?:trades?|trade bait|add\/drop|transactions?)$/i;
-
-    var links =
-      Array.prototype.slice.call(
-        document.querySelectorAll("a[href]")
-      );
-
-    for (
-      var index = 0;
-      index < links.length;
-      index += 1
-    ) {
-
-      var link =
-        links[index];
-
-      var label =
-        cleanText(
-          link.textContent ||
-          link.getAttribute("title") ||
-          link.getAttribute("aria-label") ||
-          ""
-        );
-
-      var container =
-        link.closest(
-          "tr, li, .homepagemodule, .report, .module, div"
-        );
-
-      var context =
-        cleanText(
-          container
-            ? container.textContent
-            : label
-        );
-
-      if (
-        rejectPattern.test(label) ||
-        !tradePattern.test(
-          label + " " + context
-        )
-      ) {
-        continue;
-      }
-
-      var url =
-        absoluteUrl(
-          link.getAttribute("href"),
-          window.location.href
-        );
-
-      if (!url) {
-        continue;
-      }
-
-      return {
-        eyebrow:
-          "TRADE ALERT",
-
-        title:
-          "You Have a Trade Offer",
-
-        body:
-          context &&
-          context.length <= 220
-            ? context
-            : "A trade offer is waiting for your review.",
-
-        meta:
-          "LSFFL Transaction Center",
-
-        buttonText:
-          "Review Trade Offer",
-
-        buttonUrl:
-          url.href
-      };
-    }
-
-    var blocks =
-      Array.prototype.slice.call(
-        document.querySelectorAll(
-          "tr, li, .homepagemodule, .report, .module"
-        )
-      );
-
-    for (
-      var blockIndex = 0;
-      blockIndex < blocks.length;
-      blockIndex += 1
-    ) {
-
-      var block =
-        blocks[blockIndex];
-
-      var blockText =
-        cleanText(
-          block.textContent
-        );
-
-      if (
-        !tradePattern.test(blockText)
-      ) {
-        continue;
-      }
-
-      var blockLink =
-        block.querySelector(
-          "a[href]"
-        );
-
-      if (!blockLink) {
-        continue;
-      }
-
-      var blockUrl =
-        absoluteUrl(
-          blockLink.getAttribute("href"),
-          window.location.href
-        );
-
-      if (!blockUrl) {
-        continue;
-      }
-
-      return {
-        eyebrow:
-          "TRADE ALERT",
-
-        title:
-          "You Have a Trade Offer",
-
-        body:
-          blockText.length <= 220
-            ? blockText
-            : "A trade offer is waiting for your review.",
-
-        meta:
-          "LSFFL Transaction Center",
-
-        buttonText:
-          "Review Trade Offer",
-
-        buttonUrl:
-          blockUrl.href
-      };
-    }
-
-    return null;
-  }
 
 
   /* ============================================================
@@ -2226,7 +1805,7 @@
 
 
         body:
-          "The Lamad Squad Fantasy Football League is back. Check Navy Times and League Central throughout the season for commissioner updates, league news, trade alerts, and everything happening around the LSFFL.",
+          "The Lamad Squad Fantasy Football League is back. Check the Commissioner Articles in League Central throughout the season for commissioner updates, league news, trade alerts, and everything happening around the LSFFL.",
 
 
         meta:
@@ -2234,11 +1813,11 @@
 
 
         buttonText:
-          "",
+          "Enter Draft Room",
 
 
         buttonUrl:
-          ""
+          "https://www48.myfantasyleague.com/2026/ajax_ld?L=23135"
 
       }
 
@@ -2247,27 +1826,12 @@
 
     var article =
       extractArticleAnnouncement();
-
-
-    var tradeOffer =
-      extractTradeOfferAnnouncement();
-
-
-    if (article) {
+if (article) {
       items.push(
         article
       );
     }
-
-
-    if (tradeOffer) {
-      items.push(
-        tradeOffer
-      );
-    }
-
-
-    return items;
+return items;
   }
 
 
@@ -2279,7 +1843,7 @@
 
     if (
       document.getElementById(
-        "lsffl-popup42-announcement-styles"
+        "lsffl-popup41-announcement-styles"
       )
     ) {
       return;
@@ -2293,17 +1857,17 @@
 
 
     style.id =
-      "lsffl-popup42-announcement-styles";
+      "lsffl-popup41-announcement-styles";
 
 
     style.textContent = [
 
-      "#lsffl-popup42-announcement[hidden]{" +
+      "#lsffl-popup41-announcement[hidden]{" +
         "display:none!important;" +
       "}",
 
 
-      "#lsffl-popup42-announcement{" +
+      "#lsffl-popup41-announcement{" +
         "position:fixed;" +
         "inset:0;" +
         "z-index:2147483100;" +
@@ -2317,7 +1881,7 @@
       "}",
 
 
-      "#lsffl-popup42-announcement-card{" +
+      "#lsffl-popup41-announcement-card{" +
         "width:min(760px,96vw);" +
         "max-height:94vh;" +
         "overflow:auto;" +
@@ -2329,7 +1893,7 @@
       "}",
 
 
-      "#lsffl-popup42-announcement-head{" +
+      "#lsffl-popup41-announcement-head{" +
         "display:flex;" +
         "justify-content:space-between;" +
         "gap:16px;" +
@@ -2338,7 +1902,7 @@
       "}",
 
 
-      "#lsffl-popup42-announcement-eyebrow{" +
+      "#lsffl-popup41-announcement-eyebrow{" +
         "margin-bottom:5px;" +
         "color:#e1c45a;" +
         "font-family:'Barlow Condensed',Arial,sans-serif;" +
@@ -2349,7 +1913,7 @@
       "}",
 
 
-      "#lsffl-popup42-announcement-title{" +
+      "#lsffl-popup41-announcement-title{" +
         "margin:0;" +
         "color:#fff;" +
         "font-family:'Oswald','Barlow Condensed',Arial,sans-serif;" +
@@ -2360,7 +1924,7 @@
       "}",
 
 
-      "#lsffl-popup42-announcement-close{" +
+      "#lsffl-popup41-announcement-close{" +
         "width:38px!important;" +
         "min-width:38px!important;" +
         "height:38px!important;" +
@@ -2374,7 +1938,7 @@
       "}",
 
 
-      "#lsffl-popup42-announcement-body{" +
+      "#lsffl-popup41-announcement-body{" +
         "padding:12px 22px 8px;" +
         "color:#eef4fb;" +
         "font-family:Arial,sans-serif;" +
@@ -2383,7 +1947,7 @@
       "}",
 
 
-      "#lsffl-popup42-announcement-meta{" +
+      "#lsffl-popup41-announcement-meta{" +
         "margin-top:12px;" +
         "color:#aebdcd;" +
         "font-size:13px;" +
@@ -2391,13 +1955,13 @@
       "}",
 
 
-      "#lsffl-popup42-announcement-actions{" +
+      "#lsffl-popup41-announcement-actions{" +
         "display:flex;" +
         "padding:14px 22px 12px;" +
       "}",
 
 
-      "#lsffl-popup42-announcement-open{" +
+      "#lsffl-popup41-announcement-open{" +
         "display:none;" +
         "align-items:center;" +
         "justify-content:center;" +
@@ -2415,7 +1979,7 @@
       "}",
 
 
-      "#lsffl-popup42-announcement-nav{" +
+      "#lsffl-popup41-announcement-nav{" +
         "display:flex;" +
         "align-items:center;" +
         "justify-content:space-between;" +
@@ -2426,7 +1990,7 @@
       "}",
 
 
-      ".lsffl-popup42-announcement-navbtn{" +
+      ".lsffl-popup41-announcement-navbtn{" +
         "min-width:86px!important;" +
         "min-height:36px!important;" +
         "padding:7px 12px!important;" +
@@ -2442,13 +2006,13 @@
       "}",
 
 
-      ".lsffl-popup42-announcement-navbtn:disabled{" +
+      ".lsffl-popup41-announcement-navbtn:disabled{" +
         "opacity:.35;" +
         "cursor:default!important;" +
       "}",
 
 
-      "#lsffl-popup42-announcement-counter{" +
+      "#lsffl-popup41-announcement-counter{" +
         "color:#e1c45a;" +
         "font-family:'Barlow Condensed',Arial,sans-serif;" +
         "font-size:14px;" +
@@ -2456,7 +2020,7 @@
       "}",
 
 
-      "#lsffl-popup42-announcement-footer{" +
+      "#lsffl-popup41-announcement-footer{" +
         "display:flex;" +
         "align-items:center;" +
         "justify-content:space-between;" +
@@ -2468,14 +2032,14 @@
       "}",
 
 
-      "#lsffl-popup42-announcement-footer label{" +
+      "#lsffl-popup41-announcement-footer label{" +
         "display:flex;" +
         "align-items:center;" +
         "gap:7px;" +
       "}",
 
 
-      "#lsffl-popup42-announcement-footer input{" +
+      "#lsffl-popup41-announcement-footer input{" +
         "width:16px;" +
         "height:16px;" +
         "accent-color:#c9a227;" +
@@ -2511,7 +2075,7 @@
 
 
     announcementModal.id =
-      "lsffl-popup42-announcement";
+      "lsffl-popup41-announcement";
 
 
     announcementModal.hidden =
@@ -2520,17 +2084,17 @@
 
     announcementModal.innerHTML =
 
-      '<div id="lsffl-popup42-announcement-card">' +
+      '<div id="lsffl-popup41-announcement-card">' +
 
-        '<div id="lsffl-popup42-announcement-head">' +
+        '<div id="lsffl-popup41-announcement-head">' +
 
           '<div>' +
 
-            '<div id="lsffl-popup42-announcement-eyebrow">' +
+            '<div id="lsffl-popup41-announcement-eyebrow">' +
               'LSFFL' +
             '</div>' +
 
-            '<h2 id="lsffl-popup42-announcement-title">' +
+            '<h2 id="lsffl-popup41-announcement-title">' +
               'League Update' +
             '</h2>' +
 
@@ -2538,7 +2102,7 @@
 
 
           '<button ' +
-            'id="lsffl-popup42-announcement-close" ' +
+            'id="lsffl-popup41-announcement-close" ' +
             'type="button" ' +
             'aria-label="Close announcement">' +
             '×' +
@@ -2547,19 +2111,19 @@
         '</div>' +
 
 
-        '<div id="lsffl-popup42-announcement-body">' +
+        '<div id="lsffl-popup41-announcement-body">' +
 
-          '<div id="lsffl-popup42-announcement-text"></div>' +
+          '<div id="lsffl-popup41-announcement-text"></div>' +
 
-          '<div id="lsffl-popup42-announcement-meta"></div>' +
+          '<div id="lsffl-popup41-announcement-meta"></div>' +
 
         '</div>' +
 
 
-        '<div id="lsffl-popup42-announcement-actions">' +
+        '<div id="lsffl-popup41-announcement-actions">' +
 
           '<a ' +
-            'id="lsffl-popup42-announcement-open" ' +
+            'id="lsffl-popup41-announcement-open" ' +
             'href="#">' +
             'Read More' +
           '</a>' +
@@ -2567,24 +2131,24 @@
         '</div>' +
 
 
-        '<div id="lsffl-popup42-announcement-nav">' +
+        '<div id="lsffl-popup41-announcement-nav">' +
 
           '<button ' +
-            'class="lsffl-popup42-announcement-navbtn" ' +
-            'id="lsffl-popup42-announcement-prev" ' +
+            'class="lsffl-popup41-announcement-navbtn" ' +
+            'id="lsffl-popup41-announcement-prev" ' +
             'type="button">' +
             'Previous' +
           '</button>' +
 
 
-          '<span id="lsffl-popup42-announcement-counter">' +
+          '<span id="lsffl-popup41-announcement-counter">' +
             '1 / 1' +
           '</span>' +
 
 
           '<button ' +
-            'class="lsffl-popup42-announcement-navbtn" ' +
-            'id="lsffl-popup42-announcement-next" ' +
+            'class="lsffl-popup41-announcement-navbtn" ' +
+            'id="lsffl-popup41-announcement-next" ' +
             'type="button">' +
             'Next' +
           '</button>' +
@@ -2592,12 +2156,12 @@
         '</div>' +
 
 
-        '<div id="lsffl-popup42-announcement-footer">' +
+        '<div id="lsffl-popup41-announcement-footer">' +
 
           '<label>' +
 
             '<input ' +
-              'id="lsffl-popup42-announcement-dontshow" ' +
+              'id="lsffl-popup41-announcement-dontshow" ' +
               'type="checkbox">' +
 
             ' Don\'t show announcements again for 24 hours' +
@@ -2606,7 +2170,7 @@
 
 
           '<span>' +
-            'NAVY TIMES • LSFFL 4.1' +
+            'LSFFL • 2026 SEASON' +
           '</span>' +
 
         '</div>' +
@@ -2620,7 +2184,7 @@
 
 
     document.getElementById(
-      "lsffl-popup42-announcement-close"
+      "lsffl-popup41-announcement-close"
     ).addEventListener(
       "click",
       closeAnnouncement
@@ -2628,7 +2192,7 @@
 
 
     document.getElementById(
-      "lsffl-popup42-announcement-prev"
+      "lsffl-popup41-announcement-prev"
     ).addEventListener(
       "click",
       function () {
@@ -2642,7 +2206,7 @@
 
 
     document.getElementById(
-      "lsffl-popup42-announcement-next"
+      "lsffl-popup41-announcement-next"
     ).addEventListener(
       "click",
       function () {
@@ -2656,7 +2220,7 @@
 
 
     document.getElementById(
-      "lsffl-popup42-announcement-open"
+      "lsffl-popup41-announcement-open"
     ).addEventListener(
 
       "click",
@@ -2683,6 +2247,13 @@
           );
 
 
+        if (!match) {
+          /* Draft Room and other approved non-popup links navigate normally. */
+          closeAnnouncement();
+          return;
+        }
+
+
         event.preventDefault();
 
         event.stopPropagation();
@@ -2691,20 +2262,11 @@
         closeAnnouncement();
 
 
-        if (match) {
-
-          openModal(
-            match.url,
-            match.type,
-            match.title
-          );
-
-          return;
-        }
-
-
-        window.location.href =
-          item.buttonUrl;
+        openModal(
+          match.url,
+          match.type,
+          match.title
+        );
 
       }
     );
@@ -2766,28 +2328,28 @@
 
 
     document.getElementById(
-      "lsffl-popup42-announcement-eyebrow"
+      "lsffl-popup41-announcement-eyebrow"
     ).textContent =
       item.eyebrow ||
       "LSFFL";
 
 
     document.getElementById(
-      "lsffl-popup42-announcement-title"
+      "lsffl-popup41-announcement-title"
     ).textContent =
       item.title ||
       "League Update";
 
 
     document.getElementById(
-      "lsffl-popup42-announcement-text"
+      "lsffl-popup41-announcement-text"
     ).textContent =
       item.body ||
       "";
 
 
     document.getElementById(
-      "lsffl-popup42-announcement-meta"
+      "lsffl-popup41-announcement-meta"
     ).textContent =
       item.meta ||
       "";
@@ -2795,7 +2357,7 @@
 
     var open =
       document.getElementById(
-        "lsffl-popup42-announcement-open"
+        "lsffl-popup41-announcement-open"
       );
 
 
@@ -2826,7 +2388,7 @@
 
 
     document.getElementById(
-      "lsffl-popup42-announcement-counter"
+      "lsffl-popup41-announcement-counter"
     ).textContent =
       (
         announcementIndex + 1
@@ -2836,13 +2398,13 @@
 
 
     document.getElementById(
-      "lsffl-popup42-announcement-prev"
+      "lsffl-popup41-announcement-prev"
     ).disabled =
       announcementIndex === 0;
 
 
     document.getElementById(
-      "lsffl-popup42-announcement-next"
+      "lsffl-popup41-announcement-next"
     ).disabled =
       announcementIndex ===
       announcementItems.length - 1;
@@ -2870,7 +2432,7 @@
 
 
     document.getElementById(
-      "lsffl-popup42-announcement-dontshow"
+      "lsffl-popup41-announcement-dontshow"
     ).checked =
       false;
 
@@ -2917,7 +2479,7 @@
 
     var dontShow =
       document.getElementById(
-        "lsffl-popup42-announcement-dontshow"
+        "lsffl-popup41-announcement-dontshow"
       );
 
 
@@ -3021,26 +2583,18 @@
 
       var articleReady =
         Boolean(
-
           findSourceTable(
-
             "article_summary",
-
             ".lsffl-article-module"
-
           )
-
         );
 
 
       if (
-
         articleReady ||
-
         Date.now() -
         started >
         8000
-
       ) {
 
         window.setTimeout(
