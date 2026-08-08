@@ -6,9 +6,15 @@
  * Downloads fantasy-football headlines, cleans and deduplicates them,
  * then writes:
  *
- *   news/data/fantasy-news.json
+ * news/data/fantasy-news.json
  *
  * No API key and no npm package are required.
+ *
+ * v1.1
+ * - Adds an "image" field when Google News RSS supplies a usable image.
+ * - Checks media:content, media:thumbnail, enclosure, and <img src="">
+ *   inside the RSS description.
+ * - If an article has no image, "image" is null.
  */
 
 "use strict";
@@ -76,7 +82,7 @@ function decodeXml(value = "") {
     .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
     .replace(/&amp;/g, "&")
     .replace(/&quot;/g, '"')
-    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&apos;|&#39;/g, "'")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/&#(\d+);/g, (_, number) =>
@@ -99,6 +105,104 @@ function getTag(block, tagName) {
 
   const match = block.match(expression);
   return match ? decodeXml(match[1]) : "";
+}
+
+function getTagAttribute(block, tagName, attributeName) {
+  const expression = new RegExp(
+    `<${tagName}\\b[^>]*\\b${attributeName}\\s*=\\s*["']([^"']+)["'][^>]*>`,
+    "i"
+  );
+
+  const match = block.match(expression);
+  return match ? decodeXml(match[1]) : "";
+}
+
+function cleanImageUrl(value = "") {
+  const cleaned = decodeXml(value).trim();
+
+  if (!cleaned) {
+    return null;
+  }
+
+  try {
+    const url = new URL(cleaned);
+
+    if (
+      url.protocol !== "https:" &&
+      url.protocol !== "http:"
+    ) {
+      return null;
+    }
+
+    return url.href;
+  } catch (error) {
+    return null;
+  }
+}
+
+function extractImageUrl(itemBlock) {
+  /*
+   * RSS feeds are inconsistent about image fields.
+   * Try the common locations in this order.
+   */
+
+  const mediaContent =
+    getTagAttribute(
+      itemBlock,
+      "media:content",
+      "url"
+    );
+
+  const mediaThumbnail =
+    getTagAttribute(
+      itemBlock,
+      "media:thumbnail",
+      "url"
+    );
+
+  const enclosure =
+    getTagAttribute(
+      itemBlock,
+      "enclosure",
+      "url"
+    );
+
+  /*
+   * Google News often places the publisher thumbnail inside the
+   * description HTML rather than in a dedicated media tag.
+   */
+  const rawDescription =
+    getTag(
+      itemBlock,
+      "description"
+    );
+
+  const imageMatch =
+    rawDescription.match(
+      /<img\b[^>]*\bsrc\s*=\s*["']([^"']+)["'][^>]*>/i
+    );
+
+  const descriptionImage =
+    imageMatch
+      ? imageMatch[1]
+      : "";
+
+  const candidates = [
+    mediaContent,
+    mediaThumbnail,
+    enclosure,
+    descriptionImage
+  ];
+
+  for (const candidate of candidates) {
+    const image = cleanImageUrl(candidate);
+
+    if (image) {
+      return image;
+    }
+  }
+
+  return null;
 }
 
 function splitGoogleTitle(rawTitle) {
@@ -172,7 +276,11 @@ function isRelevant(headline) {
     return false;
   }
 
-  if (BLOCKED_TERMS.some((term) => lower.includes(term))) {
+  if (
+    BLOCKED_TERMS.some((term) =>
+      lower.includes(term)
+    )
+  ) {
     return false;
   }
 
@@ -190,69 +298,163 @@ function isRecent(dateValue) {
     return true;
   }
 
-  const ageMilliseconds = Date.now() - timestamp;
-  return ageMilliseconds <= MAX_AGE_DAYS * 24 * 60 * 60 * 1000;
+  const ageMilliseconds =
+    Date.now() - timestamp;
+
+  return (
+    ageMilliseconds <=
+    MAX_AGE_DAYS *
+      24 *
+      60 *
+      60 *
+      1000
+  );
 }
 
 function parseFeed(xml, feedName) {
-  const itemBlocks = xml.match(/<item\b[\s\S]*?<\/item>/gi) || [];
+  const itemBlocks =
+    xml.match(
+      /<item\b[\s\S]*?<\/item>/gi
+    ) || [];
 
   return itemBlocks
     .map((itemBlock) => {
-      const titleParts = splitGoogleTitle(getTag(itemBlock, "title"));
-      const published = getTag(itemBlock, "pubDate");
-      const link = stripTags(getTag(itemBlock, "link"));
-      const description = stripTags(getTag(itemBlock, "description"));
+      const titleParts =
+        splitGoogleTitle(
+          getTag(
+            itemBlock,
+            "title"
+          )
+        );
+
+      const published =
+        getTag(
+          itemBlock,
+          "pubDate"
+        );
+
+      const link =
+        stripTags(
+          getTag(
+            itemBlock,
+            "link"
+          )
+        );
+
+      const description =
+        stripTags(
+          getTag(
+            itemBlock,
+            "description"
+          )
+        );
+
+      const image =
+        extractImageUrl(
+          itemBlock
+        );
 
       return {
-        headline: titleParts.headline,
-        source: titleParts.source,
-        category: categoryFor(titleParts.headline),
+        headline:
+          titleParts.headline,
+
+        source:
+          titleParts.source,
+
+        category:
+          categoryFor(
+            titleParts.headline
+          ),
+
         published,
-        publishedIso: Number.isFinite(Date.parse(published))
-          ? new Date(published).toISOString()
-          : null,
-        url: link,
+
+        publishedIso:
+          Number.isFinite(
+            Date.parse(published)
+          )
+            ? new Date(
+                published
+              ).toISOString()
+            : null,
+
+        url:
+          link,
+
+        image,
+
         description,
-        feed: feedName
+
+        feed:
+          feedName
       };
     })
     .filter((article) =>
       article.url &&
-      isRelevant(article.headline) &&
-      isRecent(article.published)
+      isRelevant(
+        article.headline
+      ) &&
+      isRecent(
+        article.published
+      )
     );
 }
 
 async function fetchText(url) {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 20000);
+  const controller =
+    new AbortController();
+
+  const timeout =
+    setTimeout(
+      () =>
+        controller.abort(),
+      20000
+    );
 
   try {
-    const response = await fetch(url, {
-      headers: {
-        "User-Agent":
-          "LSFFL-News-Builder/1.0 (+https://edmoak.github.io/LSFFL-Webpage/)",
-        "Accept":
-          "application/rss+xml, application/xml, text/xml;q=0.9, */*;q=0.8"
-      },
-      signal: controller.signal
-    });
+    const response =
+      await fetch(
+        url,
+        {
+          headers: {
+            "User-Agent":
+              "LSFFL-News-Builder/1.1 (+https://edmoak.github.io/LSFFL-Webpage/)",
+
+            "Accept":
+              "application/rss+xml, application/xml, text/xml;q=0.9, */*;q=0.8"
+          },
+
+          signal:
+            controller.signal
+        }
+      );
 
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+      throw new Error(
+        `HTTP ${response.status}`
+      );
     }
 
     return await response.text();
+
   } finally {
     clearTimeout(timeout);
   }
 }
 
 async function loadSearch(search) {
-  const url = buildFeedUrl(search.query);
-  const xml = await fetchText(url);
-  const articles = parseFeed(xml, search.name);
+  const url =
+    buildFeedUrl(
+      search.query
+    );
+
+  const xml =
+    await fetchText(url);
+
+  const articles =
+    parseFeed(
+      xml,
+      search.name
+    );
 
   console.log(
     `${search.name}: ${articles.length} usable article(s)`
@@ -262,108 +464,230 @@ async function loadSearch(search) {
 }
 
 function deduplicate(articles) {
-  const seen = new Set();
+  const seen =
+    new Set();
 
-  return articles.filter((article) => {
-    const key = normalizeHeadline(article.headline);
+  return articles.filter(
+    (article) => {
+      const key =
+        normalizeHeadline(
+          article.headline
+        );
 
-    if (!key || seen.has(key)) {
-      return false;
+      if (
+        !key ||
+        seen.has(key)
+      ) {
+        return false;
+      }
+
+      seen.add(key);
+      return true;
     }
-
-    seen.add(key);
-    return true;
-  });
+  );
 }
 
-async function writeOutput(articles, searchResults) {
+async function writeOutput(
+  articles,
+  searchResults
+) {
   const payload = {
-    generatedAt: new Date().toISOString(),
-    articleCount: articles.length,
-    refreshMinutes: 60,
-    sourceMethod: "Google News RSS",
-    feeds: searchResults.map((result) => ({
-      name: result.name,
-      status: result.status,
-      articleCount: result.articleCount,
-      error: result.error || null
-    })),
+    generatedAt:
+      new Date().toISOString(),
+
+    articleCount:
+      articles.length,
+
+    refreshMinutes:
+      60,
+
+    sourceMethod:
+      "Google News RSS",
+
+    feeds:
+      searchResults.map(
+        (result) => ({
+          name:
+            result.name,
+
+          status:
+            result.status,
+
+          articleCount:
+            result.articleCount,
+
+          error:
+            result.error || null
+        })
+      ),
+
     articles
   };
 
-  await fs.mkdir(path.dirname(OUTPUT_FILE), {
-    recursive: true
-  });
+  await fs.mkdir(
+    path.dirname(
+      OUTPUT_FILE
+    ),
+    {
+      recursive:
+        true
+    }
+  );
 
   await fs.writeFile(
     OUTPUT_FILE,
-    JSON.stringify(payload, null, 2) + "\n",
+    JSON.stringify(
+      payload,
+      null,
+      2
+    ) + "\n",
     "utf8"
   );
 
-  console.log(`Wrote ${articles.length} article(s) to:`);
-  console.log(OUTPUT_FILE);
+  console.log(
+    `Wrote ${articles.length} article(s) to:`
+  );
+
+  console.log(
+    OUTPUT_FILE
+  );
+
+  const imageCount =
+    articles.filter(
+      (article) =>
+        Boolean(article.image)
+    ).length;
+
+  console.log(
+    `Articles with usable image URLs: ${imageCount}`
+  );
 }
 
 async function main() {
-  const settled = await Promise.allSettled(
-    SEARCHES.map((search) => loadSearch(search))
+  const settled =
+    await Promise.allSettled(
+      SEARCHES.map(
+        (search) =>
+          loadSearch(search)
+      )
+    );
+
+  const allArticles =
+    [];
+
+  const searchResults =
+    [];
+
+  settled.forEach(
+    (result, index) => {
+      const search =
+        SEARCHES[index];
+
+      if (
+        result.status ===
+        "fulfilled"
+      ) {
+        allArticles.push(
+          ...result.value
+        );
+
+        searchResults.push({
+          name:
+            search.name,
+
+          status:
+            "ok",
+
+          articleCount:
+            result.value.length
+        });
+
+        return;
+      }
+
+      const errorMessage =
+        result.reason
+          instanceof Error
+          ? result.reason.message
+          : String(
+              result.reason
+            );
+
+      console.error(
+        `${search.name} failed: ${errorMessage}`
+      );
+
+      searchResults.push({
+        name:
+          search.name,
+
+        status:
+          "error",
+
+        articleCount:
+          0,
+
+        error:
+          errorMessage
+      });
+    }
   );
 
-  const allArticles = [];
-  const searchResults = [];
+  const articles =
+    deduplicate(
+      allArticles
+    )
+      .sort(
+        (a, b) => {
+          const dateA =
+            Date.parse(
+              a.published
+            ) || 0;
 
-  settled.forEach((result, index) => {
-    const search = SEARCHES[index];
+          const dateB =
+            Date.parse(
+              b.published
+            ) || 0;
 
-    if (result.status === "fulfilled") {
-      allArticles.push(...result.value);
-      searchResults.push({
-        name: search.name,
-        status: "ok",
-        articleCount: result.value.length
-      });
-      return;
-    }
-
-    const errorMessage =
-      result.reason instanceof Error
-        ? result.reason.message
-        : String(result.reason);
-
-    console.error(`${search.name} failed: ${errorMessage}`);
-
-    searchResults.push({
-      name: search.name,
-      status: "error",
-      articleCount: 0,
-      error: errorMessage
-    });
-  });
-
-  const articles = deduplicate(allArticles)
-    .sort((a, b) => {
-      const dateA = Date.parse(a.published) || 0;
-      const dateB = Date.parse(b.published) || 0;
-      return dateB - dateA;
-    })
-    .slice(0, MAX_ARTICLES);
+          return (
+            dateB - dateA
+          );
+        }
+      )
+      .slice(
+        0,
+        MAX_ARTICLES
+      );
 
   /*
    * Do not overwrite a previously working JSON file with an empty feed.
    * A failed Action run is preferable to publishing an empty news module.
    */
-  if (articles.length === 0) {
+  if (
+    articles.length === 0
+  ) {
     throw new Error(
       "No usable articles were returned. Existing news JSON was preserved."
     );
   }
 
-  await writeOutput(articles, searchResults);
+  await writeOutput(
+    articles,
+    searchResults
+  );
 }
 
-main().catch((error) => {
-  console.error("LSFFL news build failed:");
-  console.error(error);
-  process.exitCode = 1;
-});
+main().catch(
+  (error) => {
+    console.error(
+      "LSFFL news build failed:"
+    );
+
+    console.error(
+      error
+    );
+
+    process.exitCode =
+      1;
+  }
+);
