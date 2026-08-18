@@ -255,13 +255,11 @@ img {
     }
 
     .lsffl-standings-name {
-      overflow: hidden;
       color: var(--white);
       font-size: 13px;
       font-weight: 700;
       letter-spacing: 0;
       line-height: 1.15;
-      text-overflow: ellipsis;
       white-space: nowrap;
     }
 
@@ -574,7 +572,7 @@ img {
        ========================================================= */
 
     .lsffl-layout {
-      grid-template-columns: minmax(0, 2.35fr) minmax(430px, 1.15fr);
+      grid-template-columns: minmax(0, 2.55fr) minmax(420px, 1.05fr);
     }
 
     .lsffl-table td {
@@ -656,7 +654,7 @@ img {
 
     @media (max-width: 1100px) {
       .lsffl-layout {
-        grid-template-columns: minmax(0, 2.1fr) minmax(390px, 1fr);
+        grid-template-columns: minmax(0, 2.35fr) minmax(380px, 1fr);
       }
 
       .lsffl-standings-logo {
@@ -734,7 +732,6 @@ img {
           <span><strong>PCT:</strong> Win Percentage</span>
           <span><strong>PF:</strong> Points For</span>
           <span><strong>PA:</strong> Points Against</span>
-          <span><strong>DIFF:</strong> Point Differential</span>
           <span><strong>STRK:</strong> Current Streak</span>
         </footer>
       </section>
@@ -1136,8 +1133,6 @@ img {
 
           pf: pf,
           pa: pa,
-          diff: pf - pa,
-
           streak: text(
             firstValue(
               standing,
@@ -1150,30 +1145,6 @@ img {
             )
           ),
 
-          maxPF: number(
-            firstValue(
-              standing,
-              [
-                "maxpf",
-                "maxPF",
-                "max_points",
-                "potentialPoints"
-              ],
-              0
-            )
-          ),
-
-          minPF: number(
-            firstValue(
-              standing,
-              [
-                "minpf",
-                "minPF",
-                "min_points"
-              ],
-              0
-            )
-          ),
 
           powerRank: powerRank,
 
@@ -1254,17 +1225,6 @@ img {
         return standingsSort(a, b);
       }
 
-      function differentialClass(value) {
-        if (value > 0) {
-          return "lsffl-positive";
-        }
-
-        if (value < 0) {
-          return "lsffl-negative";
-        }
-
-        return "lsffl-neutral";
-      }
 
       function pctDisplay(value) {
         const numeric = number(value);
@@ -1348,13 +1308,8 @@ img {
             <td>${fixed(team.pf)}</td>
             <td>${fixed(team.pa)}</td>
 
-            <td class="${differentialClass(team.diff)}">
-              ${team.diff > 0 ? "+" : ""}${fixed(team.diff)}
-            </td>
 
             <td>${escapeHTML(team.streak)}</td>
-            <td>${fixed(team.maxPF)}</td>
-            <td>${fixed(team.minPF)}</td>
           </tr>
         `;
       }
@@ -1432,7 +1387,7 @@ img {
                 ? teams.map(standingsRow).join("")
                 : `
                   <tr>
-                    <td colspan="10">
+                    <td colspan="7">
                       <p class="lsffl-message">
                         No teams are assigned to this division.
                       </p>
@@ -1452,16 +1407,13 @@ img {
                       aria-label="${escapeHTML(divisionName)} standings"
                     >
                       <colgroup>
-                        <col style="width: 42px">
-                        <col style="width: 44%">
-                        <col style="width: 68px">
-                        <col style="width: 58px">
+                        <col style="width: 44px">
+                        <col style="width: 48%">
+                        <col style="width: 88px">
                         <col style="width: 72px">
-                        <col style="width: 72px">
-                        <col style="width: 72px">
-                        <col style="width: 62px">
-                        <col style="width: 78px">
-                        <col style="width: 78px">
+                        <col style="width: 92px">
+                        <col style="width: 92px">
+                        <col style="width: 76px">
                       </colgroup>
 
                       <thead>
@@ -1472,10 +1424,7 @@ img {
                           <th>PCT</th>
                           <th>PF</th>
                           <th>PA</th>
-                          <th>DIFF</th>
                           <th>STRK</th>
-                          <th>MAX PF</th>
-                          <th>MIN PF</th>
                         </tr>
                       </thead>
 
