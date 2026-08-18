@@ -1,7 +1,3 @@
-/
-LSFFL_Standings_LOGOS_IN_POWER_RANKINGS_2026-08-17.txt
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -445,8 +441,6 @@ img {
         font-size: 11px;
       }
 
-      .lsffl-standings-table,
-    }
   
     .lsffl-clickable-row {
       cursor: pointer;
@@ -456,12 +450,7 @@ img {
       outline: 2px solid var(--gold-400);
       outline-offset: -2px;
     }
-
-    @media (max-width: 720px) {
-    }
-
-  
-    /* =========================================================
+/* =========================================================
        FINAL STANDINGS TEAM ART SIZING
        Standings = secondary logos
        ========================================================= */
@@ -502,14 +491,7 @@ img {
       font-size: 15px;
       font-weight: 700;
     }
-
-    .lsffl-power-table td {
-      min-height: 70px;
-      padding-top: 5px;
-      padding-bottom: 5px;
-    }
-
-    @media (max-width: 1100px) {
+@media (max-width: 1100px) {
 
       .lsffl-standings-logo {
         width: 50px;
@@ -582,11 +564,23 @@ img {
         league: "data/league.json",
         standings: "data/standings.json"
       };
-      const DIVISION_BANNER_BY_NAME = {
-        "bulldogs": "Bulldogs Banner.png",
-        "pennydrops": "Pennydrops Banner.png",
-        "the gel": "The Gel Banner.png",
-        "paradiso": "Paradiso Banner.png"
+      const DIVISION_BANNERS = {
+        bulldogs: {
+          label: "Bulldogs Division",
+          file: "Bulldogs Banner.png"
+        },
+        pennydrops: {
+          label: "Pennydrops Division",
+          file: "Pennydrops Banner.png"
+        },
+        gel: {
+          label: "The Gel Division",
+          file: "The Gel Banner.png"
+        },
+        paradiso: {
+          label: "Paradiso Division",
+          file: "Paradiso Banner.png"
+        }
       };
 
 
@@ -601,7 +595,7 @@ img {
         "0008": "DaBoys Secondary Logo.png",
         "0009": "Dawgs Secondary Logo.png",
         "0010": "Camel Toes Secondary Logo.png",
-        "0011": "Cougars Helmet.png",
+        "0011": "Cougars Secondary Logo.png",
         "0012": "Mothabucca Secondary Logo.png",
         "0013": "Mad Hatters Secondary Logo.png",
         "0014": "Tiny But Mighty Secondary Logo.png",
@@ -615,25 +609,6 @@ img {
         "0006": "Mustangs",
         "0014": "Tiny But Mighty",
         "0015": "Get Off My Ditka"
-      };
-
-      const TEAM_PAGE_BY_ID = {
-        "0001": "teams/spartans.html",
-        "0002": "teams/saints.html",
-        "0003": "teams/g-men.html",
-        "0004": "teams/hambone-hogs.html",
-        "0005": "teams/purple-hooters.html",
-        "0006": "teams/mustangs.html",
-        "0007": "teams/hawky-bears.html",
-        "0008": "teams/da-boys.html",
-        "0009": "teams/dawgs.html",
-        "0010": "teams/camel-toes.html",
-        "0011": "teams/cougars.html",
-        "0012": "teams/mothabucca.html",
-        "0013": "teams/mad-hatters.html",
-        "0014": "teams/tiny-but-mighty.html",
-        "0015": "teams/get-off-my-ditka.html",
-        "0016": "teams/avalanche.html"
       };
 
       const divisionStandings =
@@ -689,9 +664,6 @@ let allTeams = [];
 
       function fixed(value, places = 2) {
         return number(value).toFixed(places);
-      }
-
-        return (numeric * 100).toFixed(1) + "%";
       }
 
       function escapeHTML(value) {
@@ -905,47 +877,6 @@ let allTeams = [];
 
           powerRank: powerRank,
 
-          efficiency: number(
-            firstValue(
-              standing,
-              [
-                "eff",
-                "efficiency",
-                "lineupEfficiency",
-                "lineup_efficiency"
-              ],
-              0
-            )
-          ),
-
-          couldHaveWon: number(
-            firstValue(
-              standing,
-              [
-                "couldHaveWon",
-                "could_have_won",
-                "couldaWon",
-                "couldawon",
-                "couldWin"
-              ],
-              0
-            )
-          ),
-
-          couldHaveLost: number(
-            firstValue(
-              standing,
-              [
-                "couldHaveLost",
-                "could_have_lost",
-                "couldaLost",
-                "couldalost",
-                "couldLose"
-              ],
-              0
-            )
-          ),
-
           icon: franchise.icon || franchise.logo || ""
         };
       }
@@ -966,6 +897,11 @@ let allTeams = [];
         return a.name.localeCompare(b.name);
       }
 
+      function powerSort(a, b) {
+        if (a.powerRank && b.powerRank) {
+          return a.powerRank - b.powerRank;
+        }
+
         if (a.powerRank && !b.powerRank) {
           return -1;
         }
@@ -977,6 +913,15 @@ let allTeams = [];
         return standingsSort(a, b);
       }
 
+      function buildPowerRankPositions() {
+        powerRankById = new Map();
+
+        [...allTeams]
+          .sort(powerSort)
+          .forEach(function (team, index) {
+            powerRankById.set(team.id, index + 1);
+          });
+      }
 
       function pctDisplay(value) {
         const numeric = number(value);
@@ -988,12 +933,50 @@ let allTeams = [];
         return (numeric / 100).toFixed(3).replace(/^0/, "");
       }
 
-      function divisionBannerSource(divisionName) {
-        const key = text(divisionName).trim().toLowerCase();
-        const file = DIVISION_BANNER_BY_NAME[key] || "";
+      function divisionKey(divisionName) {
+        const value = text(divisionName)
+          .trim()
+          .toLowerCase();
 
-        return file
-          ? encodePath("images/banners/" + file)
+        if (value.includes("bulldog")) {
+          return "bulldogs";
+        }
+
+        if (value.includes("pennydrop")) {
+          return "pennydrops";
+        }
+
+        if (value.includes("gel")) {
+          return "gel";
+        }
+
+        if (
+          value.includes("paradiso") ||
+          value.includes("paridiso")
+        ) {
+          return "paradiso";
+        }
+
+        return "";
+      }
+
+      function displayDivisionName(divisionName) {
+        const key = divisionKey(divisionName);
+
+        return key && DIVISION_BANNERS[key]
+          ? DIVISION_BANNERS[key].label
+          : text(divisionName);
+      }
+
+      function divisionBannerSource(divisionName) {
+        const key = divisionKey(divisionName);
+        const entry =
+          key
+            ? DIVISION_BANNERS[key]
+            : null;
+
+        return entry
+          ? encodePath("images/banners/" + entry.file)
           : "";
       }
 
@@ -1007,7 +990,7 @@ let allTeams = [];
       function teamPage(team) {
         return (
           "https://www48.myfantasyleague.com/2026/options" +
-          "?L=51036&F=" +
+          "?L=23135&F=" +
           encodeURIComponent(team.id) +
           "&O=07"
         );
@@ -1055,7 +1038,7 @@ let allTeams = [];
             <td>${fixed(team.pf)}</td>
             <td>${fixed(team.pa)}</td>
             <td>${escapeHTML(team.streak)}</td>
-            <td class="lsffl-power-rank-cell">${team.powerRank || "—"}</td>
+            <td class="lsffl-power-rank-cell">${powerRankById.get(team.id) || "—"}</td>
           </tr>
         `;
       }
@@ -1101,6 +1084,9 @@ let allTeams = [];
               const divisionBanner =
                 divisionBannerSource(divisionName);
 
+              const divisionLabel =
+                displayDivisionName(divisionName);
+
               return `
                 <section class="lsffl-division-row">
                   <div
@@ -1122,13 +1108,13 @@ let allTeams = [];
 
                   <section class="lsffl-division-block">
                     <h2 class="lsffl-division-heading">
-                      ${escapeHTML(divisionName)}
+                      ${escapeHTML(divisionLabel)}
                     </h2>
 
                     <div class="lsffl-division-table-wrap">
                       <table
                         class="lsffl-table lsffl-standings-table"
-                        aria-label="${escapeHTML(divisionName)} standings"
+                        aria-label="${escapeHTML(divisionLabel)} standings"
                       >
                         <colgroup>
                           <col style="width: 42px">
@@ -1251,6 +1237,7 @@ let allTeams = [];
             );
           });
 
+          buildPowerRankPositions();
           renderStandings();
         } catch (error) {
           console.error(error);
@@ -1395,65 +1382,5 @@ let allTeams = [];
       );
     })();
   </script>
-
-  <script id="lsffl-franchise-popup-bridge">
-(function () {
-  "use strict";
-
-  function getFranchiseId(value) {
-    try {
-      var url = new URL(value, window.location.href);
-      var id = String(url.searchParams.get("F") || "").replace(/\D/g, "");
-
-      return id ? id.padStart(4, "0").slice(-4) : "";
-    } catch (error) {
-      return "";
-    }
-  }
-
-  document.addEventListener(
-    "click",
-    function (event) {
-      if (
-        event.button !== 0 ||
-        event.ctrlKey ||
-        event.metaKey ||
-        event.shiftKey ||
-        event.altKey
-      ) {
-        return;
-      }
-
-      var link = event.target.closest("a[href]");
-      var row = event.target.closest("[data-team-url]");
-      var destination = "";
-
-      if (link) {
-        destination = link.href;
-      } else if (row) {
-        destination = row.getAttribute("data-team-url") || "";
-      }
-
-      var franchiseId = getFranchiseId(destination);
-
-      if (!franchiseId) {
-        return;
-      }
-
-      event.preventDefault();
-      event.stopPropagation();
-
-      window.parent.postMessage(
-        {
-          type: "LSFFL_OPEN_FRANCHISE",
-          franchiseId: franchiseId
-        },
-        "*"
-      );
-    },
-    true
-  );
-})();
-</script>
 </body>
 </html>
