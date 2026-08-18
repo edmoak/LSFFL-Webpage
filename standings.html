@@ -1,4 +1,3 @@
-
 /
 LSFFL_Standings_LOGOS_IN_POWER_RANKINGS_2026-08-17.txt
 
@@ -77,9 +76,9 @@ img {
 
     .lsffl-layout {
       display: grid;
-      grid-template-columns: minmax(0, 2.55fr) minmax(330px, 0.95fr);
-      gap: 14px;
-      align-items: stretch;
+      grid-template-columns: 1fr;
+      gap: 0;
+      align-items: start;
     }
 
     .lsffl-panel {
@@ -140,15 +139,6 @@ img {
     }
 
     .lsffl-standings-title::after {
-      content: "★";
-    }
-
-    .lsffl-power-title::before {
-      content: "▥";
-      transform: rotate(180deg);
-    }
-
-    .lsffl-power-title::after {
       content: "★";
     }
 .lsffl-table-wrap {
@@ -225,6 +215,12 @@ img {
       font-weight: 900;
     }
 
+    .lsffl-power-rank-cell {
+      color: var(--gold-400) !important;
+      font-size: 16px !important;
+      font-weight: 900;
+    }
+
     .lsffl-franchise-cell {
       padding-left: 6px !important;
       padding-right: 8px !important;
@@ -293,8 +289,37 @@ img {
 
     .lsffl-division-list {
       display: grid;
-      gap: 14px;
-      padding: 14px;
+      gap: 30px;
+      padding: 18px 14px 22px;
+    }
+
+    .lsffl-division-row {
+      display: grid;
+      grid-template-columns: 188px minmax(0, 1fr);
+      gap: 18px;
+      align-items: stretch;
+      min-width: 0;
+    }
+
+    .lsffl-division-banner-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      max-height: 306px;
+      overflow: hidden;
+    }
+
+    .lsffl-division-banner {
+      display: block;
+      width: auto;
+      height: 100%;
+      max-width: 100%;
+      max-height: 306px;
+      object-fit: contain;
+      object-position: center;
+      background: transparent;
+      filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.45));
     }
 
     .lsffl-division-block {
@@ -349,111 +374,6 @@ img {
       color: var(--gold-500);
     }
 
-    .lsffl-power-panel {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-
-    .lsffl-power-panel > .lsffl-table-wrap {
-      display: flex;
-      flex: 1 1 auto;
-      min-height: 0;
-      overflow: hidden;
-    }
-
-    .lsffl-power-table {
-      height: 100%;
-    }
-
-    .lsffl-power-table tbody {
-      height: 100%;
-    }
-
-    .lsffl-power-table tbody tr {
-      height: 6.25%;
-    }
-
-    .lsffl-power-table th:nth-child(1),
-    .lsffl-power-table td:nth-child(1) {
-      width: 50px;
-      min-width: 50px;
-      padding-left: 4px;
-      padding-right: 4px;
-      white-space: nowrap;
-    }
-
-    .lsffl-power-table th:nth-child(2),
-    .lsffl-power-table td:nth-child(2) {
-      width: auto;
-    }
-
-    .lsffl-power-table th:nth-child(3),
-    .lsffl-power-table td:nth-child(3) {
-      width: 38px;
-      min-width: 38px;
-      padding-left: 2px;
-      padding-right: 2px;
-    }
-
-    .lsffl-power-table th:nth-child(4),
-    .lsffl-power-table td:nth-child(4) {
-      width: 29px;
-      min-width: 29px;
-      padding-left: 2px;
-      padding-right: 2px;
-    }
-
-    .lsffl-power-table th:nth-child(5),
-    .lsffl-power-table td:nth-child(5) {
-      width: 29px;
-      min-width: 29px;
-      padding-left: 2px;
-      padding-right: 2px;
-    }
-
-    .lsffl-power-franchise {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      min-width: 0;
-      text-align: left;
-    }
-
-    .lsffl-power-helmet {
-      width: 58px;
-      height: 58px;
-      flex: 0 0 58px;
-      object-fit: contain;
-      filter:
-        drop-shadow(0 4px 4px rgba(0, 0, 0, 0.72));
-    }
-
-    .lsffl-power-name {
-      overflow: hidden;
-      color: var(--white);
-      font-size: 11px;
-      font-weight: 700;
-      font-style: italic;
-      letter-spacing: 0.2px;
-      text-overflow: ellipsis;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-
-    .lsffl-power-table td {
-      height: auto;
-      min-height: 76px;
-      padding-top: 4px;
-      padding-bottom: 4px;
-    }
-
-    .lsffl-power-rank {
-      color: var(--gold-400) !important;
-      font-size: 17px !important;
-      font-weight: 900;
-    }
-
     .lsffl-message {
       margin: 0;
       padding: 28px 18px;
@@ -483,28 +403,20 @@ img {
     }
 
     @media (max-width: 760px) {
-      .lsffl-layout {
+      .lsffl-division-row {
         grid-template-columns: 1fr;
-        align-items: start;
+        gap: 10px;
       }
 
-      .lsffl-power-panel {
-        width: 100%;
-        height: auto;
+      .lsffl-division-banner-wrap {
+        max-height: 180px;
       }
 
-      .lsffl-power-panel > .lsffl-table-wrap {
-        display: block;
+      .lsffl-division-banner {
+        height: 180px;
+        max-height: 180px;
       }
 
-      .lsffl-power-table,
-      .lsffl-power-table tbody {
-        height: auto;
-      }
-
-      .lsffl-power-table tbody tr {
-        height: auto;
-      }
     }
 
     @media (max-width: 720px) {
@@ -532,16 +444,8 @@ img {
       .lsffl-standings-name {
         font-size: 11px;
       }
-.lsffl-power-helmet {
-        width: 62px;
-        height: 62px;
-        flex-basis: 62px;
-      }
 
       .lsffl-standings-table,
-      .lsffl-power-table {
-        min-width: 0;
-      }
     }
   
     .lsffl-clickable-row {
@@ -553,32 +457,14 @@ img {
       outline-offset: -2px;
     }
 
-    .lsffl-power-logo {
-      width: 38px;
-      height: 38px;
-      flex: 0 0 38px;
-      object-fit: contain;
-      filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.58));
-    }
-
     @media (max-width: 720px) {
-      .lsffl-power-logo {
-        width: 34px;
-        height: 34px;
-        flex-basis: 34px;
-      }
     }
 
   
     /* =========================================================
-       FINAL TEAM ART SIZING
+       FINAL STANDINGS TEAM ART SIZING
        Standings = secondary logos
-       Power Rankings = helmets
        ========================================================= */
-
-    .lsffl-layout {
-      grid-template-columns: minmax(0, 2.55fr) minmax(420px, 1.05fr);
-    }
 
     .lsffl-table td {
       height: 58px;
@@ -617,50 +503,13 @@ img {
       font-weight: 700;
     }
 
-    .lsffl-power-table th:nth-child(1),
-    .lsffl-power-table td:nth-child(1) {
-      width: 48px;
-      min-width: 48px;
-    }
-
-    .lsffl-power-table th:nth-child(2),
-    .lsffl-power-table td:nth-child(2) {
-      width: auto;
-      min-width: 220px;
-    }
-
     .lsffl-power-table td {
       min-height: 70px;
       padding-top: 5px;
       padding-bottom: 5px;
     }
 
-    .lsffl-power-franchise {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-      text-align: left;
-    }
-
-    .lsffl-power-helmet {
-      width: 64px;
-      height: 64px;
-      flex: 0 0 64px;
-      object-fit: contain;
-      filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.72));
-    }
-
-    .lsffl-power-name {
-      font-size: 13px;
-      font-weight: 700;
-      font-style: italic;
-    }
-
     @media (max-width: 1100px) {
-      .lsffl-layout {
-        grid-template-columns: minmax(0, 2.35fr) minmax(380px, 1fr);
-      }
 
       .lsffl-standings-logo {
         width: 50px;
@@ -668,18 +517,9 @@ img {
         flex-basis: 50px;
         transform: scale(1.14);
       }
-
-      .lsffl-power-helmet {
-        width: 58px;
-        height: 58px;
-        flex-basis: 58px;
-      }
     }
 
     @media (max-width: 760px) {
-      .lsffl-layout {
-        grid-template-columns: 1fr;
-      }
 
       .lsffl-standings-logo {
         width: 46px;
@@ -687,20 +527,10 @@ img {
         flex-basis: 46px;
         transform: scale(1.12);
       }
-
-      .lsffl-power-helmet {
-        width: 56px;
-        height: 56px;
-        flex-basis: 56px;
-      }
     }
 
     @media (max-width: 720px) {
       .lsffl-standings-name {
-        font-size: 12px;
-      }
-
-      .lsffl-power-name {
         font-size: 12px;
       }
     }
@@ -738,45 +568,10 @@ img {
           <span><strong>PF:</strong> Points For</span>
           <span><strong>PA:</strong> Points Against</span>
           <span><strong>STRK:</strong> Current Streak</span>
+          <span><strong>PWR:</strong> League Power Rank</span>
         </footer>
       </section>
-
-      <section class="lsffl-panel lsffl-power-panel">
-        <header class="lsffl-panel-header">
-          <h2 class="lsffl-panel-title lsffl-power-title">
-            Power Rankings
-          </h2>
-        </header>
-
-        <div class="lsffl-table-wrap">
-          <table
-            class="lsffl-table lsffl-power-table"
-            aria-label="LSFFL power rankings"
-          >
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Franchise</th>
-                <th>Eff</th>
-                <th title="Could Have Won">CW</th>
-                <th title="Could Have Lost">CL</th>
-              </tr>
-            </thead>
-
-            <tbody id="power-body">
-              <tr>
-                <td colspan="5">
-                  <p class="lsffl-message lsffl-loading">
-                    Loading power rankings…
-                  </p>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-    </div>
+</div>
   </main>
 
   <script>
@@ -787,24 +582,11 @@ img {
         league: "data/league.json",
         standings: "data/standings.json"
       };
-
-      const BANNER_BY_ID = {
-        "0001": "Spartans.png",
-        "0002": "Saints.png",
-        "0003": "gmen.png",
-        "0004": "Hambone Hogs.png",
-        "0005": "Purple Hooters.png",
-        "0006": "Mustangs.png",
-        "0007": "Hawky Bears.png",
-        "0008": "Daboys.png",
-        "0009": "Dawgs.png",
-        "0010": "Camel Toes.png",
-        "0011": "Cougars.png",
-        "0012": "MothaBucca.png",
-        "0013": "Mad Hatters.png",
-        "0014": "TBM.png",
-        "0015": "GOMD.png",
-        "0016": "Avalanche.png"
+      const DIVISION_BANNER_BY_NAME = {
+        "bulldogs": "Bulldogs Banner.png",
+        "pennydrops": "Pennydrops Banner.png",
+        "the gel": "The Gel Banner.png",
+        "paradiso": "Paradiso Banner.png"
       };
 
 
@@ -825,25 +607,6 @@ img {
         "0014": "Tiny But Mighty Secondary Logo.png",
         "0015": "Get Off My Ditka Secondary Logo.png",
         "0016": "Avalanche Secondary Logo.png"
-      };
-
-      const HELMET_BY_ID = {
-        "0001": "Spartans Helmet.png",
-        "0002": "Saints Helmet.png",
-        "0003": "G-Men Helmet.png",
-        "0004": "Hambone Hogs Helmet.png",
-        "0005": "Purple Hooters Helmet.png",
-        "0006": "Mustangs Helmet.png",
-        "0007": "Hawky Bears Helmet.png",
-        "0008": "DaBoys Helmet.png",
-        "0009": "Dawgs Helmet.png",
-        "0010": "Camel Toes Helmet.png",
-        "0011": "Cougars Helmet.png",
-        "0012": "MothaBucca Helmet.png",
-        "0013": "Mad Hatters Helmet.png",
-        "0014": "TBM Helmet.png",
-        "0015": "GOMD Helmet.png",
-        "0016": "Avalanche Helmet.png"
       };
 
       const TEAM_NAME_OVERRIDES = {
@@ -875,11 +638,7 @@ img {
 
       const divisionStandings =
         document.getElementById("division-standings");
-
-      const powerBody =
-        document.getElementById("power-body");
-
-      let allTeams = [];
+let allTeams = [];
       let divisionsById = {};
 
       function asArray(value) {
@@ -931,13 +690,6 @@ img {
       function fixed(value, places = 2) {
         return number(value).toFixed(places);
       }
-
-      function percent(value) {
-        const numeric = number(value);
-
-        if (numeric > 1) {
-          return numeric.toFixed(1) + "%";
-        }
 
         return (numeric * 100).toFixed(1) + "%";
       }
@@ -1214,11 +966,6 @@ img {
         return a.name.localeCompare(b.name);
       }
 
-      function powerSort(a, b) {
-        if (a.powerRank && b.powerRank) {
-          return a.powerRank - b.powerRank;
-        }
-
         if (a.powerRank && !b.powerRank) {
           return -1;
         }
@@ -1241,24 +988,19 @@ img {
         return (numeric / 100).toFixed(3).replace(/^0/, "");
       }
 
-      function bannerSource(team) {
-        return encodePath(
-          "images/banners/" +
-          (BANNER_BY_ID[team.id] || "")
-        );
+      function divisionBannerSource(divisionName) {
+        const key = text(divisionName).trim().toLowerCase();
+        const file = DIVISION_BANNER_BY_NAME[key] || "";
+
+        return file
+          ? encodePath("images/banners/" + file)
+          : "";
       }
 
       function logoSource(team) {
         return encodePath(
           "images/2ndlogo/" +
           (LOGO_BY_ID[team.id] || "")
-        );
-      }
-
-      function helmetSource(team) {
-        return encodePath(
-          "images/helmets/" +
-          (HELMET_BY_ID[team.id] || "")
         );
       }
 
@@ -1312,53 +1054,8 @@ img {
             <td>${pctDisplay(team.pct)}</td>
             <td>${fixed(team.pf)}</td>
             <td>${fixed(team.pa)}</td>
-
-
             <td>${escapeHTML(team.streak)}</td>
-          </tr>
-        `;
-      }
-
-      function powerRow(team, index) {
-        // Power Rankings uses the same team logo source as Division Standings.
-        const localHelmet = logoSource(team);
-        const fallbackHelmet = escapeHTML(team.icon || "");
-
-        return `
-          <tr
-            class="lsffl-clickable-row"
-            data-team-url="${teamPage(team)}"
-            tabindex="0"
-            role="link"
-            aria-label="Open ${escapeHTML(team.name)} MFL franchise page"
-          >
-            <td class="lsffl-power-rank">${index + 1}</td>
-
-            <td>
-              <a
-                class="lsffl-team-link lsffl-power-franchise"
-                href="${teamPage(team)}"
-                aria-label="Open ${escapeHTML(team.name)} MFL franchise page"
-              >
-                <img
-                  class="lsffl-power-helmet"
-                  src="${localHelmet}"
-                  alt=""
-                  onerror="
-                    this.onerror=null;
-                    this.src='${fallbackHelmet}';
-                  "
-                >
-
-                <span class="lsffl-power-name">
-                  ${escapeHTML(team.name)}
-                </span>
-              </a>
-            </td>
-
-            <td>${percent(team.efficiency)}</td>
-            <td title="Could Have Won">${team.couldHaveWon || "0"}</td>
-            <td title="Could Have Lost">${team.couldHaveLost || "0"}</td>
+            <td class="lsffl-power-rank-cell">${team.powerRank || "—"}</td>
           </tr>
         `;
       }
@@ -1393,7 +1090,7 @@ img {
                 ? teams.map(standingsRow).join("")
                 : `
                   <tr>
-                    <td colspan="7">
+                    <td colspan="8">
                       <p class="lsffl-message">
                         No teams are assigned to this division.
                       </p>
@@ -1401,57 +1098,71 @@ img {
                   </tr>
                 `;
 
+              const divisionBanner =
+                divisionBannerSource(divisionName);
+
               return `
-                <section class="lsffl-division-block">
-                  <h2 class="lsffl-division-heading">
-                    ${escapeHTML(divisionName)}
-                  </h2>
-
-                  <div class="lsffl-division-table-wrap">
-                    <table
-                      class="lsffl-table lsffl-standings-table"
-                      aria-label="${escapeHTML(divisionName)} standings"
-                    >
-                      <colgroup>
-                        <col style="width: 44px">
-                        <col style="width: 48%">
-                        <col style="width: 88px">
-                        <col style="width: 72px">
-                        <col style="width: 92px">
-                        <col style="width: 92px">
-                        <col style="width: 76px">
-                      </colgroup>
-
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Franchise</th>
-                          <th>W-L-T</th>
-                          <th>PCT</th>
-                          <th>PF</th>
-                          <th>PA</th>
-                          <th>STRK</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        ${rows}
-                      </tbody>
-                    </table>
+                <section class="lsffl-division-row">
+                  <div
+                    class="lsffl-division-banner-wrap"
+                    aria-hidden="true"
+                  >
+                    ${
+                      divisionBanner
+                        ? `
+                          <img
+                            class="lsffl-division-banner"
+                            src="${divisionBanner}"
+                            alt=""
+                          >
+                        `
+                        : ""
+                    }
                   </div>
+
+                  <section class="lsffl-division-block">
+                    <h2 class="lsffl-division-heading">
+                      ${escapeHTML(divisionName)}
+                    </h2>
+
+                    <div class="lsffl-division-table-wrap">
+                      <table
+                        class="lsffl-table lsffl-standings-table"
+                        aria-label="${escapeHTML(divisionName)} standings"
+                      >
+                        <colgroup>
+                          <col style="width: 42px">
+                          <col style="width: 42%">
+                          <col style="width: 86px">
+                          <col style="width: 68px">
+                          <col style="width: 86px">
+                          <col style="width: 86px">
+                          <col style="width: 68px">
+                          <col style="width: 82px">
+                        </colgroup>
+
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Franchise</th>
+                            <th>W-L-T</th>
+                            <th>PCT</th>
+                            <th>PF</th>
+                            <th>PA</th>
+                            <th>STRK</th>
+                            <th>PWR</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          ${rows}
+                        </tbody>
+                      </table>
+                    </div>
+                  </section>
                 </section>
               `;
             })
-            .join("");
-      }
-
-      function renderPowerRankings() {
-        const rankedTeams =
-          [...allTeams].sort(powerSort);
-
-        powerBody.innerHTML =
-          rankedTeams
-            .map(powerRow)
             .join("");
       }
 
@@ -1463,17 +1174,7 @@ img {
             ${safeMessage}
           </p>
         `;
-
-        powerBody.innerHTML = `
-          <tr>
-            <td colspan="5">
-              <p class="lsffl-message lsffl-message-error">
-                ${safeMessage}
-              </p>
-            </td>
-          </tr>
-        `;
-      }
+}
 
       async function fetchJSON(url) {
         const response = await fetch(
@@ -1551,7 +1252,6 @@ img {
           });
 
           renderStandings();
-          renderPowerRankings();
         } catch (error) {
           console.error(error);
 
