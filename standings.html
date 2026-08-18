@@ -1,3 +1,8 @@
+
+/
+LSFFL_Standings_LOGOS_IN_POWER_RANKINGS_2026-08-17.txt
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1315,7 +1320,8 @@ img {
       }
 
       function powerRow(team, index) {
-        const localHelmet = helmetSource(team);
+        // Power Rankings uses the same team logo source as Division Standings.
+        const localHelmet = logoSource(team);
         const fallbackHelmet = escapeHTML(team.icon || "");
 
         return `
