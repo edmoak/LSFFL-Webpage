@@ -10,10 +10,10 @@
  *
  * Owns ONLY:
  *   - Commissioner Article popups
- * *   - Franchise popups
+ *   - Franchise popups
  *   - Homepage Announcement Center
  *   - Owner manager alerts harvested from MFL's hidden native notifications
- *   - Temporary 2026 Draft Room launch button
+ *   - Week 1 lineup reminder
  *
  * DOES NOT own:
  *   - Standings page
@@ -46,7 +46,7 @@
   var previousFocus = null;
 
   var ANNOUNCEMENT_SESSION_KEY =
-    "lsffl-popup41-auto-shown-2026-23135";
+    "lsffl-popup41-week1-auto-shown-2026-23135";
 
   var ANNOUNCEMENT_DISMISS_KEY =
     "lsffl-popup41-dismissed-until";
@@ -538,113 +538,58 @@
 
   /* ============================================================
      REMOVE MFL / LSFFL HEADER CHROME FROM IFRAME
-
-     This is the main Pop-Up 4.0 fix.
      ============================================================ */
 
   function hideMflChrome(doc) {
 
     var selectors = [
 
-      /* MFL top navigation */
-
       ".myfantasyleague_menu",
-
       "#myfantasyleague_menu",
-
       ".mfl-menu",
-
       ".mflmenu",
-
       ".topmenu",
-
       ".top-menu",
 
-
-      /* Main LSFFL banner */
-
       ".banner-container",
-
       ".banner-container-wrap",
-
       ".banner-leftside",
-
       ".banner-rightside",
-
       ".bannerlinkicons",
-
       ".icon-bar",
-
       ".lsffl-banner",
-
       ".lsffl-header",
-
       ".header-wrapper",
 
-
-      /* Standard MFL header containers */
-
       "#header",
-
       "#pageheader",
-
       "#MFLHeader",
-
       "#mflheader",
-
       ".pageheader",
-
       ".page-header",
-
       ".mfl-header",
 
-
-      /* Scoreboard / ticker */
-
       ".ticker-wrapper",
-
       ".lsffl-ticker-wrapper",
-
       ".lsffl-scoreboard",
-
       ".scoreboard-wrapper",
-
       "#scoreboard",
-
       "#MFLScoreboard",
 
-
-      /* MFL utility chrome */
-
       "#MFLBoxWrapper",
-
       ".MFLSkinSelection",
-
       "#menu-trigger",
-
       "#menu-overlay",
-
       "#click-blocker",
-
       "#myfantasyleague_mobile_menu",
-
       ".mobile-menu",
-
       ".mobile_menu",
-
       ".mobilemenu",
-
       ".mfl-mobile-menu",
 
-
-      /* Footer */
-
       "#footer",
-
       ".footer",
-
       ".pagefooter",
-
       "#pagefooter"
 
     ];
@@ -663,14 +608,6 @@
       }
     );
 
-
-    /*
-     * Some MFL skins wrap the banner/menu in a parent
-     * that has no useful class.
-     *
-     * If one of the known banner pieces survives,
-     * hide the nearest large wrapper too.
-     */
 
     var bannerPieces =
       doc.querySelectorAll(
@@ -771,8 +708,6 @@
       "}",
 
 
-      /* Franchise logo */
-
       "html.lsffl-popup41-doc " +
       "body.lsffl-popup41-franchise " +
       "img.lsffl-popup41-team-logo{" +
@@ -787,8 +722,6 @@
 
       "}",
 
-
-      /* Franchise name */
 
       "html.lsffl-popup41-doc " +
       ".lsffl-popup41-team-brand{" +
@@ -863,10 +796,6 @@
       .replace(/\s+/g, " ")
       .trim();
 
-    /*
-     * Most MFL franchise pages expose the team name in text such as:
-     *   COUGARS: Main | Roster | ...
-     */
 
     var navMatch = bodyText.match(
       /(?:^|\s)([A-Za-z0-9][A-Za-z0-9'’&. \/_-]{1,45}?):\s*Main\b/i
@@ -881,11 +810,6 @@
         .trim();
     }
 
-
-    /*
-     * Some MFL skins render only the franchise name as a heading.
-     * Read visible headings/cells and reject MFL navigation labels.
-     */
 
     var rejected =
       /^(main|home|roster|roster w\/?stats|scoring history|transactions|schedule|accounting|series records|box score|my options|franchise center|league|standings|reports|players|draft|communications|league message board|message board|team|owner|record|points|power rank|all|submit|go)$/i;
@@ -1144,7 +1068,6 @@
           }
 
         } catch (error) {
-          /* Ignore an image that cannot be measured. */
         }
 
       }
@@ -1376,7 +1299,6 @@
           }
 
         } catch (error) {
-          /* Ignore inaccessible nested frames. */
         }
 
       }
@@ -1571,9 +1493,6 @@
 
   /* ============================================================
      TOP-LEVEL MFL LINK INTERCEPTION
-
-     ONLY commissioner-article and franchise URLs.
-     GitHub links are ignored.
      ============================================================ */
 
   document.addEventListener(
@@ -2031,10 +1950,6 @@
 
   /* ============================================================
      OWNER MANAGER ALERTS
-
-     MFL remains the rule engine. Its native notification popup is hidden,
-     but we read the generated notification text and convert relevant owner
-     issues into LSFFL announcement cards.
      ============================================================ */
 
   function getNativeNotificationRoot() {
@@ -2157,10 +2072,6 @@
 
     var alerts = [];
 
-    /*
-     * Keep the matching deliberately broad because MFL's wording can vary
-     * by league settings and by the exact type of roster problem.
-     */
 
     if (
       /\btrade\b/i.test(text) &&
@@ -2290,10 +2201,6 @@
     }
 
 
-    /*
-     * De-duplicate cards in case MFL repeats the same warning in multiple
-     * elements inside its hidden notification container.
-     */
     var seen =
       Object.create(null);
 
@@ -2333,23 +2240,23 @@
 
 
         title:
-          "Welcome to the 2026 LSFFL Season",
+          "Week 1 Is Here — Set Your Lineup",
 
 
         body:
-          "The Lamad Squad Fantasy Football League is back. Check the Commissioner Articles in League Central throughout the season for commissioner updates, league news, trade alerts, and everything happening around the LSFFL.",
+          "NFL regular-season games begin Wednesday, September 9. Make sure your starting lineup is submitted before your players lock. Reminder: LSFFL now starts TWO FLEX players instead of one. Your weekly lineup should have 9 starters total: 1 QB, 1 RB, 2 WR, 1 TE, 2 FLEX, 1 K, and 1 Defense.",
 
 
         meta:
-          "A Tradition Born Across the Sea",
+          "9 STARTERS • 2 FLEX • GET YOUR LINEUP IN",
 
 
         buttonText:
-          "Enter Draft Room",
+          "Submit Lineup",
 
 
         buttonUrl:
-          "https://www48.myfantasyleague.com/2026/ajax_ld?L=23135"
+          "https://www48.myfantasyleague.com/2026/options?L=23135&O=02"
 
       }
 
@@ -2373,7 +2280,10 @@
 
 
     if (
-      article
+      article &&
+      !/draft/i.test(
+        article.title || ""
+      )
     ) {
 
       items.push(
@@ -3007,11 +2917,6 @@
     );
 
 
-    /*
-     * Only mark this session as shown AFTER
-     * the popup has actually opened.
-     */
-
     try {
 
       sessionStorage.setItem(
@@ -3020,7 +2925,6 @@
       );
 
     } catch (error) {
-      /* Storage unavailable. */
     }
 
 
@@ -3066,7 +2970,6 @@
         );
 
       } catch (error) {
-        /* Storage unavailable. */
       }
     }
 
@@ -3098,7 +3001,6 @@
       }
 
     } catch (error) {
-      /* Storage unavailable. */
     }
 
 
@@ -3114,7 +3016,6 @@
       }
 
     } catch (error) {
-      /* Storage unavailable. */
     }
 
 
@@ -3181,19 +3082,8 @@
     }
 
 
-    /*
-     * Kill MFL's notification popup immediately if it
-     * already exists when our popup manager starts.
-     */
-
     killPopup();
 
-
-    /*
-     * MFL can activate the popup after our JavaScript
-     * has loaded, so watch the DOM briefly and kill it
-     * if MFL changes or recreates the popup.
-     */
 
     var observer =
       new MutationObserver(
@@ -3240,12 +3130,6 @@
       return;
     }
 
-
-    /*
-     * Block MFL's original League Notifications popup
-     * before LSFFL decides whether its own announcement
-     * should automatically open.
-     */
 
     disableMflNativeNotificationPopup();
 
@@ -3355,4 +3239,4 @@
 
   }
 
-})()
+})();
