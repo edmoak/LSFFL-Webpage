@@ -1,6 +1,6 @@
 /*
  * ============================================================
- * LSFFL POPUP MANAGER — POP-UP 4.4
+ * LSFFL POPUP MANAGER — POP-UP 4.3
  * ============================================================
  * File:
  *   js/lsffl-popup-manager.js
@@ -10,12 +10,12 @@
  *
  * Owns ONLY:
  *   - Commissioner Article popups
- *   - Franchise popups
+ * *   - Franchise popups
  *   - Homepage Announcement Center
- *   - Owner manager alerts harvested from MFL's hidden native notifications
+ *   - Temporary 2026 Draft Room launch button
  *
  * DOES NOT own:
- *   - Standings page team popups
+ *   - Standings page
  *   - Hall of Fame page
  *   - Retired Franchises page
  *   - Other GitHub LSFFL pages
@@ -43,9 +43,8 @@
 
   var modalType = "content";
   var previousFocus = null;
-
   var ANNOUNCEMENT_SESSION_KEY =
-    "lsffl-popup41-week1-auto-shown-2026-23135";
+    "lsffl-popup41-auto-shown-2026-23135";
 
   var ANNOUNCEMENT_DISMISS_KEY =
     "lsffl-popup41-dismissed-until";
@@ -97,6 +96,9 @@
 
   /* ============================================================
      URL CLASSIFICATION
+
+     IMPORTANT:
+     GitHub pages are intentionally NOT classified.
      ============================================================ */
 
   function classifyMflUrl(value) {
@@ -110,12 +112,10 @@
       url.searchParams.get("O") || ""
     ).replace(/^0+/, "");
 
-    var franchiseId =
-      normalizeFranchiseId(
-        url.searchParams.get("F")
-      );
-
-    if (
+    var franchiseId = normalizeFranchiseId(
+      url.searchParams.get("F")
+    );
+if (
       /\/options\/?$/i.test(url.pathname) &&
       option === "73"
     ) {
@@ -125,8 +125,7 @@
         url: url.href
       };
     }
-
-    if (
+if (
       franchiseId &&
       /\/options\/?$/i.test(url.pathname)
     ) {
@@ -168,9 +167,11 @@
         "overflow:hidden!important;" +
       "}",
 
+
       "#lsffl-popup41-modal[hidden]{" +
         "display:none!important;" +
       "}",
+
 
       "#lsffl-popup41-modal{" +
         "position:fixed;" +
@@ -185,6 +186,7 @@
         "-webkit-backdrop-filter:blur(4px);" +
       "}",
 
+
       "#lsffl-popup41-dialog{" +
         "width:min(1180px,96vw);" +
         "height:min(850px,94vh);" +
@@ -197,6 +199,7 @@
         "box-shadow:0 22px 70px rgba(0,0,0,.72);" +
       "}",
 
+
       "#lsffl-popup41-bar{" +
         "min-height:48px;" +
         "display:flex;" +
@@ -207,6 +210,7 @@
         "border-bottom:2px solid #c9a227;" +
         "background:linear-gradient(180deg,#123755 0%,#071a2f 100%);" +
       "}",
+
 
       "#lsffl-popup41-title{" +
         "min-width:0;" +
@@ -221,6 +225,7 @@
         "text-transform:uppercase;" +
         "white-space:nowrap;" +
       "}",
+
 
       "#lsffl-popup41-close{" +
         "width:34px!important;" +
@@ -238,10 +243,12 @@
         "cursor:pointer!important;" +
       "}",
 
+
       "#lsffl-popup41-close:hover{" +
         "background:#c9a227!important;" +
         "color:#061426!important;" +
       "}",
+
 
       "#lsffl-popup41-frame{" +
         "width:100%;" +
@@ -252,6 +259,7 @@
         "opacity:0;" +
         "transition:opacity .12s ease;" +
       "}",
+
 
       "@media(max-width:700px){" +
 
@@ -290,6 +298,7 @@
 
     injectModalStyles();
 
+
     modal =
       document.createElement(
         "div"
@@ -311,6 +320,7 @@
       "true"
     );
 
+
     modalDialog =
       document.createElement(
         "div"
@@ -319,6 +329,7 @@
     modalDialog.id =
       "lsffl-popup41-dialog";
 
+
     var bar =
       document.createElement(
         "div"
@@ -326,6 +337,7 @@
 
     bar.id =
       "lsffl-popup41-bar";
+
 
     modalTitle =
       document.createElement(
@@ -337,6 +349,7 @@
 
     modalTitle.textContent =
       "LSFFL";
+
 
     modalClose =
       document.createElement(
@@ -357,6 +370,7 @@
     modalClose.textContent =
       "×";
 
+
     modalFrame =
       document.createElement(
         "iframe"
@@ -373,6 +387,7 @@
       "eager"
     );
 
+
     bar.appendChild(
       modalTitle
     );
@@ -380,6 +395,7 @@
     bar.appendChild(
       modalClose
     );
+
 
     modalDialog.appendChild(
       bar
@@ -389,6 +405,7 @@
       modalFrame
     );
 
+
     modal.appendChild(
       modalDialog
     );
@@ -397,10 +414,12 @@
       modal
     );
 
+
     modalClose.addEventListener(
       "click",
       closeModal
     );
+
 
     modal.addEventListener(
       "click",
@@ -414,6 +433,7 @@
 
       }
     );
+
 
     modalFrame.addEventListener(
       "load",
@@ -513,61 +533,117 @@
 
   /* ============================================================
      REMOVE MFL / LSFFL HEADER CHROME FROM IFRAME
+
+     This is the main Pop-Up 4.0 fix.
      ============================================================ */
 
   function hideMflChrome(doc) {
 
     var selectors = [
 
+      /* MFL top navigation */
+
       ".myfantasyleague_menu",
+
       "#myfantasyleague_menu",
+
       ".mfl-menu",
+
       ".mflmenu",
+
       ".topmenu",
+
       ".top-menu",
 
+
+      /* Main LSFFL banner */
+
       ".banner-container",
+
       ".banner-container-wrap",
+
       ".banner-leftside",
+
       ".banner-rightside",
+
       ".bannerlinkicons",
+
       ".icon-bar",
+
       ".lsffl-banner",
+
       ".lsffl-header",
+
       ".header-wrapper",
 
+
+      /* Standard MFL header containers */
+
       "#header",
+
       "#pageheader",
+
       "#MFLHeader",
+
       "#mflheader",
+
       ".pageheader",
+
       ".page-header",
+
       ".mfl-header",
 
+
+      /* Scoreboard / ticker */
+
       ".ticker-wrapper",
+
       ".lsffl-ticker-wrapper",
+
       ".lsffl-scoreboard",
+
       ".scoreboard-wrapper",
+
       "#scoreboard",
+
       "#MFLScoreboard",
 
+
+      /* MFL utility chrome */
+
       "#MFLBoxWrapper",
+
       ".MFLSkinSelection",
+
       "#menu-trigger",
+
       "#menu-overlay",
+
       "#click-blocker",
+
       "#myfantasyleague_mobile_menu",
+
       ".mobile-menu",
+
       ".mobile_menu",
+
       ".mobilemenu",
+
       ".mfl-mobile-menu",
 
+
+      /* Footer */
+
       "#footer",
+
       ".footer",
+
       ".pagefooter",
+
       "#pagefooter"
 
     ];
+
 
     selectors.forEach(
       function (selector) {
@@ -582,12 +658,22 @@
       }
     );
 
+
+    /*
+     * Some MFL skins wrap the banner/menu in a parent
+     * that has no useful class.
+     *
+     * If one of the known banner pieces survives,
+     * hide the nearest large wrapper too.
+     */
+
     var bannerPieces =
       doc.querySelectorAll(
         ".banner-leftside," +
         ".banner-rightside," +
         ".bannerlinkicons"
       );
+
 
     Array.prototype.forEach.call(
       bannerPieces,
@@ -622,6 +708,7 @@
       return;
     }
 
+
     var style =
       doc.createElement(
         "style"
@@ -629,6 +716,7 @@
 
     style.id =
       "lsffl-popup41-frame-style";
+
 
     style.textContent = [
 
@@ -652,10 +740,12 @@
 
       "}",
 
+
       "html.lsffl-popup41-doc body{" +
         "padding:10px!important;" +
         "box-sizing:border-box!important;" +
       "}",
+
 
       "html.lsffl-popup41-doc #container-wrap," +
       "html.lsffl-popup41-doc .pagebody," +
@@ -669,10 +759,14 @@
 
       "}",
 
+
       "html.lsffl-popup41-doc img{" +
         "max-width:100%!important;" +
         "height:auto!important;" +
       "}",
+
+
+      /* Franchise logo */
 
       "html.lsffl-popup41-doc " +
       "body.lsffl-popup41-franchise " +
@@ -688,6 +782,9 @@
 
       "}",
 
+
+      /* Franchise name */
+
       "html.lsffl-popup41-doc " +
       ".lsffl-popup41-team-brand{" +
 
@@ -696,6 +793,7 @@
         "text-align:center!important;" +
 
       "}",
+
 
       "html.lsffl-popup41-doc " +
       ".lsffl-popup41-team-name{" +
@@ -713,6 +811,7 @@
         "text-shadow:0 3px 8px rgba(0,0,0,.55)!important;" +
 
       "}",
+
 
       "html.lsffl-popup41-doc " +
       ".lsffl-popup41-team-line{" +
@@ -733,6 +832,7 @@
       "}"
 
     ].join("");
+
 
     doc.head.appendChild(
       style
@@ -758,53 +858,43 @@
       .replace(/\s+/g, " ")
       .trim();
 
+    /*
+     * Most MFL franchise pages expose the team name in text such as:
+     *   COUGARS: Main | Roster | ...
+     */
     var navMatch = bodyText.match(
       /(?:^|\s)([A-Za-z0-9][A-Za-z0-9'’&. \/_-]{1,45}?):\s*Main\b/i
     );
 
-    if (
-      navMatch &&
-      navMatch[1]
-    ) {
+    if (navMatch && navMatch[1]) {
       return navMatch[1]
         .replace(/\s+/g, " ")
         .trim();
     }
 
-    var rejected =
-      /^(main|home|roster|roster w\/?stats|scoring history|transactions|schedule|accounting|series records|box score|my options|franchise center|league|standings|reports|players|draft|communications|league message board|message board|team|owner|record|points|power rank|all|submit|go)$/i;
+    /*
+     * Some MFL skins render only the franchise name as a heading.
+     * Read visible headings/cells and reject MFL navigation labels.
+     */
+    var rejected = /^(main|home|roster|roster w\/?stats|scoring history|transactions|schedule|accounting|series records|box score|my options|franchise center|league|standings|reports|players|draft|communications|league message board|message board|team|owner|record|points|power rank|all|submit|go)$/i;
 
-    var candidates =
-      Array.prototype.slice.call(
-        doc.querySelectorAll(
-          ".modulehead,.moduleheader,.reportnavigation,h1,h2,h3,caption,th,td,strong,b"
-        )
-      );
+    var candidates = Array.prototype.slice.call(
+      doc.querySelectorAll(
+        ".modulehead,.moduleheader,.reportnavigation,h1,h2,h3,caption,th,td,strong,b"
+      )
+    );
 
-    for (
-      var i = 0;
-      i < candidates.length;
-      i += 1
-    ) {
+    for (var i = 0; i < candidates.length; i += 1) {
+      var node = candidates[i];
 
-      var node =
-        candidates[i];
-
-      if (
-        !node ||
-        !node.textContent
-      ) {
+      if (!node || !node.textContent) {
         continue;
       }
 
-      var text =
-        String(node.textContent)
-          .replace(/\s+/g, " ")
-          .replace(
-            /:\s*Main.*$/i,
-            ""
-          )
-          .trim();
+      var text = String(node.textContent)
+        .replace(/\s+/g, " ")
+        .replace(/:\s*Main.*$/i, "")
+        .trim();
 
       if (
         text.length < 2 ||
@@ -816,63 +906,37 @@
         continue;
       }
 
-      var computedStyle;
-
+      var style;
       try {
-        computedStyle =
-          doc.defaultView
-            .getComputedStyle(
-              node
-            );
+        style = doc.defaultView.getComputedStyle(node);
       } catch (error) {
-        computedStyle = null;
+        style = null;
       }
 
       if (
-        computedStyle &&
-        (
-          computedStyle.display === "none" ||
-          computedStyle.visibility === "hidden"
-        )
+        style &&
+        (style.display === "none" || style.visibility === "hidden")
       ) {
         continue;
       }
 
+      /* Team names are normally short headings, often all caps. */
       if (
         /^[A-Z0-9][A-Z0-9'’&. \-_/]{1,44}$/.test(text) ||
-        node.matches(
-          ".modulehead,.moduleheader,h1,h2,h3,caption"
-        )
+        node.matches(".modulehead,.moduleheader,h1,h2,h3,caption")
       ) {
         return text;
       }
     }
 
-    var title =
-      String(
-        doc.title || ""
-      )
-        .replace(
-          /MyFantasyLeague\.com/ig,
-          ""
-        )
-        .replace(
-          /2026/ig,
-          ""
-        )
-        .replace(
-          /LSFFL/ig,
-          ""
-        )
-        .replace(
-          /[|\-–—]+/g,
-          " "
-        )
-        .replace(
-          /\s+/g,
-          " "
-        )
-        .trim();
+    /* Last fallback: use the document title if it contains a clean name. */
+    var title = String(doc.title || "")
+      .replace(/MyFantasyLeague\.com/ig, "")
+      .replace(/2026/ig, "")
+      .replace(/LSFFL/ig, "")
+      .replace(/[|\-–—]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
 
     if (
       title.length >= 2 &&
@@ -912,108 +976,68 @@
       return;
     }
 
-    var name =
-      getFranchiseName(
-        doc
-      );
+    var name = getFranchiseName(doc);
 
     if (!name) {
       return;
     }
 
+    /* Always surface the franchise name in our own popup title bar. */
     if (modalTitle) {
-      modalTitle.textContent =
-        "Franchise Center — " +
-        name;
+      modalTitle.textContent = "Franchise Center — " + name;
     }
 
-    var images =
-      Array.prototype.slice.call(
-        doc.querySelectorAll(
-          "img"
-        )
-      );
+    var images = Array.prototype.slice.call(
+      doc.querySelectorAll("img")
+    );
 
-    var logo =
-      null;
+    var logo = null;
+    var bestScore = 0;
 
-    var bestScore =
-      0;
+    images.forEach(function (img) {
+      try {
+        var style = doc.defaultView.getComputedStyle(img);
+        var rect = img.getBoundingClientRect();
 
-    images.forEach(
-      function (img) {
-
-        try {
-
-          var computedStyle =
-            doc.defaultView
-              .getComputedStyle(
-                img
-              );
-
-          var rect =
-            img.getBoundingClientRect();
-
-          if (
-            computedStyle.display === "none" ||
-            computedStyle.visibility === "hidden" ||
-            rect.width < 140 ||
-            rect.height < 80
-          ) {
-            return;
-          }
-
-          if (
-            img.closest(
-              ".banner-container,.banner-container-wrap,.banner-leftside,.banner-rightside,.bannerlinkicons,.icon-bar,.myfantasyleague_menu,#header,#pageheader,#MFLHeader,.lsffl-header,.ticker-wrapper,.lsffl-ticker-wrapper,.lsffl-scoreboard,.scoreboard-wrapper"
-            )
-          ) {
-            return;
-          }
-
-          var nw =
-            img.naturalWidth ||
-            rect.width;
-
-          var nh =
-            img.naturalHeight ||
-            rect.height;
-
-          var ratio =
-            nw /
-            Math.max(
-              nh,
-              1
-            );
-
-          if (
-            ratio > 3.2
-          ) {
-            return;
-          }
-
-          var score =
-            Math.max(
-              nw * nh,
-              rect.width *
-              rect.height
-            );
-
-          if (
-            score > bestScore
-          ) {
-            bestScore =
-              score;
-
-            logo =
-              img;
-          }
-
-        } catch (error) {
+        if (
+          style.display === "none" ||
+          style.visibility === "hidden" ||
+          rect.width < 140 ||
+          rect.height < 80
+        ) {
+          return;
         }
 
+        if (
+          img.closest(
+            ".banner-container,.banner-container-wrap,.banner-leftside,.banner-rightside,.bannerlinkicons,.icon-bar,.myfantasyleague_menu,#header,#pageheader,#MFLHeader,.lsffl-header,.ticker-wrapper,.lsffl-ticker-wrapper,.lsffl-scoreboard,.scoreboard-wrapper"
+          )
+        ) {
+          return;
+        }
+
+        var nw = img.naturalWidth || rect.width;
+        var nh = img.naturalHeight || rect.height;
+        var ratio = nw / Math.max(nh, 1);
+
+        /* Avoid very wide banner-like images. */
+        if (ratio > 3.2) {
+          return;
+        }
+
+        var score = Math.max(
+          nw * nh,
+          rect.width * rect.height
+        );
+
+        if (score > bestScore) {
+          bestScore = score;
+          logo = img;
+        }
+      } catch (error) {
+        /* Ignore an image that cannot be measured. */
       }
-    );
+    });
 
     if (!logo) {
       return;
@@ -1023,55 +1047,29 @@
       "lsffl-popup41-team-logo"
     );
 
-    var brand =
-      doc.createElement(
-        "div"
-      );
+    var brand = doc.createElement("div");
+    brand.id = "lsffl-popup41-team-brand";
+    brand.className = "lsffl-popup41-team-brand";
 
-    brand.id =
-      "lsffl-popup41-team-brand";
+    var nameElement = doc.createElement("div");
+    nameElement.className = "lsffl-popup41-team-name";
+    nameElement.textContent = name;
 
-    brand.className =
-      "lsffl-popup41-team-brand";
+    var line = doc.createElement("div");
+    line.className = "lsffl-popup41-team-line";
 
-    var nameElement =
-      doc.createElement(
-        "div"
-      );
+    brand.appendChild(nameElement);
+    brand.appendChild(line);
 
-    nameElement.className =
-      "lsffl-popup41-team-name";
-
-    nameElement.textContent =
-      name;
-
-    var line =
-      doc.createElement(
-        "div"
-      );
-
-    line.className =
-      "lsffl-popup41-team-line";
-
-    brand.appendChild(
-      nameElement
-    );
-
-    brand.appendChild(
-      line
-    );
-
-    if (
-      logo.parentNode
-    ) {
-
+    if (logo.parentNode) {
       logo.parentNode.insertBefore(
         brand,
         logo
       );
-
     }
   }
+
+
 
 
   /* ============================================================
@@ -1093,141 +1091,70 @@
       return;
     }
 
-    doc.documentElement
-      .classList.add(
-        "lsffl-popup41-doc"
-      );
+    doc.documentElement.classList.add(
+      "lsffl-popup41-doc"
+    );
 
     doc.body.classList.add(
       "lsffl-popup41-doc"
     );
 
-    injectFrameTheme(
-      doc
-    );
+    injectFrameTheme(doc);
+    hideMflChrome(doc);
+    decorateFranchise(doc);
 
-    hideMflChrome(
-      doc
-    );
-
-    decorateFranchise(
-      doc
-    );
-
-    if (
-      modalType ===
-      "franchise"
-    ) {
-
-      window.setTimeout(
-        function () {
-
-          try {
-            decorateFranchise(
-              doc
-            );
-          } catch (error) {}
-
-        },
-        250
-      );
-
-      window.setTimeout(
-        function () {
-
-          try {
-            decorateFranchise(
-              doc
-            );
-          } catch (error) {}
-
-        },
-        700
-      );
-
+    if (modalType === "franchise") {
+      window.setTimeout(function () {
+        try { decorateFranchise(doc); } catch (error) {}
+      }, 250);
+      window.setTimeout(function () {
+        try { decorateFranchise(doc); } catch (error) {}
+      }, 700);
     }
 
-    var frames =
-      Array.prototype.slice.call(
-        doc.querySelectorAll(
-          "iframe,frame"
-        )
-      );
+    var frames = Array.prototype.slice.call(
+      doc.querySelectorAll("iframe,frame")
+    );
 
-    frames.forEach(
-      function (nestedFrame) {
+    frames.forEach(function (nestedFrame) {
+      try {
+        var nestedDoc = nestedFrame.contentDocument;
+        var nestedWin = nestedFrame.contentWindow;
 
-        try {
-
-          var nestedDoc =
-            nestedFrame
-              .contentDocument;
-
-          var nestedWin =
-            nestedFrame
-              .contentWindow;
-
-          if (
-            nestedDoc &&
-            nestedWin
-          ) {
-
-            cleanDocumentTree(
-              nestedDoc,
-              nestedWin,
-              depth + 1
-            );
-
-          }
-
-          if (
-            !nestedFrame.dataset
-              .lsfflPopup41Cleaner
-          ) {
-
-            nestedFrame.dataset
-              .lsfflPopup41Cleaner =
-              "1";
-
-            nestedFrame.addEventListener(
-
-              "load",
-
-              function () {
-
-                window.setTimeout(
-
-                  function () {
-
-                    try {
-
-                      cleanDocumentTree(
-                        nestedFrame
-                          .contentDocument,
-                        nestedFrame
-                          .contentWindow,
-                        depth + 1
-                      );
-
-                    } catch (error) {}
-
-                  },
-
-                  30
-
-                );
-
-              }
-
-            );
-
-          }
-
-        } catch (error) {
+        if (nestedDoc && nestedWin) {
+          cleanDocumentTree(
+            nestedDoc,
+            nestedWin,
+            depth + 1
+          );
         }
 
+        if (
+          !nestedFrame.dataset
+            .lsfflPopup41Cleaner
+        ) {
+          nestedFrame.dataset
+            .lsfflPopup41Cleaner = "1";
+
+          nestedFrame.addEventListener(
+            "load",
+            function () {
+              window.setTimeout(function () {
+                try {
+                  cleanDocumentTree(
+                    nestedFrame.contentDocument,
+                    nestedFrame.contentWindow,
+                    depth + 1
+                  );
+                } catch (error) {}
+              }, 30);
+            }
+          );
+        }
+      } catch (error) {
+        /* Ignore inaccessible nested frames. */
       }
-    );
+    });
   }
 
 
@@ -1242,14 +1169,8 @@
     }
 
     try {
-
-      var doc =
-        modalFrame
-          .contentDocument;
-
-      var win =
-        modalFrame
-          .contentWindow;
+      var doc = modalFrame.contentDocument;
+      var win = modalFrame.contentWindow;
 
       if (
         !doc ||
@@ -1259,20 +1180,16 @@
         return;
       }
 
+      /* Hide the website chrome immediately, even while MFL is on its gate. */
       cleanDocumentTree(
         doc,
         win,
         0
       );
-
-      modalFrame.style.opacity =
-        "1";
+modalFrame.style.opacity = "1";
 
     } catch (error) {
-
-      modalFrame.style.opacity =
-        "1";
-
+      modalFrame.style.opacity = "1";
     }
   }
 
@@ -1289,40 +1206,45 @@
 
     createModal();
 
+
     previousFocus =
       document.activeElement;
 
+
     modalType =
       type || "content";
-
     modalTitle.textContent =
       title || "LSFFL";
+
 
     modalFrame.style.opacity =
       "0";
 
+
     modalFrame.src =
       url;
 
+
     modal.hidden =
       false;
+
 
     document.body.classList.add(
       "lsffl-popup41-open"
     );
 
+
     window.setTimeout(
       function () {
 
-        if (
-          modalClose
-        ) {
+        if (modalClose) {
           modalClose.focus();
         }
 
       },
       0
     );
+
 
     return true;
   }
@@ -1337,15 +1259,19 @@
       return;
     }
 
+
     modal.hidden =
       true;
+
 
     modalFrame.src =
       "about:blank";
 
+
     document.body.classList.remove(
       "lsffl-popup41-open"
     );
+
 
     if (
       previousFocus &&
@@ -1372,9 +1298,11 @@
         franchiseId
       );
 
+
     if (!id) {
       return false;
     }
+
 
     return openModal(
 
@@ -1402,10 +1330,6 @@
 
      ONLY commissioner-article and franchise URLs.
      GitHub links are ignored.
-
-     PROTECTED AREAS:
-     - Announcement Center owns its own action button.
-     - Standings owns its own team popup links.
      ============================================================ */
 
   document.addEventListener(
@@ -1419,24 +1343,14 @@
           "a[href]"
         );
 
+
       if (
         !link ||
-
-        link.closest(
-          "#lsffl-popup41-announcement"
-        ) ||
-
-        link.closest(
-          "#lsffl-standings-app"
-        ) ||
-
         event.button !== 0 ||
-
         event.ctrlKey ||
         event.metaKey ||
         event.shiftKey ||
         event.altKey ||
-
         link.hasAttribute(
           "download"
         )
@@ -1444,20 +1358,24 @@
         return;
       }
 
+
       var match =
         classifyMflUrl(
           link.href
         );
 
+
       if (!match) {
         return;
       }
+
 
       event.preventDefault();
 
       event.stopPropagation();
 
       event.stopImmediatePropagation();
+
 
       openModal(
         match.url,
@@ -1484,6 +1402,7 @@
       var data =
         event.data;
 
+
       if (
         !data ||
         data.type !==
@@ -1492,22 +1411,6 @@
         return;
       }
 
-      /*
-       * The Standings page has its own popup system.
-       * If the message originates from the Standings page,
-       * do not hijack it into the generic franchise modal.
-       */
-
-      var standingsApp =
-        document.getElementById(
-          "lsffl-standings-app"
-        );
-
-      if (
-        standingsApp
-      ) {
-        return;
-      }
 
       openFranchise(
         data.franchiseId
@@ -1532,21 +1435,11 @@
           "[data-mfl-franchise]"
         );
 
+
       if (!trigger) {
         return;
       }
 
-      /*
-       * Never interfere with Standings.
-       */
-
-      if (
-        trigger.closest(
-          "#lsffl-standings-app"
-        )
-      ) {
-        return;
-      }
 
       var id =
         normalizeFranchiseId(
@@ -1555,15 +1448,18 @@
           )
         );
 
+
       if (!id) {
         return;
       }
+
 
       event.preventDefault();
 
       event.stopPropagation();
 
       event.stopImmediatePropagation();
+
 
       openFranchise(
         id
@@ -1615,9 +1511,11 @@
           url
         );
 
+
       if (!match) {
         return false;
       }
+
 
       return openModal(
         match.url,
@@ -1627,8 +1525,10 @@
       );
     };
 
+
   window.lsfflOpenFranchisePopup =
     openFranchise;
+
 
   window.lsfflCloseContentPopup =
     closeModal;
@@ -1656,11 +1556,13 @@
         ""
       );
 
+
     var query =
       new URLSearchParams(
         window.location.search ||
         ""
       );
+
 
     return (
 
@@ -1710,8 +1612,7 @@
       ) ||
 
       document.querySelector(
-        "table#" +
-        id
+        "table#" + id
       )
 
     );
@@ -1726,12 +1627,14 @@
       return null;
     }
 
+
     var rows =
       Array.prototype.slice.call(
         table.querySelectorAll(
           "tr"
         )
       );
+
 
     for (
       var i = 0;
@@ -1742,14 +1645,17 @@
       var row =
         rows[i];
 
+
       var text =
         cleanText(
           row.textContent
         );
 
+
       if (!text) {
         continue;
       }
+
 
       if (
         /view all articles|write new article/i.test(
@@ -1758,6 +1664,7 @@
       ) {
         continue;
       }
+
 
       if (
         row.querySelector(
@@ -1770,6 +1677,7 @@
         continue;
       }
 
+
       if (
         row.querySelector(
           "a[href]"
@@ -1780,6 +1688,7 @@
 
       }
     }
+
 
     return null;
   }
@@ -1804,19 +1713,23 @@
 
       );
 
+
     if (!row) {
       return null;
     }
+
 
     var link =
       row.querySelector(
         "a[href]"
       );
 
+
     var cells =
       row.querySelectorAll(
         "td"
       );
+
 
     var url =
       link
@@ -1828,10 +1741,12 @@
           )
         : null;
 
+
     return {
 
       eyebrow:
         "COMMISSIONER ARTICLE",
+
 
       title:
         cleanText(
@@ -1841,8 +1756,10 @@
         ) ||
         "Commissioner Article",
 
+
       body:
         "A Commissioner Article is available in League Central.",
+
 
       meta:
         cells.length
@@ -1853,8 +1770,10 @@
             )
           : "",
 
+
       buttonText:
         "Open Full Article",
+
 
       buttonUrl:
         url
@@ -1865,356 +1784,6 @@
   }
 
 
-  /* ============================================================
-     OWNER MANAGER ALERTS
-     ============================================================ */
-
-  function getNativeNotificationRoot() {
-
-    return (
-
-      document.getElementById(
-        "MFLPlayerPopupNotificationContainer"
-      ) ||
-
-      document.getElementById(
-        "MFLPlayerPopupContainer"
-      )
-
-    );
-  }
-
-
-  function nativeNotificationText() {
-
-    var root =
-      getNativeNotificationRoot();
-
-    if (!root) {
-      return "";
-    }
-
-    return cleanText(
-      root.innerText ||
-      root.textContent ||
-      ""
-    );
-  }
-
-
-  function findNativeNotificationLink(pattern) {
-
-    var root =
-      getNativeNotificationRoot();
-
-    if (!root) {
-      return "";
-    }
-
-    var links =
-      Array.prototype.slice.call(
-        root.querySelectorAll(
-          "a[href]"
-        )
-      );
-
-    for (
-      var i = 0;
-      i < links.length;
-      i += 1
-    ) {
-
-      var link =
-        links[i];
-
-      var haystack =
-        cleanText(
-          (link.textContent || "") +
-          " " +
-          (link.getAttribute("href") || "")
-        );
-
-      if (
-        pattern.test(
-          haystack
-        )
-      ) {
-
-        var url =
-          absoluteUrl(
-            link.getAttribute(
-              "href"
-            ),
-            window.location.href
-          );
-
-        return url
-          ? url.href
-          : "";
-      }
-    }
-
-    return "";
-  }
-
-
-  function ownerAlertCard(
-    eyebrow,
-    title,
-    body,
-    buttonText,
-    buttonUrl
-  ) {
-
-    return {
-
-      eyebrow:
-        eyebrow,
-
-      title:
-        title,
-
-      body:
-        body,
-
-      meta:
-        "Owner Action Required",
-
-      buttonText:
-        buttonText,
-
-      buttonUrl:
-        buttonUrl
-
-    };
-  }
-
-
-  function extractOwnerManagerAlerts() {
-
-    var text =
-      nativeNotificationText();
-
-    if (!text) {
-      return [];
-    }
-
-    var alerts = [];
-
-
-    /* TRADE */
-
-    if (
-      /\btrade\b/i.test(text) &&
-      /\b(pending|proposal|proposed|offer|respond|response|approve|reject|accept)\b/i.test(text)
-    ) {
-
-      alerts.push(
-
-        ownerAlertCard(
-
-          "TRADE ALERT",
-
-          "Trade Offer Pending",
-
-          "You have a trade proposal waiting for your attention.",
-
-          "View Trade",
-
-          findNativeNotificationLink(
-            /trade|O=0?5\b/i
-          ) ||
-
-          MFL_ORIGIN +
-            "/" +
-            YEAR +
-            "/options?L=" +
-            LEAGUE_ID +
-            "&O=05"
-
-        )
-
-      );
-    }
-
-
-    /* IR */
-
-    if (
-      /\b(injured reserve|injury reserve|\bIR\b)\b/i.test(text) &&
-      /\b(illegal|invalid|ineligible|violation|must|remove|activate|error)\b/i.test(text)
-    ) {
-
-      alerts.push(
-
-        ownerAlertCard(
-
-          "ROSTER ALERT",
-
-          "IR Violation",
-
-          "Your roster has an injured-reserve violation that needs to be corrected.",
-
-          "Fix IR",
-
-          findNativeNotificationLink(
-            /injured|reserve|\bIR\b/i
-          ) ||
-
-          MFL_ORIGIN +
-            "/" +
-            YEAR +
-            "/options?L=" +
-            LEAGUE_ID +
-            "&O=07"
-
-        )
-
-      );
-    }
-
-
-    /* TAXI */
-
-    if (
-      /\b(taxi|taxi squad|taxicab)\b/i.test(text) &&
-      /\b(illegal|invalid|ineligible|violation|must|remove|activate|error)\b/i.test(text)
-    ) {
-
-      alerts.push(
-
-        ownerAlertCard(
-
-          "ROSTER ALERT",
-
-          "Taxi Squad Violation",
-
-          "Your taxi squad has a violation that needs to be corrected.",
-
-          "Fix Taxi Squad",
-
-          findNativeNotificationLink(
-            /taxi/i
-          ) ||
-
-          MFL_ORIGIN +
-            "/" +
-            YEAR +
-            "/options?L=" +
-            LEAGUE_ID +
-            "&O=07"
-
-        )
-
-      );
-    }
-
-
-    /* GENERAL ROSTER */
-
-    if (
-      /\b(roster|players?|position)\b/i.test(text) &&
-      /\b(illegal|invalid|violation|too many|too few|over limit|under limit|minimum|maximum|must|error)\b/i.test(text) &&
-      !(
-        /\b(injured reserve|injury reserve|\bIR\b)\b/i.test(text) &&
-        alerts.some(
-          function (item) {
-
-            return item.title ===
-              "IR Violation";
-
-          }
-        )
-      )
-    ) {
-
-      alerts.push(
-
-        ownerAlertCard(
-
-          "ROSTER ALERT",
-
-          "Roster Violation",
-
-          "Your active roster does not currently meet the league roster requirements.",
-
-          "View Roster",
-
-          findNativeNotificationLink(
-            /roster|O=0?7\b/i
-          ) ||
-
-          MFL_ORIGIN +
-            "/" +
-            YEAR +
-            "/options?L=" +
-            LEAGUE_ID +
-            "&O=07"
-
-        )
-
-      );
-    }
-
-
-    /* STARTING LINEUP */
-
-    if (
-      /\b(lineup|starter|starting lineup)\b/i.test(text) &&
-      /\b(empty|missing|incomplete|illegal|invalid|violation|hole|must|submit|not submitted|error)\b/i.test(text)
-    ) {
-
-      alerts.push(
-
-        ownerAlertCard(
-
-          "LINEUP ALERT",
-
-          "Starting Lineup Incomplete",
-
-          "You have an empty or invalid starting-lineup position that needs attention.",
-
-          "Fix Lineup",
-
-          findNativeNotificationLink(
-            /lineup|starter/i
-          ) ||
-
-          MFL_ORIGIN +
-            "/" +
-            YEAR +
-            "/lineup?L=" +
-            LEAGUE_ID
-
-        )
-
-      );
-    }
-
-
-    var seen =
-      Object.create(null);
-
-    return alerts.filter(
-      function (item) {
-
-        if (
-          seen[
-            item.title
-          ]
-        ) {
-          return false;
-        }
-
-        seen[
-          item.title
-        ] =
-          true;
-
-        return true;
-      }
-    );
-  }
 
 
   /* ============================================================
@@ -2230,64 +1799,39 @@
         eyebrow:
           "COMMISSIONER'S DESK",
 
+
         title:
-          "Week 1 Is Here — Set Your Lineup",
+          "Welcome to the 2026 LSFFL Season",
+
 
         body:
-          "NFL regular-season games begin Wednesday, September 9. Make sure your starting lineup is submitted before your players lock. Reminder: LSFFL now starts TWO FLEX players instead of one. Your weekly lineup should have 9 starters total: 1 QB, 1 RB, 2 WR, 1 TE, 2 FLEX, 1 K, and 1 Defense.",
+          "The Lamad Squad Fantasy Football League is back. Check the Commissioner Articles in League Central throughout the season for commissioner updates, league news, trade alerts, and everything happening around the LSFFL.",
+
 
         meta:
-          "9 STARTERS • 2 FLEX • GET YOUR LINEUP IN",
+          "A Tradition Born Across the Sea",
+
 
         buttonText:
-          "Submit Lineup",
+          "Enter Draft Room",
+
 
         buttonUrl:
-          "https://www48.myfantasyleague.com/2026/options?L=23135&O=02"
+          "https://www48.myfantasyleague.com/2026/ajax_ld?L=23135"
 
       }
 
     ];
 
 
-    var ownerAlerts =
-      extractOwnerManagerAlerts();
-
-    ownerAlerts.forEach(
-      function (alert) {
-
-        items.push(
-          alert
-        );
-
-      }
-    );
-
-
     var article =
       extractArticleAnnouncement();
-
-
-    /*
-     * Do not resurrect old draft articles in the
-     * automatic announcement carousel.
-     */
-
-    if (
-      article &&
-      !/draft/i.test(
-        article.title || ""
-      )
-    ) {
-
+if (article) {
       items.push(
         article
       );
-
     }
-
-
-    return items;
+return items;
   }
 
 
@@ -2305,19 +1849,23 @@
       return;
     }
 
+
     var style =
       document.createElement(
         "style"
       );
 
+
     style.id =
       "lsffl-popup41-announcement-styles";
+
 
     style.textContent = [
 
       "#lsffl-popup41-announcement[hidden]{" +
         "display:none!important;" +
       "}",
+
 
       "#lsffl-popup41-announcement{" +
         "position:fixed;" +
@@ -2332,6 +1880,7 @@
         "-webkit-backdrop-filter:blur(5px);" +
       "}",
 
+
       "#lsffl-popup41-announcement-card{" +
         "width:min(760px,96vw);" +
         "max-height:94vh;" +
@@ -2343,6 +1892,7 @@
         "box-shadow:0 24px 90px rgba(0,0,0,.78);" +
       "}",
 
+
       "#lsffl-popup41-announcement-head{" +
         "display:flex;" +
         "justify-content:space-between;" +
@@ -2350,6 +1900,7 @@
         "padding:22px 22px 8px;" +
         "border-top:6px solid #c9a227;" +
       "}",
+
 
       "#lsffl-popup41-announcement-eyebrow{" +
         "margin-bottom:5px;" +
@@ -2361,6 +1912,7 @@
         "text-transform:uppercase;" +
       "}",
 
+
       "#lsffl-popup41-announcement-title{" +
         "margin:0;" +
         "color:#fff;" +
@@ -2370,6 +1922,7 @@
         "font-weight:900;" +
         "text-transform:uppercase;" +
       "}",
+
 
       "#lsffl-popup41-announcement-close{" +
         "width:38px!important;" +
@@ -2384,6 +1937,7 @@
         "cursor:pointer!important;" +
       "}",
 
+
       "#lsffl-popup41-announcement-body{" +
         "padding:12px 22px 8px;" +
         "color:#eef4fb;" +
@@ -2392,6 +1946,7 @@
         "line-height:1.58;" +
       "}",
 
+
       "#lsffl-popup41-announcement-meta{" +
         "margin-top:12px;" +
         "color:#aebdcd;" +
@@ -2399,10 +1954,12 @@
         "font-weight:700;" +
       "}",
 
+
       "#lsffl-popup41-announcement-actions{" +
         "display:flex;" +
         "padding:14px 22px 12px;" +
       "}",
+
 
       "#lsffl-popup41-announcement-open{" +
         "display:none;" +
@@ -2421,6 +1978,7 @@
         "text-transform:uppercase;" +
       "}",
 
+
       "#lsffl-popup41-announcement-nav{" +
         "display:flex;" +
         "align-items:center;" +
@@ -2430,6 +1988,7 @@
         "border-top:1px solid rgba(201,162,39,.3);" +
         "background:rgba(0,0,0,.18);" +
       "}",
+
 
       ".lsffl-popup41-announcement-navbtn{" +
         "min-width:86px!important;" +
@@ -2446,10 +2005,12 @@
         "cursor:pointer!important;" +
       "}",
 
+
       ".lsffl-popup41-announcement-navbtn:disabled{" +
         "opacity:.35;" +
         "cursor:default!important;" +
       "}",
+
 
       "#lsffl-popup41-announcement-counter{" +
         "color:#e1c45a;" +
@@ -2457,6 +2018,7 @@
         "font-size:14px;" +
         "font-weight:900;" +
       "}",
+
 
       "#lsffl-popup41-announcement-footer{" +
         "display:flex;" +
@@ -2469,11 +2031,13 @@
         "font-size:12px;" +
       "}",
 
+
       "#lsffl-popup41-announcement-footer label{" +
         "display:flex;" +
         "align-items:center;" +
         "gap:7px;" +
       "}",
+
 
       "#lsffl-popup41-announcement-footer input{" +
         "width:16px;" +
@@ -2482,6 +2046,7 @@
       "}"
 
     ].join("");
+
 
     document.head.appendChild(
       style
@@ -2495,24 +2060,27 @@
 
   function createAnnouncementModal() {
 
-    if (
-      announcementModal
-    ) {
+    if (announcementModal) {
       return;
     }
 
+
     injectAnnouncementStyles();
+
 
     announcementModal =
       document.createElement(
         "div"
       );
 
+
     announcementModal.id =
       "lsffl-popup41-announcement";
 
+
     announcementModal.hidden =
       true;
+
 
     announcementModal.innerHTML =
 
@@ -2532,6 +2100,7 @@
 
           '</div>' +
 
+
           '<button ' +
             'id="lsffl-popup41-announcement-close" ' +
             'type="button" ' +
@@ -2541,6 +2110,7 @@
 
         '</div>' +
 
+
         '<div id="lsffl-popup41-announcement-body">' +
 
           '<div id="lsffl-popup41-announcement-text"></div>' +
@@ -2548,6 +2118,7 @@
           '<div id="lsffl-popup41-announcement-meta"></div>' +
 
         '</div>' +
+
 
         '<div id="lsffl-popup41-announcement-actions">' +
 
@@ -2559,6 +2130,7 @@
 
         '</div>' +
 
+
         '<div id="lsffl-popup41-announcement-nav">' +
 
           '<button ' +
@@ -2568,9 +2140,11 @@
             'Previous' +
           '</button>' +
 
+
           '<span id="lsffl-popup41-announcement-counter">' +
             '1 / 1' +
           '</span>' +
+
 
           '<button ' +
             'class="lsffl-popup41-announcement-navbtn" ' +
@@ -2580,6 +2154,7 @@
           '</button>' +
 
         '</div>' +
+
 
         '<div id="lsffl-popup41-announcement-footer">' +
 
@@ -2593,6 +2168,7 @@
 
           '</label>' +
 
+
           '<span>' +
             'LSFFL • 2026 SEASON' +
           '</span>' +
@@ -2600,6 +2176,7 @@
         '</div>' +
 
       '</div>';
+
 
     document.body.appendChild(
       announcementModal
@@ -2617,36 +2194,28 @@
     document.getElementById(
       "lsffl-popup41-announcement-prev"
     ).addEventListener(
-
       "click",
-
       function () {
 
         showAnnouncement(
-          announcementIndex -
-          1
+          announcementIndex - 1
         );
 
       }
-
     );
 
 
     document.getElementById(
       "lsffl-popup41-announcement-next"
     ).addEventListener(
-
       "click",
-
       function () {
 
         showAnnouncement(
-          announcementIndex +
-          1
+          announcementIndex + 1
         );
 
       }
-
     );
 
 
@@ -2663,6 +2232,7 @@
             announcementIndex
           ];
 
+
         if (
           !item ||
           !item.buttonUrl
@@ -2670,33 +2240,27 @@
           return;
         }
 
+
         var match =
           classifyMflUrl(
             item.buttonUrl
           );
 
-        /*
-         * Submit Lineup and normal MFL links
-         * navigate normally.
-         */
 
         if (!match) {
-
+          /* Draft Room and other approved non-popup links navigate normally. */
           closeAnnouncement();
-
           return;
         }
 
-        /*
-         * Commissioner Article content opens
-         * inside the LSFFL content modal.
-         */
 
         event.preventDefault();
 
         event.stopPropagation();
 
+
         closeAnnouncement();
+
 
         openModal(
           match.url,
@@ -2740,6 +2304,7 @@
       return;
     }
 
+
     announcementIndex =
       Math.max(
 
@@ -2749,17 +2314,18 @@
 
           index,
 
-          announcementItems.length -
-          1
+          announcementItems.length - 1
 
         )
 
       );
 
+
     var item =
       announcementItems[
         announcementIndex
       ];
+
 
     document.getElementById(
       "lsffl-popup41-announcement-eyebrow"
@@ -2767,11 +2333,13 @@
       item.eyebrow ||
       "LSFFL";
 
+
     document.getElementById(
       "lsffl-popup41-announcement-title"
     ).textContent =
       item.title ||
       "League Update";
+
 
     document.getElementById(
       "lsffl-popup41-announcement-text"
@@ -2779,16 +2347,19 @@
       item.body ||
       "";
 
+
     document.getElementById(
       "lsffl-popup41-announcement-meta"
     ).textContent =
       item.meta ||
       "";
 
+
     var open =
       document.getElementById(
         "lsffl-popup41-announcement-open"
       );
+
 
     if (
       item.buttonUrl
@@ -2815,28 +2386,28 @@
 
     }
 
+
     document.getElementById(
       "lsffl-popup41-announcement-counter"
     ).textContent =
       (
-        announcementIndex +
-        1
+        announcementIndex + 1
       ) +
       " / " +
       announcementItems.length;
 
+
     document.getElementById(
       "lsffl-popup41-announcement-prev"
     ).disabled =
-      announcementIndex ===
-      0;
+      announcementIndex === 0;
+
 
     document.getElementById(
       "lsffl-popup41-announcement-next"
     ).disabled =
       announcementIndex ===
-      announcementItems.length -
-      1;
+      announcementItems.length - 1;
   }
 
 
@@ -2848,8 +2419,10 @@
 
     createAnnouncementModal();
 
+
     announcementItems =
       loadAnnouncementItems();
+
 
     if (
       !announcementItems.length
@@ -2857,17 +2430,26 @@
       return false;
     }
 
+
     document.getElementById(
       "lsffl-popup41-announcement-dontshow"
     ).checked =
       false;
 
+
     announcementModal.hidden =
       false;
+
 
     showAnnouncement(
       0
     );
+
+
+    /*
+     * Only mark this session as shown AFTER
+     * the popup has actually opened.
+     */
 
     try {
 
@@ -2877,7 +2459,9 @@
       );
 
     } catch (error) {
+      /* Storage unavailable. */
     }
+
 
     return true;
   }
@@ -2892,10 +2476,12 @@
       return;
     }
 
+
     var dontShow =
       document.getElementById(
         "lsffl-popup41-announcement-dontshow"
       );
+
 
     if (
       dontShow &&
@@ -2919,8 +2505,10 @@
         );
 
       } catch (error) {
+        /* Storage unavailable. */
       }
     }
+
 
     announcementModal.hidden =
       true;
@@ -2939,16 +2527,19 @@
           0
         );
 
+
       if (
         dismissedUntil &&
         Date.now() <
-        dismissedUntil
+          dismissedUntil
       ) {
         return false;
       }
 
     } catch (error) {
+      /* Storage unavailable. */
     }
+
 
     try {
 
@@ -2962,97 +2553,298 @@
       }
 
     } catch (error) {
+      /* Storage unavailable. */
     }
+
 
     return true;
   }
 
 
   /* ============================================================
-     DISABLE MFL NATIVE LEAGUE NOTIFICATION POPUP
+     SUPPRESS MFL'S NATIVE DAILY HOMEPAGE POPUP
+
+     MFL can inject its own once-per-day popup after page load.
+     Because LSFFL now owns the homepage announcement experience,
+     suppress any visible MFL modal/popup that appears during the
+     first few seconds of homepage startup.
+
+     IMPORTANT:
+     - Runs ONLY on the LSFFL homepage.
+     - Never touches LSFFL Pop-Up 4.x elements.
+     - Does not affect franchise/article iframe popups.
      ============================================================ */
 
-  function disableMflNativeNotificationPopup() {
+  var nativeMflPopupObserver = null;
+  var nativeMflPopupStopTimer = null;
 
-    function killPopup() {
+  function isLsfflPopupElement(element) {
 
-      var popup =
-        document.getElementById(
-          "MFLPlayerPopupContainer"
-        );
-
-      var notification =
-        document.getElementById(
-          "MFLPlayerPopupNotificationContainer"
-        );
-
-      if (
-        notification
-      ) {
-
-        notification.style.setProperty(
-          "display",
-          "none",
-          "important"
-        );
-
-        notification.style.setProperty(
-          "visibility",
-          "hidden",
-          "important"
-        );
-
-      }
-
-      if (
-        popup
-      ) {
-
-        popup.style.setProperty(
-          "display",
-          "none",
-          "important"
-        );
-
-        popup.style.setProperty(
-          "visibility",
-          "hidden",
-          "important"
-        );
-
-      }
+    if (!element || element.nodeType !== 1) {
+      return false;
     }
 
-    killPopup();
+    if (
+      element.id &&
+      /^lsffl-popup41-/i.test(element.id)
+    ) {
+      return true;
+    }
 
-    var observer =
+    if (
+      element.closest &&
+      element.closest(
+        '#lsffl-popup41-modal,' +
+        '#lsffl-popup41-announcement'
+      )
+    ) {
+      return true;
+    }
+
+    if (
+      element.querySelector &&
+      element.querySelector(
+        '#lsffl-popup41-modal,' +
+        '#lsffl-popup41-announcement'
+      )
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+
+  function looksLikeNativeMflPopup(element) {
+
+    if (
+      !element ||
+      element.nodeType !== 1 ||
+      isLsfflPopupElement(element)
+    ) {
+      return false;
+    }
+
+    var style;
+
+    try {
+      style = window.getComputedStyle(element);
+    } catch (error) {
+      return false;
+    }
+
+    if (
+      !style ||
+      style.display === "none" ||
+      style.visibility === "hidden" ||
+      Number(style.opacity || 1) === 0
+    ) {
+      return false;
+    }
+
+    var rect;
+
+    try {
+      rect = element.getBoundingClientRect();
+    } catch (error) {
+      return false;
+    }
+
+    if (
+      rect.width < 180 ||
+      rect.height < 90
+    ) {
+      return false;
+    }
+
+    var position =
+      String(style.position || "").toLowerCase();
+
+    var zIndex =
+      parseInt(style.zIndex, 10);
+
+    var name =
+      (
+        String(element.id || "") +
+        " " +
+        String(element.className || "") +
+        " " +
+        String(element.getAttribute("role") || "")
+      ).toLowerCase();
+
+    var popupNamed =
+      /popup|modal|dialog|lightbox|overlay/.test(name);
+
+    var dialogRole =
+      String(
+        element.getAttribute("role") || ""
+      ).toLowerCase() === "dialog";
+
+    var floating =
+      position === "fixed" ||
+      position === "absolute";
+
+    var highLayer =
+      !isNaN(zIndex) &&
+      zIndex >= 100;
+
+    return (
+      dialogRole ||
+      (
+        popupNamed &&
+        floating &&
+        highLayer
+      )
+    );
+  }
+
+
+  function hideNativeMflPopup(element) {
+
+    if (!looksLikeNativeMflPopup(element)) {
+      return false;
+    }
+
+    element.style.setProperty(
+      "display",
+      "none",
+      "important"
+    );
+
+    element.style.setProperty(
+      "visibility",
+      "hidden",
+      "important"
+    );
+
+    element.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+
+    return true;
+  }
+
+
+  function suppressNativeMflPopups() {
+
+    if (!isHomepage()) {
+      return;
+    }
+
+    var selectors = [
+      '[role="dialog"]',
+      '[id*="popup" i]',
+      '[class*="popup" i]',
+      '[id*="modal" i]',
+      '[class*="modal" i]',
+      '[id*="lightbox" i]',
+      '[class*="lightbox" i]',
+      '[id*="overlay" i]',
+      '[class*="overlay" i]'
+    ];
+
+    var candidates = [];
+
+    selectors.forEach(function (selector) {
+      try {
+        candidates =
+          candidates.concat(
+            Array.prototype.slice.call(
+              document.querySelectorAll(selector)
+            )
+          );
+      } catch (error) {}
+    });
+
+    candidates.forEach(
+      hideNativeMflPopup
+    );
+  }
+
+
+  function watchForNativeMflPopup() {
+
+    if (
+      !isHomepage() ||
+      nativeMflPopupObserver
+    ) {
+      return;
+    }
+
+    suppressNativeMflPopups();
+
+    nativeMflPopupObserver =
       new MutationObserver(
-        killPopup
+        function (mutations) {
+
+          mutations.forEach(
+            function (mutation) {
+
+              Array.prototype.forEach.call(
+                mutation.addedNodes || [],
+                function (node) {
+
+                  if (
+                    !node ||
+                    node.nodeType !== 1
+                  ) {
+                    return;
+                  }
+
+                  hideNativeMflPopup(node);
+
+                  if (node.querySelectorAll) {
+
+                    var descendants =
+                      node.querySelectorAll(
+                        '[role="dialog"],' +
+                        '[id*="popup" i],' +
+                        '[class*="popup" i],' +
+                        '[id*="modal" i],' +
+                        '[class*="modal" i],' +
+                        '[id*="lightbox" i],' +
+                        '[class*="lightbox" i],' +
+                        '[id*="overlay" i],' +
+                        '[class*="overlay" i]'
+                      );
+
+                    Array.prototype.forEach.call(
+                      descendants,
+                      hideNativeMflPopup
+                    );
+                  }
+                }
+              );
+            }
+          );
+
+          suppressNativeMflPopups();
+        }
       );
 
-    observer.observe(
+    nativeMflPopupObserver.observe(
       document.documentElement,
       {
         childList: true,
-        subtree: true,
-        attributes: true,
-        attributeFilter: [
-          "style",
-          "class"
-        ]
+        subtree: true
       }
     );
 
-    window.setTimeout(
-      function () {
+    nativeMflPopupStopTimer =
+      window.setTimeout(
+        function () {
 
-        observer.disconnect();
+          if (nativeMflPopupObserver) {
+            nativeMflPopupObserver.disconnect();
+            nativeMflPopupObserver = null;
+          }
 
-        killPopup();
+          nativeMflPopupStopTimer = null;
 
-      },
-      15000
-    );
+        },
+        12000
+      );
   }
 
 
@@ -3062,22 +2854,29 @@
 
   function bootAnnouncement() {
 
-    if (
-      !isHomepage()
-    ) {
+    if (!isHomepage()) {
       return;
     }
 
-    disableMflNativeNotificationPopup();
+    /*
+     * Do NOT suppress generic MFL popups here.
+     *
+     * The old watcher treated any dialog/popup/modal/overlay as the
+     * once-a-day MFL notification and could hide legitimate player
+     * cards and player-news popups while leaving the page overlay.
+     *
+     * Native automatic notifications are disabled in the header, so
+     * no broad DOM popup suppression is needed.
+     */
 
-    if (
-      !shouldAutoOpenAnnouncement()
-    ) {
+    if (!shouldAutoOpenAnnouncement()) {
       return;
     }
+
 
     var started =
       Date.now();
+
 
     (function waitForSources() {
 
@@ -3089,14 +2888,9 @@
           )
         );
 
-      var managerAlertReady =
-        Boolean(
-          nativeNotificationText()
-        );
 
       if (
         articleReady ||
-        managerAlertReady ||
         Date.now() -
         started >
         8000
@@ -3107,8 +2901,10 @@
           500
         );
 
+
         return;
       }
+
 
       window.setTimeout(
         waitForSources,
@@ -3120,7 +2916,7 @@
 
 
   /* ============================================================
-     PUBLIC POP-UP API
+     PUBLIC POP-UP 4.3 API
      ============================================================ */
 
   window.lsfflPopup3 = {
@@ -3128,11 +2924,14 @@
     openAnnouncement:
       openAnnouncement,
 
+
     closeAnnouncement:
       closeAnnouncement,
 
+
     openFranchise:
       openFranchise,
+
 
     openContent:
       window.lsfflOpenContentPopup
