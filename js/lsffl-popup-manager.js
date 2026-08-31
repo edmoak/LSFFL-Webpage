@@ -13,7 +13,6 @@
  *   - Franchise popups
  *   - Homepage Announcement Center
  *   - Owner manager alerts harvested from MFL's hidden native notifications
- *   - Week 1 lineup reminder
  *
  * DOES NOT own:
  *   - Standings page
@@ -98,9 +97,6 @@
 
   /* ============================================================
      URL CLASSIFICATION
-
-     IMPORTANT:
-     GitHub pages are intentionally NOT classified.
      ============================================================ */
 
   function classifyMflUrl(value) {
@@ -172,11 +168,9 @@
         "overflow:hidden!important;" +
       "}",
 
-
       "#lsffl-popup41-modal[hidden]{" +
         "display:none!important;" +
       "}",
-
 
       "#lsffl-popup41-modal{" +
         "position:fixed;" +
@@ -191,7 +185,6 @@
         "-webkit-backdrop-filter:blur(4px);" +
       "}",
 
-
       "#lsffl-popup41-dialog{" +
         "width:min(1180px,96vw);" +
         "height:min(850px,94vh);" +
@@ -204,7 +197,6 @@
         "box-shadow:0 22px 70px rgba(0,0,0,.72);" +
       "}",
 
-
       "#lsffl-popup41-bar{" +
         "min-height:48px;" +
         "display:flex;" +
@@ -215,7 +207,6 @@
         "border-bottom:2px solid #c9a227;" +
         "background:linear-gradient(180deg,#123755 0%,#071a2f 100%);" +
       "}",
-
 
       "#lsffl-popup41-title{" +
         "min-width:0;" +
@@ -230,7 +221,6 @@
         "text-transform:uppercase;" +
         "white-space:nowrap;" +
       "}",
-
 
       "#lsffl-popup41-close{" +
         "width:34px!important;" +
@@ -248,12 +238,10 @@
         "cursor:pointer!important;" +
       "}",
 
-
       "#lsffl-popup41-close:hover{" +
         "background:#c9a227!important;" +
         "color:#061426!important;" +
       "}",
-
 
       "#lsffl-popup41-frame{" +
         "width:100%;" +
@@ -264,7 +252,6 @@
         "opacity:0;" +
         "transition:opacity .12s ease;" +
       "}",
-
 
       "@media(max-width:700px){" +
 
@@ -303,7 +290,6 @@
 
     injectModalStyles();
 
-
     modal =
       document.createElement(
         "div"
@@ -325,7 +311,6 @@
       "true"
     );
 
-
     modalDialog =
       document.createElement(
         "div"
@@ -334,7 +319,6 @@
     modalDialog.id =
       "lsffl-popup41-dialog";
 
-
     var bar =
       document.createElement(
         "div"
@@ -342,7 +326,6 @@
 
     bar.id =
       "lsffl-popup41-bar";
-
 
     modalTitle =
       document.createElement(
@@ -354,7 +337,6 @@
 
     modalTitle.textContent =
       "LSFFL";
-
 
     modalClose =
       document.createElement(
@@ -375,7 +357,6 @@
     modalClose.textContent =
       "×";
 
-
     modalFrame =
       document.createElement(
         "iframe"
@@ -392,7 +373,6 @@
       "eager"
     );
 
-
     bar.appendChild(
       modalTitle
     );
@@ -400,7 +380,6 @@
     bar.appendChild(
       modalClose
     );
-
 
     modalDialog.appendChild(
       bar
@@ -410,7 +389,6 @@
       modalFrame
     );
 
-
     modal.appendChild(
       modalDialog
     );
@@ -419,12 +397,10 @@
       modal
     );
 
-
     modalClose.addEventListener(
       "click",
       closeModal
     );
-
 
     modal.addEventListener(
       "click",
@@ -438,7 +414,6 @@
 
       }
     );
-
 
     modalFrame.addEventListener(
       "load",
@@ -594,7 +569,6 @@
 
     ];
 
-
     selectors.forEach(
       function (selector) {
 
@@ -608,14 +582,12 @@
       }
     );
 
-
     var bannerPieces =
       doc.querySelectorAll(
         ".banner-leftside," +
         ".banner-rightside," +
         ".bannerlinkicons"
       );
-
 
     Array.prototype.forEach.call(
       bannerPieces,
@@ -650,7 +622,6 @@
       return;
     }
 
-
     var style =
       doc.createElement(
         "style"
@@ -658,7 +629,6 @@
 
     style.id =
       "lsffl-popup41-frame-style";
-
 
     style.textContent = [
 
@@ -682,12 +652,10 @@
 
       "}",
 
-
       "html.lsffl-popup41-doc body{" +
         "padding:10px!important;" +
         "box-sizing:border-box!important;" +
       "}",
-
 
       "html.lsffl-popup41-doc #container-wrap," +
       "html.lsffl-popup41-doc .pagebody," +
@@ -701,12 +669,10 @@
 
       "}",
 
-
       "html.lsffl-popup41-doc img{" +
         "max-width:100%!important;" +
         "height:auto!important;" +
       "}",
-
 
       "html.lsffl-popup41-doc " +
       "body.lsffl-popup41-franchise " +
@@ -722,7 +688,6 @@
 
       "}",
 
-
       "html.lsffl-popup41-doc " +
       ".lsffl-popup41-team-brand{" +
 
@@ -731,7 +696,6 @@
         "text-align:center!important;" +
 
       "}",
-
 
       "html.lsffl-popup41-doc " +
       ".lsffl-popup41-team-name{" +
@@ -749,7 +713,6 @@
         "text-shadow:0 3px 8px rgba(0,0,0,.55)!important;" +
 
       "}",
-
 
       "html.lsffl-popup41-doc " +
       ".lsffl-popup41-team-line{" +
@@ -770,7 +733,6 @@
       "}"
 
     ].join("");
-
 
     doc.head.appendChild(
       style
@@ -796,7 +758,6 @@
       .replace(/\s+/g, " ")
       .trim();
 
-
     var navMatch = bodyText.match(
       /(?:^|\s)([A-Za-z0-9][A-Za-z0-9'’&. \/_-]{1,45}?):\s*Main\b/i
     );
@@ -810,10 +771,8 @@
         .trim();
     }
 
-
     var rejected =
       /^(main|home|roster|roster w\/?stats|scoring history|transactions|schedule|accounting|series records|box score|my options|franchise center|league|standings|reports|players|draft|communications|league message board|message board|team|owner|record|points|power rank|all|submit|go)$/i;
-
 
     var candidates =
       Array.prototype.slice.call(
@@ -821,7 +780,6 @@
           ".modulehead,.moduleheader,.reportnavigation,h1,h2,h3,caption,th,td,strong,b"
         )
       );
-
 
     for (
       var i = 0;
@@ -848,7 +806,6 @@
           )
           .trim();
 
-
       if (
         text.length < 2 ||
         text.length > 45 ||
@@ -859,30 +816,27 @@
         continue;
       }
 
-
-      var style;
+      var computedStyle;
 
       try {
-        style =
+        computedStyle =
           doc.defaultView
             .getComputedStyle(
               node
             );
       } catch (error) {
-        style = null;
+        computedStyle = null;
       }
 
-
       if (
-        style &&
+        computedStyle &&
         (
-          style.display === "none" ||
-          style.visibility === "hidden"
+          computedStyle.display === "none" ||
+          computedStyle.visibility === "hidden"
         )
       ) {
         continue;
       }
-
 
       if (
         /^[A-Z0-9][A-Z0-9'’&. \-_/]{1,44}$/.test(text) ||
@@ -893,7 +847,6 @@
         return text;
       }
     }
-
 
     var title =
       String(
@@ -921,7 +874,6 @@
         )
         .trim();
 
-
     if (
       title.length >= 2 &&
       title.length <= 45 &&
@@ -929,7 +881,6 @@
     ) {
       return title;
     }
-
 
     return "";
   }
@@ -970,13 +921,11 @@
       return;
     }
 
-
     if (modalTitle) {
       modalTitle.textContent =
         "Franchise Center — " +
         name;
     }
-
 
     var images =
       Array.prototype.slice.call(
@@ -991,13 +940,12 @@
     var bestScore =
       0;
 
-
     images.forEach(
       function (img) {
 
         try {
 
-          var style =
+          var computedStyle =
             doc.defaultView
               .getComputedStyle(
                 img
@@ -1006,16 +954,14 @@
           var rect =
             img.getBoundingClientRect();
 
-
           if (
-            style.display === "none" ||
-            style.visibility === "hidden" ||
+            computedStyle.display === "none" ||
+            computedStyle.visibility === "hidden" ||
             rect.width < 140 ||
             rect.height < 80
           ) {
             return;
           }
-
 
           if (
             img.closest(
@@ -1024,7 +970,6 @@
           ) {
             return;
           }
-
 
           var nw =
             img.naturalWidth ||
@@ -1041,13 +986,11 @@
               1
             );
 
-
           if (
             ratio > 3.2
           ) {
             return;
           }
-
 
           var score =
             Math.max(
@@ -1055,7 +998,6 @@
               rect.width *
               rect.height
             );
-
 
           if (
             score > bestScore
@@ -1073,16 +1015,13 @@
       }
     );
 
-
     if (!logo) {
       return;
     }
 
-
     logo.classList.add(
       "lsffl-popup41-team-logo"
     );
-
 
     var brand =
       doc.createElement(
@@ -1095,7 +1034,6 @@
     brand.className =
       "lsffl-popup41-team-brand";
 
-
     var nameElement =
       doc.createElement(
         "div"
@@ -1107,7 +1045,6 @@
     nameElement.textContent =
       name;
 
-
     var line =
       doc.createElement(
         "div"
@@ -1116,7 +1053,6 @@
     line.className =
       "lsffl-popup41-team-line";
 
-
     brand.appendChild(
       nameElement
     );
@@ -1124,7 +1060,6 @@
     brand.appendChild(
       line
     );
-
 
     if (
       logo.parentNode
@@ -1158,17 +1093,14 @@
       return;
     }
 
-
     doc.documentElement
       .classList.add(
         "lsffl-popup41-doc"
       );
 
-
     doc.body.classList.add(
       "lsffl-popup41-doc"
     );
-
 
     injectFrameTheme(
       doc
@@ -1181,7 +1113,6 @@
     decorateFranchise(
       doc
     );
-
 
     if (
       modalType ===
@@ -1201,7 +1132,6 @@
         250
       );
 
-
       window.setTimeout(
         function () {
 
@@ -1217,14 +1147,12 @@
 
     }
 
-
     var frames =
       Array.prototype.slice.call(
         doc.querySelectorAll(
           "iframe,frame"
         )
       );
-
 
     frames.forEach(
       function (nestedFrame) {
@@ -1239,7 +1167,6 @@
             nestedFrame
               .contentWindow;
 
-
           if (
             nestedDoc &&
             nestedWin
@@ -1253,7 +1180,6 @@
 
           }
 
-
           if (
             !nestedFrame.dataset
               .lsfflPopup41Cleaner
@@ -1262,7 +1188,6 @@
             nestedFrame.dataset
               .lsfflPopup41Cleaner =
               "1";
-
 
             nestedFrame.addEventListener(
 
@@ -1316,7 +1241,6 @@
       return;
     }
 
-
     try {
 
       var doc =
@@ -1327,7 +1251,6 @@
         modalFrame
           .contentWindow;
 
-
       if (
         !doc ||
         !doc.documentElement ||
@@ -1336,17 +1259,14 @@
         return;
       }
 
-
       cleanDocumentTree(
         doc,
         win,
         0
       );
 
-
       modalFrame.style.opacity =
         "1";
-
 
     } catch (error) {
 
@@ -1369,10 +1289,8 @@
 
     createModal();
 
-
     previousFocus =
       document.activeElement;
-
 
     modalType =
       type || "content";
@@ -1380,23 +1298,18 @@
     modalTitle.textContent =
       title || "LSFFL";
 
-
     modalFrame.style.opacity =
       "0";
-
 
     modalFrame.src =
       url;
 
-
     modal.hidden =
       false;
-
 
     document.body.classList.add(
       "lsffl-popup41-open"
     );
-
 
     window.setTimeout(
       function () {
@@ -1411,7 +1324,6 @@
       0
     );
 
-
     return true;
   }
 
@@ -1425,19 +1337,15 @@
       return;
     }
 
-
     modal.hidden =
       true;
-
 
     modalFrame.src =
       "about:blank";
 
-
     document.body.classList.remove(
       "lsffl-popup41-open"
     );
-
 
     if (
       previousFocus &&
@@ -1464,11 +1372,9 @@
         franchiseId
       );
 
-
     if (!id) {
       return false;
     }
-
 
     return openModal(
 
@@ -1493,6 +1399,14 @@
 
   /* ============================================================
      TOP-LEVEL MFL LINK INTERCEPTION
+
+     IMPORTANT:
+     Links INSIDE the Announcement Center are deliberately ignored
+     here. The Announcement Center has its own click handler.
+
+     This prevents the capture-phase global listener from stealing
+     Commissioner Article button clicks before the Announcement
+     Center can process them.
      ============================================================ */
 
   document.addEventListener(
@@ -1506,14 +1420,20 @@
           "a[href]"
         );
 
-
       if (
         !link ||
+
+        link.closest(
+          "#lsffl-popup41-announcement"
+        ) ||
+
         event.button !== 0 ||
+
         event.ctrlKey ||
         event.metaKey ||
         event.shiftKey ||
         event.altKey ||
+
         link.hasAttribute(
           "download"
         )
@@ -1521,24 +1441,20 @@
         return;
       }
 
-
       var match =
         classifyMflUrl(
           link.href
         );
 
-
       if (!match) {
         return;
       }
-
 
       event.preventDefault();
 
       event.stopPropagation();
 
       event.stopImmediatePropagation();
-
 
       openModal(
         match.url,
@@ -1565,7 +1481,6 @@
       var data =
         event.data;
 
-
       if (
         !data ||
         data.type !==
@@ -1573,7 +1488,6 @@
       ) {
         return;
       }
-
 
       openFranchise(
         data.franchiseId
@@ -1598,11 +1512,9 @@
           "[data-mfl-franchise]"
         );
 
-
       if (!trigger) {
         return;
       }
-
 
       var id =
         normalizeFranchiseId(
@@ -1611,18 +1523,15 @@
           )
         );
 
-
       if (!id) {
         return;
       }
-
 
       event.preventDefault();
 
       event.stopPropagation();
 
       event.stopImmediatePropagation();
-
 
       openFranchise(
         id
@@ -1674,11 +1583,9 @@
           url
         );
 
-
       if (!match) {
         return false;
       }
-
 
       return openModal(
         match.url,
@@ -1688,10 +1595,8 @@
       );
     };
 
-
   window.lsfflOpenFranchisePopup =
     openFranchise;
-
 
   window.lsfflCloseContentPopup =
     closeModal;
@@ -1719,13 +1624,11 @@
         ""
       );
 
-
     var query =
       new URLSearchParams(
         window.location.search ||
         ""
       );
-
 
     return (
 
@@ -1791,14 +1694,12 @@
       return null;
     }
 
-
     var rows =
       Array.prototype.slice.call(
         table.querySelectorAll(
           "tr"
         )
       );
-
 
     for (
       var i = 0;
@@ -1809,17 +1710,14 @@
       var row =
         rows[i];
 
-
       var text =
         cleanText(
           row.textContent
         );
 
-
       if (!text) {
         continue;
       }
-
 
       if (
         /view all articles|write new article/i.test(
@@ -1828,7 +1726,6 @@
       ) {
         continue;
       }
-
 
       if (
         row.querySelector(
@@ -1841,7 +1738,6 @@
         continue;
       }
 
-
       if (
         row.querySelector(
           "a[href]"
@@ -1852,7 +1748,6 @@
 
       }
     }
-
 
     return null;
   }
@@ -1877,23 +1772,19 @@
 
       );
 
-
     if (!row) {
       return null;
     }
-
 
     var link =
       row.querySelector(
         "a[href]"
       );
 
-
     var cells =
       row.querySelectorAll(
         "td"
       );
-
 
     var url =
       link
@@ -1905,12 +1796,10 @@
           )
         : null;
 
-
     return {
 
       eyebrow:
         "COMMISSIONER ARTICLE",
-
 
       title:
         cleanText(
@@ -1920,10 +1809,8 @@
         ) ||
         "Commissioner Article",
 
-
       body:
         "A Commissioner Article is available in League Central.",
-
 
       meta:
         cells.length
@@ -1934,10 +1821,8 @@
             )
           : "",
 
-
       buttonText:
         "Open Full Article",
-
 
       buttonUrl:
         url
@@ -1953,18 +1838,23 @@
      ============================================================ */
 
   function getNativeNotificationRoot() {
+
     return (
+
       document.getElementById(
         "MFLPlayerPopupNotificationContainer"
       ) ||
+
       document.getElementById(
         "MFLPlayerPopupContainer"
       )
+
     );
   }
 
 
   function nativeNotificationText() {
+
     var root =
       getNativeNotificationRoot();
 
@@ -1981,6 +1871,7 @@
 
 
   function findNativeNotificationLink(pattern) {
+
     var root =
       getNativeNotificationRoot();
 
@@ -2000,6 +1891,7 @@
       i < links.length;
       i += 1
     ) {
+
       var link =
         links[i];
 
@@ -2015,6 +1907,7 @@
           haystack
         )
       ) {
+
         var url =
           absoluteUrl(
             link.getAttribute(
@@ -2040,7 +1933,9 @@
     buttonText,
     buttonUrl
   ) {
+
     return {
+
       eyebrow:
         eyebrow,
 
@@ -2058,11 +1953,13 @@
 
       buttonUrl:
         buttonUrl
+
     };
   }
 
 
   function extractOwnerManagerAlerts() {
+
     var text =
       nativeNotificationText();
 
@@ -2073,77 +1970,115 @@
     var alerts = [];
 
 
+    /* TRADE */
+
     if (
       /\btrade\b/i.test(text) &&
       /\b(pending|proposal|proposed|offer|respond|response|approve|reject|accept)\b/i.test(text)
     ) {
+
       alerts.push(
+
         ownerAlertCard(
+
           "TRADE ALERT",
+
           "Trade Offer Pending",
+
           "You have a trade proposal waiting for your attention.",
+
           "View Trade",
+
           findNativeNotificationLink(
             /trade|O=0?5\b/i
           ) ||
+
           MFL_ORIGIN +
             "/" +
             YEAR +
             "/options?L=" +
             LEAGUE_ID +
             "&O=05"
+
         )
+
       );
     }
 
+
+    /* IR */
 
     if (
       /\b(injured reserve|injury reserve|\bIR\b)\b/i.test(text) &&
       /\b(illegal|invalid|ineligible|violation|must|remove|activate|error)\b/i.test(text)
     ) {
+
       alerts.push(
+
         ownerAlertCard(
+
           "ROSTER ALERT",
+
           "IR Violation",
+
           "Your roster has an injured-reserve violation that needs to be corrected.",
+
           "Fix IR",
+
           findNativeNotificationLink(
             /injured|reserve|\bIR\b/i
           ) ||
+
           MFL_ORIGIN +
             "/" +
             YEAR +
             "/options?L=" +
             LEAGUE_ID +
             "&O=07"
+
         )
+
       );
     }
 
+
+    /* TAXI */
 
     if (
       /\b(taxi|taxi squad|taxicab)\b/i.test(text) &&
       /\b(illegal|invalid|ineligible|violation|must|remove|activate|error)\b/i.test(text)
     ) {
+
       alerts.push(
+
         ownerAlertCard(
+
           "ROSTER ALERT",
+
           "Taxi Squad Violation",
+
           "Your taxi squad has a violation that needs to be corrected.",
+
           "Fix Taxi Squad",
+
           findNativeNotificationLink(
             /taxi/i
           ) ||
+
           MFL_ORIGIN +
             "/" +
             YEAR +
             "/options?L=" +
             LEAGUE_ID +
             "&O=07"
+
         )
+
       );
     }
 
+
+    /* GENERAL ROSTER */
 
     if (
       /\b(roster|players?|position)\b/i.test(text) &&
@@ -2152,51 +2087,75 @@
         /\b(injured reserve|injury reserve|\bIR\b)\b/i.test(text) &&
         alerts.some(
           function (item) {
+
             return item.title ===
               "IR Violation";
+
           }
         )
       )
     ) {
+
       alerts.push(
+
         ownerAlertCard(
+
           "ROSTER ALERT",
+
           "Roster Violation",
+
           "Your active roster does not currently meet the league roster requirements.",
+
           "View Roster",
+
           findNativeNotificationLink(
             /roster|O=0?7\b/i
           ) ||
+
           MFL_ORIGIN +
             "/" +
             YEAR +
             "/options?L=" +
             LEAGUE_ID +
             "&O=07"
+
         )
+
       );
     }
 
+
+    /* STARTING LINEUP */
 
     if (
       /\b(lineup|starter|starting lineup)\b/i.test(text) &&
       /\b(empty|missing|incomplete|illegal|invalid|violation|hole|must|submit|not submitted|error)\b/i.test(text)
     ) {
+
       alerts.push(
+
         ownerAlertCard(
+
           "LINEUP ALERT",
+
           "Starting Lineup Incomplete",
+
           "You have an empty or invalid starting-lineup position that needs attention.",
+
           "Fix Lineup",
+
           findNativeNotificationLink(
             /lineup|starter/i
           ) ||
+
           MFL_ORIGIN +
             "/" +
             YEAR +
             "/lineup?L=" +
             LEAGUE_ID
+
         )
+
       );
     }
 
@@ -2206,6 +2165,7 @@
 
     return alerts.filter(
       function (item) {
+
         if (
           seen[
             item.title
@@ -2238,22 +2198,17 @@
         eyebrow:
           "COMMISSIONER'S DESK",
 
-
         title:
           "Week 1 Is Here — Set Your Lineup",
-
 
         body:
           "NFL regular-season games begin Wednesday, September 9. Make sure your starting lineup is submitted before your players lock. Reminder: LSFFL now starts TWO FLEX players instead of one. Your weekly lineup should have 9 starters total: 1 QB, 1 RB, 2 WR, 1 TE, 2 FLEX, 1 K, and 1 Defense.",
 
-
         meta:
           "9 STARTERS • 2 FLEX • GET YOUR LINEUP IN",
 
-
         buttonText:
           "Submit Lineup",
-
 
         buttonUrl:
           "https://www48.myfantasyleague.com/2026/options?L=23135&O=02"
@@ -2268,9 +2223,11 @@
 
     ownerAlerts.forEach(
       function (alert) {
+
         items.push(
           alert
         );
+
       }
     );
 
@@ -2278,6 +2235,11 @@
     var article =
       extractArticleAnnouncement();
 
+
+    /*
+     * Do not resurrect old draft articles in the
+     * automatic announcement carousel.
+     */
 
     if (
       article &&
@@ -2311,23 +2273,19 @@
       return;
     }
 
-
     var style =
       document.createElement(
         "style"
       );
 
-
     style.id =
       "lsffl-popup41-announcement-styles";
-
 
     style.textContent = [
 
       "#lsffl-popup41-announcement[hidden]{" +
         "display:none!important;" +
       "}",
-
 
       "#lsffl-popup41-announcement{" +
         "position:fixed;" +
@@ -2342,7 +2300,6 @@
         "-webkit-backdrop-filter:blur(5px);" +
       "}",
 
-
       "#lsffl-popup41-announcement-card{" +
         "width:min(760px,96vw);" +
         "max-height:94vh;" +
@@ -2354,7 +2311,6 @@
         "box-shadow:0 24px 90px rgba(0,0,0,.78);" +
       "}",
 
-
       "#lsffl-popup41-announcement-head{" +
         "display:flex;" +
         "justify-content:space-between;" +
@@ -2362,7 +2318,6 @@
         "padding:22px 22px 8px;" +
         "border-top:6px solid #c9a227;" +
       "}",
-
 
       "#lsffl-popup41-announcement-eyebrow{" +
         "margin-bottom:5px;" +
@@ -2374,7 +2329,6 @@
         "text-transform:uppercase;" +
       "}",
 
-
       "#lsffl-popup41-announcement-title{" +
         "margin:0;" +
         "color:#fff;" +
@@ -2384,7 +2338,6 @@
         "font-weight:900;" +
         "text-transform:uppercase;" +
       "}",
-
 
       "#lsffl-popup41-announcement-close{" +
         "width:38px!important;" +
@@ -2399,7 +2352,6 @@
         "cursor:pointer!important;" +
       "}",
 
-
       "#lsffl-popup41-announcement-body{" +
         "padding:12px 22px 8px;" +
         "color:#eef4fb;" +
@@ -2408,7 +2360,6 @@
         "line-height:1.58;" +
       "}",
 
-
       "#lsffl-popup41-announcement-meta{" +
         "margin-top:12px;" +
         "color:#aebdcd;" +
@@ -2416,12 +2367,10 @@
         "font-weight:700;" +
       "}",
 
-
       "#lsffl-popup41-announcement-actions{" +
         "display:flex;" +
         "padding:14px 22px 12px;" +
       "}",
-
 
       "#lsffl-popup41-announcement-open{" +
         "display:none;" +
@@ -2440,7 +2389,6 @@
         "text-transform:uppercase;" +
       "}",
 
-
       "#lsffl-popup41-announcement-nav{" +
         "display:flex;" +
         "align-items:center;" +
@@ -2450,7 +2398,6 @@
         "border-top:1px solid rgba(201,162,39,.3);" +
         "background:rgba(0,0,0,.18);" +
       "}",
-
 
       ".lsffl-popup41-announcement-navbtn{" +
         "min-width:86px!important;" +
@@ -2467,12 +2414,10 @@
         "cursor:pointer!important;" +
       "}",
 
-
       ".lsffl-popup41-announcement-navbtn:disabled{" +
         "opacity:.35;" +
         "cursor:default!important;" +
       "}",
-
 
       "#lsffl-popup41-announcement-counter{" +
         "color:#e1c45a;" +
@@ -2480,7 +2425,6 @@
         "font-size:14px;" +
         "font-weight:900;" +
       "}",
-
 
       "#lsffl-popup41-announcement-footer{" +
         "display:flex;" +
@@ -2493,13 +2437,11 @@
         "font-size:12px;" +
       "}",
 
-
       "#lsffl-popup41-announcement-footer label{" +
         "display:flex;" +
         "align-items:center;" +
         "gap:7px;" +
       "}",
-
 
       "#lsffl-popup41-announcement-footer input{" +
         "width:16px;" +
@@ -2508,7 +2450,6 @@
       "}"
 
     ].join("");
-
 
     document.head.appendChild(
       style
@@ -2528,23 +2469,18 @@
       return;
     }
 
-
     injectAnnouncementStyles();
-
 
     announcementModal =
       document.createElement(
         "div"
       );
 
-
     announcementModal.id =
       "lsffl-popup41-announcement";
 
-
     announcementModal.hidden =
       true;
-
 
     announcementModal.innerHTML =
 
@@ -2564,7 +2500,6 @@
 
           '</div>' +
 
-
           '<button ' +
             'id="lsffl-popup41-announcement-close" ' +
             'type="button" ' +
@@ -2574,7 +2509,6 @@
 
         '</div>' +
 
-
         '<div id="lsffl-popup41-announcement-body">' +
 
           '<div id="lsffl-popup41-announcement-text"></div>' +
@@ -2582,7 +2516,6 @@
           '<div id="lsffl-popup41-announcement-meta"></div>' +
 
         '</div>' +
-
 
         '<div id="lsffl-popup41-announcement-actions">' +
 
@@ -2594,7 +2527,6 @@
 
         '</div>' +
 
-
         '<div id="lsffl-popup41-announcement-nav">' +
 
           '<button ' +
@@ -2604,11 +2536,9 @@
             'Previous' +
           '</button>' +
 
-
           '<span id="lsffl-popup41-announcement-counter">' +
             '1 / 1' +
           '</span>' +
-
 
           '<button ' +
             'class="lsffl-popup41-announcement-navbtn" ' +
@@ -2618,7 +2548,6 @@
           '</button>' +
 
         '</div>' +
-
 
         '<div id="lsffl-popup41-announcement-footer">' +
 
@@ -2632,7 +2561,6 @@
 
           '</label>' +
 
-
           '<span>' +
             'LSFFL • 2026 SEASON' +
           '</span>' +
@@ -2640,7 +2568,6 @@
         '</div>' +
 
       '</div>';
-
 
     document.body.appendChild(
       announcementModal
@@ -2658,7 +2585,9 @@
     document.getElementById(
       "lsffl-popup41-announcement-prev"
     ).addEventListener(
+
       "click",
+
       function () {
 
         showAnnouncement(
@@ -2667,13 +2596,16 @@
         );
 
       }
+
     );
 
 
     document.getElementById(
       "lsffl-popup41-announcement-next"
     ).addEventListener(
+
       "click",
+
       function () {
 
         showAnnouncement(
@@ -2682,8 +2614,20 @@
         );
 
       }
+
     );
 
+
+    /*
+     * THIS is the Announcement Center's own button handler.
+     *
+     * The global capture listener above explicitly ignores
+     * links inside #lsffl-popup41-announcement, so this handler
+     * can now process Commissioner Article buttons correctly.
+     *
+     * Non-popup links such as Submit Lineup continue through
+     * their normal browser navigation.
+     */
 
     document.getElementById(
       "lsffl-popup41-announcement-open"
@@ -2698,7 +2642,6 @@
             announcementIndex
           ];
 
-
         if (
           !item ||
           !item.buttonUrl
@@ -2706,12 +2649,18 @@
           return;
         }
 
-
         var match =
           classifyMflUrl(
             item.buttonUrl
           );
 
+        /*
+         * Submit Lineup and other ordinary MFL links are
+         * intentionally not classified.
+         *
+         * Close the Announcement Center and allow the link's
+         * normal browser navigation to continue.
+         */
 
         if (!match) {
 
@@ -2720,14 +2669,16 @@
           return;
         }
 
+        /*
+         * Commissioner Article or Franchise content is owned by
+         * our custom LSFFL modal.
+         */
 
         event.preventDefault();
 
         event.stopPropagation();
 
-
         closeAnnouncement();
-
 
         openModal(
           match.url,
@@ -2771,7 +2722,6 @@
       return;
     }
 
-
     announcementIndex =
       Math.max(
 
@@ -2788,12 +2738,10 @@
 
       );
 
-
     var item =
       announcementItems[
         announcementIndex
       ];
-
 
     document.getElementById(
       "lsffl-popup41-announcement-eyebrow"
@@ -2801,13 +2749,11 @@
       item.eyebrow ||
       "LSFFL";
 
-
     document.getElementById(
       "lsffl-popup41-announcement-title"
     ).textContent =
       item.title ||
       "League Update";
-
 
     document.getElementById(
       "lsffl-popup41-announcement-text"
@@ -2815,19 +2761,16 @@
       item.body ||
       "";
 
-
     document.getElementById(
       "lsffl-popup41-announcement-meta"
     ).textContent =
       item.meta ||
       "";
 
-
     var open =
       document.getElementById(
         "lsffl-popup41-announcement-open"
       );
-
 
     if (
       item.buttonUrl
@@ -2854,7 +2797,6 @@
 
     }
 
-
     document.getElementById(
       "lsffl-popup41-announcement-counter"
     ).textContent =
@@ -2865,13 +2807,11 @@
       " / " +
       announcementItems.length;
 
-
     document.getElementById(
       "lsffl-popup41-announcement-prev"
     ).disabled =
       announcementIndex ===
       0;
-
 
     document.getElementById(
       "lsffl-popup41-announcement-next"
@@ -2890,10 +2830,8 @@
 
     createAnnouncementModal();
 
-
     announcementItems =
       loadAnnouncementItems();
-
 
     if (
       !announcementItems.length
@@ -2901,21 +2839,17 @@
       return false;
     }
 
-
     document.getElementById(
       "lsffl-popup41-announcement-dontshow"
     ).checked =
       false;
 
-
     announcementModal.hidden =
       false;
-
 
     showAnnouncement(
       0
     );
-
 
     try {
 
@@ -2926,7 +2860,6 @@
 
     } catch (error) {
     }
-
 
     return true;
   }
@@ -2941,12 +2874,10 @@
       return;
     }
 
-
     var dontShow =
       document.getElementById(
         "lsffl-popup41-announcement-dontshow"
       );
-
 
     if (
       dontShow &&
@@ -2973,7 +2904,6 @@
       }
     }
 
-
     announcementModal.hidden =
       true;
   }
@@ -2991,7 +2921,6 @@
           0
         );
 
-
       if (
         dismissedUntil &&
         Date.now() <
@@ -3002,7 +2931,6 @@
 
     } catch (error) {
     }
-
 
     try {
 
@@ -3017,7 +2945,6 @@
 
     } catch (error) {
     }
-
 
     return true;
   }
@@ -3036,12 +2963,10 @@
           "MFLPlayerPopupContainer"
         );
 
-
       var notification =
         document.getElementById(
           "MFLPlayerPopupNotificationContainer"
         );
-
 
       if (
         notification
@@ -3060,7 +2985,6 @@
         );
 
       }
-
 
       if (
         popup
@@ -3081,15 +3005,21 @@
       }
     }
 
+    /*
+     * Kill MFL's native notification popup immediately.
+     */
 
     killPopup();
 
+    /*
+     * MFL can activate/rebuild its popup after page load,
+     * so watch it briefly.
+     */
 
     var observer =
       new MutationObserver(
         killPopup
       );
-
 
     observer.observe(
       document.documentElement,
@@ -3103,7 +3033,6 @@
         ]
       }
     );
-
 
     window.setTimeout(
       function () {
@@ -3130,9 +3059,7 @@
       return;
     }
 
-
     disableMflNativeNotificationPopup();
-
 
     if (
       !shouldAutoOpenAnnouncement()
@@ -3140,10 +3067,8 @@
       return;
     }
 
-
     var started =
       Date.now();
-
 
     (function waitForSources() {
 
@@ -3160,7 +3085,6 @@
           nativeNotificationText()
         );
 
-
       if (
         articleReady ||
         managerAlertReady ||
@@ -3174,10 +3098,8 @@
           500
         );
 
-
         return;
       }
-
 
       window.setTimeout(
         waitForSources,
@@ -3189,7 +3111,7 @@
 
 
   /* ============================================================
-     PUBLIC POP-UP 4.4 API
+     PUBLIC POP-UP API
      ============================================================ */
 
   window.lsfflPopup3 = {
@@ -3197,14 +3119,11 @@
     openAnnouncement:
       openAnnouncement,
 
-
     closeAnnouncement:
       closeAnnouncement,
 
-
     openFranchise:
       openFranchise,
-
 
     openContent:
       window.lsfflOpenContentPopup
