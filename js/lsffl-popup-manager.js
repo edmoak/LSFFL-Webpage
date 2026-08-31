@@ -15,7 +15,7 @@
  *   - Owner manager alerts harvested from MFL's hidden native notifications
  *
  * DOES NOT own:
- *   - Standings page
+ *   - Standings page team popups
  *   - Hall of Fame page
  *   - Retired Franchises page
  *   - Other GitHub LSFFL pages
@@ -1400,13 +1400,12 @@
   /* ============================================================
      TOP-LEVEL MFL LINK INTERCEPTION
 
-     IMPORTANT:
-     Links INSIDE the Announcement Center are deliberately ignored
-     here. The Announcement Center has its own click handler.
+     ONLY commissioner-article and franchise URLs.
+     GitHub links are ignored.
 
-     This prevents the capture-phase global listener from stealing
-     Commissioner Article button clicks before the Announcement
-     Center can process them.
+     PROTECTED AREAS:
+     - Announcement Center owns its own action button.
+     - Standings owns its own team popup links.
      ============================================================ */
 
   document.addEventListener(
@@ -1425,6 +1424,10 @@
 
         link.closest(
           "#lsffl-popup41-announcement"
+        ) ||
+
+        link.closest(
+          "#lsffl-standings-app"
         ) ||
 
         event.button !== 0 ||
@@ -1489,6 +1492,23 @@
         return;
       }
 
+      /*
+       * The Standings page has its own popup system.
+       * If the message originates from the Standings page,
+       * do not hijack it into the generic franchise modal.
+       */
+
+      var standingsApp =
+        document.getElementById(
+          "lsffl-standings-app"
+        );
+
+      if (
+        standingsApp
+      ) {
+        return;
+      }
+
       openFranchise(
         data.franchiseId
       );
@@ -1513,6 +1533,18 @@
         );
 
       if (!trigger) {
+        return;
+      }
+
+      /*
+       * Never interfere with Standings.
+       */
+
+      if (
+        trigger.closest(
+          "#lsffl-standings-app"
+        )
+      ) {
         return;
       }
 
@@ -2618,17 +2650,6 @@
     );
 
 
-    /*
-     * THIS is the Announcement Center's own button handler.
-     *
-     * The global capture listener above explicitly ignores
-     * links inside #lsffl-popup41-announcement, so this handler
-     * can now process Commissioner Article buttons correctly.
-     *
-     * Non-popup links such as Submit Lineup continue through
-     * their normal browser navigation.
-     */
-
     document.getElementById(
       "lsffl-popup41-announcement-open"
     ).addEventListener(
@@ -2655,11 +2676,8 @@
           );
 
         /*
-         * Submit Lineup and other ordinary MFL links are
-         * intentionally not classified.
-         *
-         * Close the Announcement Center and allow the link's
-         * normal browser navigation to continue.
+         * Submit Lineup and normal MFL links
+         * navigate normally.
          */
 
         if (!match) {
@@ -2670,8 +2688,8 @@
         }
 
         /*
-         * Commissioner Article or Franchise content is owned by
-         * our custom LSFFL modal.
+         * Commissioner Article content opens
+         * inside the LSFFL content modal.
          */
 
         event.preventDefault();
@@ -3005,16 +3023,7 @@
       }
     }
 
-    /*
-     * Kill MFL's native notification popup immediately.
-     */
-
     killPopup();
-
-    /*
-     * MFL can activate/rebuild its popup after page load,
-     * so watch it briefly.
-     */
 
     var observer =
       new MutationObserver(
