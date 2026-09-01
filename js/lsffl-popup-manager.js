@@ -233,25 +233,48 @@
 
 
       "#lsffl-popup41-close{" +
-        "width:34px!important;" +
-        "min-width:34px!important;" +
-        "height:34px!important;" +
-        "min-height:34px!important;" +
+        "-webkit-appearance:none!important;" +
+        "appearance:none!important;" +
+        "width:36px!important;" +
+        "min-width:36px!important;" +
+        "max-width:36px!important;" +
+        "height:36px!important;" +
+        "min-height:36px!important;" +
+        "max-height:36px!important;" +
+        "margin:0!important;" +
         "padding:0!important;" +
         "display:grid!important;" +
         "place-items:center!important;" +
         "border:1px solid #e1c45a!important;" +
-        "border-radius:6px!important;" +
+        "border-radius:50%!important;" +
+        "outline:0!important;" +
         "background:#061426!important;" +
+        "background-image:none!important;" +
         "color:#fff!important;" +
-        "font:400 26px/26px Arial,sans-serif!important;" +
+        "box-shadow:none!important;" +
         "cursor:pointer!important;" +
+        "overflow:hidden!important;" +
       "}",
 
 
-      "#lsffl-popup41-close:hover{" +
+      "#lsffl-popup41-close svg{" +
+        "display:block!important;" +
+        "width:18px!important;" +
+        "height:18px!important;" +
+        "fill:none!important;" +
+        "stroke:currentColor!important;" +
+        "stroke-width:2.7!important;" +
+        "stroke-linecap:round!important;" +
+        "pointer-events:none!important;" +
+      "}",
+
+
+      "#lsffl-popup41-close:hover," +
+      "#lsffl-popup41-close:focus{" +
+        "border-color:#f2d76e!important;" +
         "background:#c9a227!important;" +
         "color:#061426!important;" +
+        "outline:none!important;" +
       "}",
 
 
@@ -372,8 +395,10 @@
       "Close popup"
     );
 
-    modalClose.textContent =
-      "×";
+    modalClose.innerHTML =
+      '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+        '<path d="M6 6L18 18M18 6L6 18"></path>' +
+      '</svg>';
 
 
     modalFrame =
@@ -2616,16 +2641,48 @@
 
 
       "#lsffl-popup41-announcement-close{" +
-        "width:38px!important;" +
-        "min-width:38px!important;" +
-        "height:38px!important;" +
+        "-webkit-appearance:none!important;" +
+        "appearance:none!important;" +
+        "width:36px!important;" +
+        "min-width:36px!important;" +
+        "max-width:36px!important;" +
+        "height:36px!important;" +
+        "min-height:36px!important;" +
+        "max-height:36px!important;" +
+        "margin:0!important;" +
         "padding:0!important;" +
+        "display:grid!important;" +
+        "place-items:center!important;" +
         "border:1px solid #e1c45a!important;" +
-        "border-radius:8px!important;" +
+        "border-radius:50%!important;" +
+        "outline:0!important;" +
         "background:#061426!important;" +
+        "background-image:none!important;" +
         "color:#fff!important;" +
-        "font:400 28px/1 Arial,sans-serif!important;" +
+        "box-shadow:none!important;" +
         "cursor:pointer!important;" +
+        "overflow:hidden!important;" +
+      "}",
+
+
+      "#lsffl-popup41-announcement-close svg{" +
+        "display:block!important;" +
+        "width:18px!important;" +
+        "height:18px!important;" +
+        "fill:none!important;" +
+        "stroke:currentColor!important;" +
+        "stroke-width:2.7!important;" +
+        "stroke-linecap:round!important;" +
+        "pointer-events:none!important;" +
+      "}",
+
+
+      "#lsffl-popup41-announcement-close:hover," +
+      "#lsffl-popup41-announcement-close:focus{" +
+        "border-color:#f2d76e!important;" +
+        "background:#c9a227!important;" +
+        "color:#061426!important;" +
+        "outline:none!important;" +
       "}",
 
 
@@ -2798,7 +2855,9 @@
             'id="lsffl-popup41-announcement-close" ' +
             'type="button" ' +
             'aria-label="Close announcement">' +
-            '×' +
+            '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+              '<path d="M6 6L18 18M18 6L6 18"></path>' +
+            '</svg>' +
           '</button>' +
 
         '</div>' +
