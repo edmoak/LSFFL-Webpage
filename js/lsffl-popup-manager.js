@@ -607,11 +607,29 @@
 
       ".lsffl-scoreboard",
 
+      ".lsffl-scoreboard-shell",
+
       ".scoreboard-wrapper",
+
+      ".scoreboard",
+
+      ".scoreboard-wrap",
 
       "#scoreboard",
 
       "#MFLScoreboard",
+
+      "#MFLScoreboardLoading",
+
+      "#body_ajax_ls",
+
+      ".lsb-scoreboard",
+
+      ".lsb-scoreboard-shell",
+
+      "[id*='scoreboard' i]",
+
+      "[class*='scoreboard' i]",
 
 
       /* MFL utility chrome */
@@ -660,6 +678,72 @@
           hideElement
         );
 
+      }
+    );
+
+
+    /*
+     * The current LSFFL scoreboard can be injected after the MFL page loads
+     * and some versions do not retain a stable wrapper class. Hide the
+     * smallest useful container when its matchup label is present.
+     */
+    Array.prototype.forEach.call(
+      doc.querySelectorAll(
+        "div,table,nav,section,header,ul"
+      ),
+      function (node) {
+
+        if (!node || !node.textContent) {
+          return;
+        }
+
+        var textValue =
+          String(node.textContent)
+            .replace(/\s+/g, " ")
+            .trim();
+
+        if (
+          !textValue ||
+          textValue.length > 1800
+        ) {
+          return;
+        }
+
+        if (
+          /DIVISIONAL MATCHUPS/i.test(textValue) ||
+          /NON-DIVISIONAL MATCHUPS/i.test(textValue) ||
+          /LSFFL MATCHUPS/i.test(textValue) ||
+          /PLAYOFFS\s*[—-]\s*(QUARTERFINALS|SEMIFINALS)/i.test(textValue) ||
+          /LSFFL CHAMPIONSHIP/i.test(textValue)
+        ) {
+
+          var current = node;
+
+          while (
+            current &&
+            current.parentElement &&
+            current.parentElement !== doc.body
+          ) {
+
+            if (
+              current.matches &&
+              current.matches(
+                ".mobile-wrap,.homepagemodule,.module,.report,table,nav,header,section," +
+                ".lsffl-scoreboard,.lsffl-scoreboard-shell,.lsb-scoreboard,.lsb-scoreboard-shell," +
+                ".scoreboard,.scoreboard-wrap,[id*='scoreboard' i],[class*='scoreboard' i]"
+              )
+            ) {
+              break;
+            }
+
+            current =
+              current.parentElement;
+          }
+
+          hideElement(
+            current || node
+          );
+        }
       }
     );
 
@@ -1254,6 +1338,44 @@
     hideMflChrome(
       doc
     );
+
+    /*
+     * Header/scoreboard content can be painted asynchronously after the
+     * Franchise Center page initially loads. Keep removing only chrome
+     * as new nodes arrive so View Roster / Manage IR popups stay clean.
+     */
+    if (
+      !doc.documentElement
+        .getAttribute(
+          "data-lsffl-popup41-chrome-watch"
+        )
+    ) {
+
+      doc.documentElement
+        .setAttribute(
+          "data-lsffl-popup41-chrome-watch",
+          "1"
+        );
+
+      var chromeObserver =
+        new MutationObserver(
+          function () {
+            try {
+              hideMflChrome(
+                doc
+              );
+            } catch (error) {}
+          }
+        );
+
+      chromeObserver.observe(
+        doc.body,
+        {
+          childList:true,
+          subtree:true
+        }
+      );
+    }
 
     decorateFranchise(
       doc
