@@ -3261,12 +3261,16 @@
 
 
     /*
-     * Block MFL's original League Notifications popup
-     * before LSFFL decides whether its own announcement
-     * should automatically open.
+     * IMPORTANT:
+     * Do not suppress MFL's popup container here.
+     *
+     * MFL reuses MFLPlayerPopupContainer for legitimate player/news
+     * popups. Hiding that container causes the page to dim while the
+     * player popup itself never appears.
+     *
+     * Native automatic notifications are already disabled by the
+     * LSFFL header, so no DOM suppression is needed here.
      */
-
-    disableMflNativeNotificationPopup();
 
 
     if (
