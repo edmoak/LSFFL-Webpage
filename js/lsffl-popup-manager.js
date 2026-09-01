@@ -1,6 +1,6 @@
 /*
  * ============================================================
- * LSFFL POPUP MANAGER — POP-UP 4.3
+ * LSFFL POPUP MANAGER — POP-UP 4.4
  * ============================================================
  * File:
  *   js/lsffl-popup-manager.js
@@ -12,7 +12,8 @@
  *   - Commissioner Article popups
  * *   - Franchise popups
  *   - Homepage Announcement Center
- *   - Temporary 2026 Draft Room launch button
+ *   - Owner manager alerts harvested from MFL's hidden native notifications
+ *   - Week 1 lineup reminder
  *
  * DOES NOT own:
  *   - Standings page
@@ -43,11 +44,12 @@
 
   var modalType = "content";
   var previousFocus = null;
+
   var ANNOUNCEMENT_SESSION_KEY =
-    "lsffl-popup41-auto-shown-2026-23135";
+    "lsffl-popup41-week1-auto-shown-2026-23135";
 
   var ANNOUNCEMENT_DISMISS_KEY =
-    "lsffl-popup41-dismissed-until";
+    "lsffl-popup41-week1-dismissed-until";
 
 
   /* ============================================================
@@ -112,10 +114,12 @@
       url.searchParams.get("O") || ""
     ).replace(/^0+/, "");
 
-    var franchiseId = normalizeFranchiseId(
-      url.searchParams.get("F")
-    );
-if (
+    var franchiseId =
+      normalizeFranchiseId(
+        url.searchParams.get("F")
+      );
+
+    if (
       /\/options\/?$/i.test(url.pathname) &&
       option === "73"
     ) {
@@ -125,7 +129,8 @@ if (
         url: url.href
       };
     }
-if (
+
+    if (
       franchiseId &&
       /\/options\/?$/i.test(url.pathname)
     ) {
@@ -862,39 +867,63 @@ if (
      * Most MFL franchise pages expose the team name in text such as:
      *   COUGARS: Main | Roster | ...
      */
+
     var navMatch = bodyText.match(
       /(?:^|\s)([A-Za-z0-9][A-Za-z0-9'’&. \/_-]{1,45}?):\s*Main\b/i
     );
 
-    if (navMatch && navMatch[1]) {
+    if (
+      navMatch &&
+      navMatch[1]
+    ) {
       return navMatch[1]
         .replace(/\s+/g, " ")
         .trim();
     }
 
+
     /*
      * Some MFL skins render only the franchise name as a heading.
      * Read visible headings/cells and reject MFL navigation labels.
      */
-    var rejected = /^(main|home|roster|roster w\/?stats|scoring history|transactions|schedule|accounting|series records|box score|my options|franchise center|league|standings|reports|players|draft|communications|league message board|message board|team|owner|record|points|power rank|all|submit|go)$/i;
 
-    var candidates = Array.prototype.slice.call(
-      doc.querySelectorAll(
-        ".modulehead,.moduleheader,.reportnavigation,h1,h2,h3,caption,th,td,strong,b"
-      )
-    );
+    var rejected =
+      /^(main|home|roster|roster w\/?stats|scoring history|transactions|schedule|accounting|series records|box score|my options|franchise center|league|standings|reports|players|draft|communications|league message board|message board|team|owner|record|points|power rank|all|submit|go)$/i;
 
-    for (var i = 0; i < candidates.length; i += 1) {
-      var node = candidates[i];
 
-      if (!node || !node.textContent) {
+    var candidates =
+      Array.prototype.slice.call(
+        doc.querySelectorAll(
+          ".modulehead,.moduleheader,.reportnavigation,h1,h2,h3,caption,th,td,strong,b"
+        )
+      );
+
+
+    for (
+      var i = 0;
+      i < candidates.length;
+      i += 1
+    ) {
+
+      var node =
+        candidates[i];
+
+      if (
+        !node ||
+        !node.textContent
+      ) {
         continue;
       }
 
-      var text = String(node.textContent)
-        .replace(/\s+/g, " ")
-        .replace(/:\s*Main.*$/i, "")
-        .trim();
+      var text =
+        String(node.textContent)
+          .replace(/\s+/g, " ")
+          .replace(
+            /:\s*Main.*$/i,
+            ""
+          )
+          .trim();
+
 
       if (
         text.length < 2 ||
@@ -906,37 +935,68 @@ if (
         continue;
       }
 
+
       var style;
+
       try {
-        style = doc.defaultView.getComputedStyle(node);
+        style =
+          doc.defaultView
+            .getComputedStyle(
+              node
+            );
       } catch (error) {
         style = null;
       }
 
+
       if (
         style &&
-        (style.display === "none" || style.visibility === "hidden")
+        (
+          style.display === "none" ||
+          style.visibility === "hidden"
+        )
       ) {
         continue;
       }
 
-      /* Team names are normally short headings, often all caps. */
+
       if (
         /^[A-Z0-9][A-Z0-9'’&. \-_/]{1,44}$/.test(text) ||
-        node.matches(".modulehead,.moduleheader,h1,h2,h3,caption")
+        node.matches(
+          ".modulehead,.moduleheader,h1,h2,h3,caption"
+        )
       ) {
         return text;
       }
     }
 
-    /* Last fallback: use the document title if it contains a clean name. */
-    var title = String(doc.title || "")
-      .replace(/MyFantasyLeague\.com/ig, "")
-      .replace(/2026/ig, "")
-      .replace(/LSFFL/ig, "")
-      .replace(/[|\-–—]+/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
+
+    var title =
+      String(
+        doc.title || ""
+      )
+        .replace(
+          /MyFantasyLeague\.com/ig,
+          ""
+        )
+        .replace(
+          /2026/ig,
+          ""
+        )
+        .replace(
+          /LSFFL/ig,
+          ""
+        )
+        .replace(
+          /[|\-–—]+/g,
+          " "
+        )
+        .replace(
+          /\s+/g,
+          " "
+        )
+        .trim();
+
 
     if (
       title.length >= 2 &&
@@ -945,6 +1005,7 @@ if (
     ) {
       return title;
     }
+
 
     return "";
   }
@@ -976,100 +1037,183 @@ if (
       return;
     }
 
-    var name = getFranchiseName(doc);
+    var name =
+      getFranchiseName(
+        doc
+      );
 
     if (!name) {
       return;
     }
 
-    /* Always surface the franchise name in our own popup title bar. */
+
     if (modalTitle) {
-      modalTitle.textContent = "Franchise Center — " + name;
+      modalTitle.textContent =
+        "Franchise Center — " +
+        name;
     }
 
-    var images = Array.prototype.slice.call(
-      doc.querySelectorAll("img")
+
+    var images =
+      Array.prototype.slice.call(
+        doc.querySelectorAll(
+          "img"
+        )
+      );
+
+    var logo =
+      null;
+
+    var bestScore =
+      0;
+
+
+    images.forEach(
+      function (img) {
+
+        try {
+
+          var style =
+            doc.defaultView
+              .getComputedStyle(
+                img
+              );
+
+          var rect =
+            img.getBoundingClientRect();
+
+
+          if (
+            style.display === "none" ||
+            style.visibility === "hidden" ||
+            rect.width < 140 ||
+            rect.height < 80
+          ) {
+            return;
+          }
+
+
+          if (
+            img.closest(
+              ".banner-container,.banner-container-wrap,.banner-leftside,.banner-rightside,.bannerlinkicons,.icon-bar,.myfantasyleague_menu,#header,#pageheader,#MFLHeader,.lsffl-header,.ticker-wrapper,.lsffl-ticker-wrapper,.lsffl-scoreboard,.scoreboard-wrapper"
+            )
+          ) {
+            return;
+          }
+
+
+          var nw =
+            img.naturalWidth ||
+            rect.width;
+
+          var nh =
+            img.naturalHeight ||
+            rect.height;
+
+          var ratio =
+            nw /
+            Math.max(
+              nh,
+              1
+            );
+
+
+          if (
+            ratio > 3.2
+          ) {
+            return;
+          }
+
+
+          var score =
+            Math.max(
+              nw * nh,
+              rect.width *
+              rect.height
+            );
+
+
+          if (
+            score > bestScore
+          ) {
+            bestScore =
+              score;
+
+            logo =
+              img;
+          }
+
+        } catch (error) {
+          /* Ignore an image that cannot be measured. */
+        }
+
+      }
     );
 
-    var logo = null;
-    var bestScore = 0;
-
-    images.forEach(function (img) {
-      try {
-        var style = doc.defaultView.getComputedStyle(img);
-        var rect = img.getBoundingClientRect();
-
-        if (
-          style.display === "none" ||
-          style.visibility === "hidden" ||
-          rect.width < 140 ||
-          rect.height < 80
-        ) {
-          return;
-        }
-
-        if (
-          img.closest(
-            ".banner-container,.banner-container-wrap,.banner-leftside,.banner-rightside,.bannerlinkicons,.icon-bar,.myfantasyleague_menu,#header,#pageheader,#MFLHeader,.lsffl-header,.ticker-wrapper,.lsffl-ticker-wrapper,.lsffl-scoreboard,.scoreboard-wrapper"
-          )
-        ) {
-          return;
-        }
-
-        var nw = img.naturalWidth || rect.width;
-        var nh = img.naturalHeight || rect.height;
-        var ratio = nw / Math.max(nh, 1);
-
-        /* Avoid very wide banner-like images. */
-        if (ratio > 3.2) {
-          return;
-        }
-
-        var score = Math.max(
-          nw * nh,
-          rect.width * rect.height
-        );
-
-        if (score > bestScore) {
-          bestScore = score;
-          logo = img;
-        }
-      } catch (error) {
-        /* Ignore an image that cannot be measured. */
-      }
-    });
 
     if (!logo) {
       return;
     }
 
+
     logo.classList.add(
       "lsffl-popup41-team-logo"
     );
 
-    var brand = doc.createElement("div");
-    brand.id = "lsffl-popup41-team-brand";
-    brand.className = "lsffl-popup41-team-brand";
 
-    var nameElement = doc.createElement("div");
-    nameElement.className = "lsffl-popup41-team-name";
-    nameElement.textContent = name;
+    var brand =
+      doc.createElement(
+        "div"
+      );
 
-    var line = doc.createElement("div");
-    line.className = "lsffl-popup41-team-line";
+    brand.id =
+      "lsffl-popup41-team-brand";
 
-    brand.appendChild(nameElement);
-    brand.appendChild(line);
+    brand.className =
+      "lsffl-popup41-team-brand";
 
-    if (logo.parentNode) {
+
+    var nameElement =
+      doc.createElement(
+        "div"
+      );
+
+    nameElement.className =
+      "lsffl-popup41-team-name";
+
+    nameElement.textContent =
+      name;
+
+
+    var line =
+      doc.createElement(
+        "div"
+      );
+
+    line.className =
+      "lsffl-popup41-team-line";
+
+
+    brand.appendChild(
+      nameElement
+    );
+
+    brand.appendChild(
+      line
+    );
+
+
+    if (
+      logo.parentNode
+    ) {
+
       logo.parentNode.insertBefore(
         brand,
         logo
       );
+
     }
   }
-
-
 
 
   /* ============================================================
@@ -1091,70 +1235,152 @@ if (
       return;
     }
 
-    doc.documentElement.classList.add(
-      "lsffl-popup41-doc"
-    );
+
+    doc.documentElement
+      .classList.add(
+        "lsffl-popup41-doc"
+      );
+
 
     doc.body.classList.add(
       "lsffl-popup41-doc"
     );
 
-    injectFrameTheme(doc);
-    hideMflChrome(doc);
-    decorateFranchise(doc);
 
-    if (modalType === "franchise") {
-      window.setTimeout(function () {
-        try { decorateFranchise(doc); } catch (error) {}
-      }, 250);
-      window.setTimeout(function () {
-        try { decorateFranchise(doc); } catch (error) {}
-      }, 700);
-    }
-
-    var frames = Array.prototype.slice.call(
-      doc.querySelectorAll("iframe,frame")
+    injectFrameTheme(
+      doc
     );
 
-    frames.forEach(function (nestedFrame) {
-      try {
-        var nestedDoc = nestedFrame.contentDocument;
-        var nestedWin = nestedFrame.contentWindow;
+    hideMflChrome(
+      doc
+    );
 
-        if (nestedDoc && nestedWin) {
-          cleanDocumentTree(
-            nestedDoc,
-            nestedWin,
-            depth + 1
-          );
+    decorateFranchise(
+      doc
+    );
+
+
+    if (
+      modalType ===
+      "franchise"
+    ) {
+
+      window.setTimeout(
+        function () {
+
+          try {
+            decorateFranchise(
+              doc
+            );
+          } catch (error) {}
+
+        },
+        250
+      );
+
+
+      window.setTimeout(
+        function () {
+
+          try {
+            decorateFranchise(
+              doc
+            );
+          } catch (error) {}
+
+        },
+        700
+      );
+
+    }
+
+
+    var frames =
+      Array.prototype.slice.call(
+        doc.querySelectorAll(
+          "iframe,frame"
+        )
+      );
+
+
+    frames.forEach(
+      function (nestedFrame) {
+
+        try {
+
+          var nestedDoc =
+            nestedFrame
+              .contentDocument;
+
+          var nestedWin =
+            nestedFrame
+              .contentWindow;
+
+
+          if (
+            nestedDoc &&
+            nestedWin
+          ) {
+
+            cleanDocumentTree(
+              nestedDoc,
+              nestedWin,
+              depth + 1
+            );
+
+          }
+
+
+          if (
+            !nestedFrame.dataset
+              .lsfflPopup41Cleaner
+          ) {
+
+            nestedFrame.dataset
+              .lsfflPopup41Cleaner =
+              "1";
+
+
+            nestedFrame.addEventListener(
+
+              "load",
+
+              function () {
+
+                window.setTimeout(
+
+                  function () {
+
+                    try {
+
+                      cleanDocumentTree(
+                        nestedFrame
+                          .contentDocument,
+                        nestedFrame
+                          .contentWindow,
+                        depth + 1
+                      );
+
+                    } catch (error) {}
+
+                  },
+
+                  30
+
+                );
+
+              }
+
+            );
+
+          }
+
+        } catch (error) {
+          /* Ignore inaccessible nested frames. */
         }
 
-        if (
-          !nestedFrame.dataset
-            .lsfflPopup41Cleaner
-        ) {
-          nestedFrame.dataset
-            .lsfflPopup41Cleaner = "1";
-
-          nestedFrame.addEventListener(
-            "load",
-            function () {
-              window.setTimeout(function () {
-                try {
-                  cleanDocumentTree(
-                    nestedFrame.contentDocument,
-                    nestedFrame.contentWindow,
-                    depth + 1
-                  );
-                } catch (error) {}
-              }, 30);
-            }
-          );
-        }
-      } catch (error) {
-        /* Ignore inaccessible nested frames. */
       }
-    });
+    );
   }
 
 
@@ -1168,9 +1394,17 @@ if (
       return;
     }
 
+
     try {
-      var doc = modalFrame.contentDocument;
-      var win = modalFrame.contentWindow;
+
+      var doc =
+        modalFrame
+          .contentDocument;
+
+      var win =
+        modalFrame
+          .contentWindow;
+
 
       if (
         !doc ||
@@ -1180,16 +1414,23 @@ if (
         return;
       }
 
-      /* Hide the website chrome immediately, even while MFL is on its gate. */
+
       cleanDocumentTree(
         doc,
         win,
         0
       );
-modalFrame.style.opacity = "1";
+
+
+      modalFrame.style.opacity =
+        "1";
+
 
     } catch (error) {
-      modalFrame.style.opacity = "1";
+
+      modalFrame.style.opacity =
+        "1";
+
     }
   }
 
@@ -1213,6 +1454,7 @@ modalFrame.style.opacity = "1";
 
     modalType =
       type || "content";
+
     modalTitle.textContent =
       title || "LSFFL";
 
@@ -1237,7 +1479,9 @@ modalFrame.style.opacity = "1";
     window.setTimeout(
       function () {
 
-        if (modalClose) {
+        if (
+          modalClose
+        ) {
           modalClose.focus();
         }
 
@@ -1342,6 +1586,20 @@ modalFrame.style.opacity = "1";
         event.target.closest(
           "a[href]"
         );
+
+
+      /*
+       * The Announcement Center owns its own action links.
+       * Do not let the global capture-phase MFL interceptor
+       * steal those clicks before the announcement handler runs.
+       */
+      if (
+        announcementModal &&
+        !announcementModal.hidden &&
+        announcementModal.contains(event.target)
+      ) {
+        return;
+      }
 
 
       if (
@@ -1612,7 +1870,8 @@ modalFrame.style.opacity = "1";
       ) ||
 
       document.querySelector(
-        "table#" + id
+        "table#" +
+        id
       )
 
     );
@@ -1784,6 +2043,293 @@ modalFrame.style.opacity = "1";
   }
 
 
+  /* ============================================================
+     OWNER MANAGER ALERTS
+
+     MFL remains the rule engine. Its native notification popup is hidden,
+     but we read the generated notification text and convert relevant owner
+     issues into LSFFL announcement cards.
+     ============================================================ */
+
+  function getNativeNotificationRoot() {
+    return (
+      document.getElementById(
+        "MFLPlayerPopupNotificationContainer"
+      ) ||
+      document.getElementById(
+        "MFLPlayerPopupContainer"
+      )
+    );
+  }
+
+
+  function nativeNotificationText() {
+    var root =
+      getNativeNotificationRoot();
+
+    if (!root) {
+      return "";
+    }
+
+    return cleanText(
+      root.innerText ||
+      root.textContent ||
+      ""
+    );
+  }
+
+
+  function findNativeNotificationLink(pattern) {
+    var root =
+      getNativeNotificationRoot();
+
+    if (!root) {
+      return "";
+    }
+
+    var links =
+      Array.prototype.slice.call(
+        root.querySelectorAll(
+          "a[href]"
+        )
+      );
+
+    for (
+      var i = 0;
+      i < links.length;
+      i += 1
+    ) {
+      var link =
+        links[i];
+
+      var haystack =
+        cleanText(
+          (link.textContent || "") +
+          " " +
+          (link.getAttribute("href") || "")
+        );
+
+      if (
+        pattern.test(
+          haystack
+        )
+      ) {
+        var url =
+          absoluteUrl(
+            link.getAttribute(
+              "href"
+            ),
+            window.location.href
+          );
+
+        return url
+          ? url.href
+          : "";
+      }
+    }
+
+    return "";
+  }
+
+
+  function ownerAlertCard(
+    eyebrow,
+    title,
+    body,
+    buttonText,
+    buttonUrl
+  ) {
+    return {
+      eyebrow:
+        eyebrow,
+
+      title:
+        title,
+
+      body:
+        body,
+
+      meta:
+        "Owner Action Required",
+
+      buttonText:
+        buttonText,
+
+      buttonUrl:
+        buttonUrl
+    };
+  }
+
+
+  function extractOwnerManagerAlerts() {
+    var text =
+      nativeNotificationText();
+
+    if (!text) {
+      return [];
+    }
+
+    var alerts = [];
+
+    /*
+     * Keep the matching deliberately broad because MFL's wording can vary
+     * by league settings and by the exact type of roster problem.
+     */
+
+    if (
+      /\btrade\b/i.test(text) &&
+      /\b(pending|proposal|proposed|offer|respond|response|approve|reject|accept)\b/i.test(text)
+    ) {
+      alerts.push(
+        ownerAlertCard(
+          "TRADE ALERT",
+          "Trade Offer Pending",
+          "You have a trade proposal waiting for your attention.",
+          "View Trade",
+          findNativeNotificationLink(
+            /trade|O=0?5\b/i
+          ) ||
+          MFL_ORIGIN +
+            "/" +
+            YEAR +
+            "/options?L=" +
+            LEAGUE_ID +
+            "&O=05"
+        )
+      );
+    }
+
+
+    if (
+      /\b(injured reserve|injury reserve|\bIR\b)\b/i.test(text) &&
+      /\b(illegal|invalid|ineligible|violation|must|remove|activate|error)\b/i.test(text)
+    ) {
+      alerts.push(
+        ownerAlertCard(
+          "ROSTER ALERT",
+          "IR Violation",
+          "Your roster has an injured-reserve violation that needs to be corrected.",
+          "Fix IR",
+          findNativeNotificationLink(
+            /injured|reserve|\bIR\b/i
+          ) ||
+          MFL_ORIGIN +
+            "/" +
+            YEAR +
+            "/options?L=" +
+            LEAGUE_ID +
+            "&O=07"
+        )
+      );
+    }
+
+
+    if (
+      /\b(taxi|taxi squad|taxicab)\b/i.test(text) &&
+      /\b(illegal|invalid|ineligible|violation|must|remove|activate|error)\b/i.test(text)
+    ) {
+      alerts.push(
+        ownerAlertCard(
+          "ROSTER ALERT",
+          "Taxi Squad Violation",
+          "Your taxi squad has a violation that needs to be corrected.",
+          "Fix Taxi Squad",
+          findNativeNotificationLink(
+            /taxi/i
+          ) ||
+          MFL_ORIGIN +
+            "/" +
+            YEAR +
+            "/options?L=" +
+            LEAGUE_ID +
+            "&O=07"
+        )
+      );
+    }
+
+
+    if (
+      /\b(roster|players?|position)\b/i.test(text) &&
+      /\b(illegal|invalid|violation|too many|too few|over limit|under limit|minimum|maximum|must|error)\b/i.test(text) &&
+      !(
+        /\b(injured reserve|injury reserve|\bIR\b)\b/i.test(text) &&
+        alerts.some(
+          function (item) {
+            return item.title ===
+              "IR Violation";
+          }
+        )
+      )
+    ) {
+      alerts.push(
+        ownerAlertCard(
+          "ROSTER ALERT",
+          "Roster Violation",
+          "Your active roster does not currently meet the league roster requirements.",
+          "View Roster",
+          findNativeNotificationLink(
+            /roster|O=0?7\b/i
+          ) ||
+          MFL_ORIGIN +
+            "/" +
+            YEAR +
+            "/options?L=" +
+            LEAGUE_ID +
+            "&O=07"
+        )
+      );
+    }
+
+
+    if (
+      /\b(lineup|starter|starting lineup)\b/i.test(text) &&
+      /\b(empty|missing|incomplete|illegal|invalid|violation|hole|must|submit|not submitted|error)\b/i.test(text)
+    ) {
+      alerts.push(
+        ownerAlertCard(
+          "LINEUP ALERT",
+          "Starting Lineup Incomplete",
+          "You have an empty or invalid starting-lineup position that needs attention.",
+          "Fix Lineup",
+          findNativeNotificationLink(
+            /lineup|starter/i
+          ) ||
+          MFL_ORIGIN +
+            "/" +
+            YEAR +
+            "/lineup?L=" +
+            LEAGUE_ID
+        )
+      );
+    }
+
+
+    /*
+     * De-duplicate cards in case MFL repeats the same warning in multiple
+     * elements inside its hidden notification container.
+     */
+    var seen =
+      Object.create(null);
+
+    return alerts.filter(
+      function (item) {
+        if (
+          seen[
+            item.title
+          ]
+        ) {
+          return false;
+        }
+
+        seen[
+          item.title
+        ] =
+          true;
+
+        return true;
+      }
+    );
+  }
 
 
   /* ============================================================
@@ -1801,37 +2347,60 @@ modalFrame.style.opacity = "1";
 
 
         title:
-          "Welcome to the 2026 LSFFL Season",
+          "Week 1 Is Here — Set Your Lineup",
 
 
         body:
-          "The Lamad Squad Fantasy Football League is back. Check the Commissioner Articles in League Central throughout the season for commissioner updates, league news, trade alerts, and everything happening around the LSFFL.",
+          "NFL regular-season games begin Wednesday, September 9. Make sure your starting lineup is submitted before your players lock. Reminder: LSFFL now starts TWO FLEX players instead of one. Your weekly lineup should have 9 starters total: 1 QB, 1 RB, 2 WR, 1 TE, 2 FLEX, 1 K, and 1 Defense.",
 
 
         meta:
-          "A Tradition Born Across the Sea",
+          "9 STARTERS • 2 FLEX • GET YOUR LINEUP IN",
 
 
         buttonText:
-          "Enter Draft Room",
+          "Submit Lineup",
 
 
         buttonUrl:
-          "https://www48.myfantasyleague.com/2026/ajax_ld?L=23135"
+          "https://www48.myfantasyleague.com/2026/options?L=23135&O=02"
 
       }
 
     ];
 
 
+    var ownerAlerts =
+      extractOwnerManagerAlerts();
+
+    ownerAlerts.forEach(
+      function (alert) {
+        items.push(
+          alert
+        );
+      }
+    );
+
+
     var article =
       extractArticleAnnouncement();
-if (article) {
+
+
+    if (
+      article &&
+      !/draft/i.test(
+        article.title || ""
+      )
+    ) {
+
       items.push(
         article
       );
+
     }
-return items;
+
+
+    return items;
   }
 
 
@@ -2060,7 +2629,9 @@ return items;
 
   function createAnnouncementModal() {
 
-    if (announcementModal) {
+    if (
+      announcementModal
+    ) {
       return;
     }
 
@@ -2198,7 +2769,8 @@ return items;
       function () {
 
         showAnnouncement(
-          announcementIndex - 1
+          announcementIndex -
+          1
         );
 
       }
@@ -2212,7 +2784,8 @@ return items;
       function () {
 
         showAnnouncement(
-          announcementIndex + 1
+          announcementIndex +
+          1
         );
 
       }
@@ -2248,8 +2821,9 @@ return items;
 
 
         if (!match) {
-          /* Draft Room and other approved non-popup links navigate normally. */
+
           closeAnnouncement();
+
           return;
         }
 
@@ -2257,6 +2831,8 @@ return items;
         event.preventDefault();
 
         event.stopPropagation();
+
+        event.stopImmediatePropagation();
 
 
         closeAnnouncement();
@@ -2314,7 +2890,8 @@ return items;
 
           index,
 
-          announcementItems.length - 1
+          announcementItems.length -
+          1
 
         )
 
@@ -2391,7 +2968,8 @@ return items;
       "lsffl-popup41-announcement-counter"
     ).textContent =
       (
-        announcementIndex + 1
+        announcementIndex +
+        1
       ) +
       " / " +
       announcementItems.length;
@@ -2400,14 +2978,16 @@ return items;
     document.getElementById(
       "lsffl-popup41-announcement-prev"
     ).disabled =
-      announcementIndex === 0;
+      announcementIndex ===
+      0;
 
 
     document.getElementById(
       "lsffl-popup41-announcement-next"
     ).disabled =
       announcementIndex ===
-      announcementItems.length - 1;
+      announcementItems.length -
+      1;
   }
 
 
@@ -2531,7 +3111,7 @@ return items;
       if (
         dismissedUntil &&
         Date.now() <
-          dismissedUntil
+        dismissedUntil
       ) {
         return false;
       }
@@ -2562,289 +3142,108 @@ return items;
 
 
   /* ============================================================
-     SUPPRESS MFL'S NATIVE DAILY HOMEPAGE POPUP
-
-     MFL can inject its own once-per-day popup after page load.
-     Because LSFFL now owns the homepage announcement experience,
-     suppress any visible MFL modal/popup that appears during the
-     first few seconds of homepage startup.
-
-     IMPORTANT:
-     - Runs ONLY on the LSFFL homepage.
-     - Never touches LSFFL Pop-Up 4.x elements.
-     - Does not affect franchise/article iframe popups.
+     DISABLE MFL NATIVE LEAGUE NOTIFICATION POPUP
      ============================================================ */
 
-  var nativeMflPopupObserver = null;
-  var nativeMflPopupStopTimer = null;
+  function disableMflNativeNotificationPopup() {
 
-  function isLsfflPopupElement(element) {
+    function killPopup() {
 
-    if (!element || element.nodeType !== 1) {
-      return false;
+      var popup =
+        document.getElementById(
+          "MFLPlayerPopupContainer"
+        );
+
+
+      var notification =
+        document.getElementById(
+          "MFLPlayerPopupNotificationContainer"
+        );
+
+
+      if (
+        notification
+      ) {
+
+        notification.style.setProperty(
+          "display",
+          "none",
+          "important"
+        );
+
+        notification.style.setProperty(
+          "visibility",
+          "hidden",
+          "important"
+        );
+
+      }
+
+
+      if (
+        popup
+      ) {
+
+        popup.style.setProperty(
+          "display",
+          "none",
+          "important"
+        );
+
+        popup.style.setProperty(
+          "visibility",
+          "hidden",
+          "important"
+        );
+
+      }
     }
 
-    if (
-      element.id &&
-      /^lsffl-popup41-/i.test(element.id)
-    ) {
-      return true;
-    }
 
-    if (
-      element.closest &&
-      element.closest(
-        '#lsffl-popup41-modal,' +
-        '#lsffl-popup41-announcement'
-      )
-    ) {
-      return true;
-    }
+    /*
+     * Kill MFL's notification popup immediately if it
+     * already exists when our popup manager starts.
+     */
 
-    if (
-      element.querySelector &&
-      element.querySelector(
-        '#lsffl-popup41-modal,' +
-        '#lsffl-popup41-announcement'
-      )
-    ) {
-      return true;
-    }
-
-    return false;
-  }
+    killPopup();
 
 
-  function looksLikeNativeMflPopup(element) {
+    /*
+     * MFL can activate the popup after our JavaScript
+     * has loaded, so watch the DOM briefly and kill it
+     * if MFL changes or recreates the popup.
+     */
 
-    if (
-      !element ||
-      element.nodeType !== 1 ||
-      isLsfflPopupElement(element)
-    ) {
-      return false;
-    }
-
-    var style;
-
-    try {
-      style = window.getComputedStyle(element);
-    } catch (error) {
-      return false;
-    }
-
-    if (
-      !style ||
-      style.display === "none" ||
-      style.visibility === "hidden" ||
-      Number(style.opacity || 1) === 0
-    ) {
-      return false;
-    }
-
-    var rect;
-
-    try {
-      rect = element.getBoundingClientRect();
-    } catch (error) {
-      return false;
-    }
-
-    if (
-      rect.width < 180 ||
-      rect.height < 90
-    ) {
-      return false;
-    }
-
-    var position =
-      String(style.position || "").toLowerCase();
-
-    var zIndex =
-      parseInt(style.zIndex, 10);
-
-    var name =
-      (
-        String(element.id || "") +
-        " " +
-        String(element.className || "") +
-        " " +
-        String(element.getAttribute("role") || "")
-      ).toLowerCase();
-
-    var popupNamed =
-      /popup|modal|dialog|lightbox|overlay/.test(name);
-
-    var dialogRole =
-      String(
-        element.getAttribute("role") || ""
-      ).toLowerCase() === "dialog";
-
-    var floating =
-      position === "fixed" ||
-      position === "absolute";
-
-    var highLayer =
-      !isNaN(zIndex) &&
-      zIndex >= 100;
-
-    return (
-      dialogRole ||
-      (
-        popupNamed &&
-        floating &&
-        highLayer
-      )
-    );
-  }
-
-
-  function hideNativeMflPopup(element) {
-
-    if (!looksLikeNativeMflPopup(element)) {
-      return false;
-    }
-
-    element.style.setProperty(
-      "display",
-      "none",
-      "important"
-    );
-
-    element.style.setProperty(
-      "visibility",
-      "hidden",
-      "important"
-    );
-
-    element.setAttribute(
-      "aria-hidden",
-      "true"
-    );
-
-    return true;
-  }
-
-
-  function suppressNativeMflPopups() {
-
-    if (!isHomepage()) {
-      return;
-    }
-
-    var selectors = [
-      '[role="dialog"]',
-      '[id*="popup" i]',
-      '[class*="popup" i]',
-      '[id*="modal" i]',
-      '[class*="modal" i]',
-      '[id*="lightbox" i]',
-      '[class*="lightbox" i]',
-      '[id*="overlay" i]',
-      '[class*="overlay" i]'
-    ];
-
-    var candidates = [];
-
-    selectors.forEach(function (selector) {
-      try {
-        candidates =
-          candidates.concat(
-            Array.prototype.slice.call(
-              document.querySelectorAll(selector)
-            )
-          );
-      } catch (error) {}
-    });
-
-    candidates.forEach(
-      hideNativeMflPopup
-    );
-  }
-
-
-  function watchForNativeMflPopup() {
-
-    if (
-      !isHomepage() ||
-      nativeMflPopupObserver
-    ) {
-      return;
-    }
-
-    suppressNativeMflPopups();
-
-    nativeMflPopupObserver =
+    var observer =
       new MutationObserver(
-        function (mutations) {
-
-          mutations.forEach(
-            function (mutation) {
-
-              Array.prototype.forEach.call(
-                mutation.addedNodes || [],
-                function (node) {
-
-                  if (
-                    !node ||
-                    node.nodeType !== 1
-                  ) {
-                    return;
-                  }
-
-                  hideNativeMflPopup(node);
-
-                  if (node.querySelectorAll) {
-
-                    var descendants =
-                      node.querySelectorAll(
-                        '[role="dialog"],' +
-                        '[id*="popup" i],' +
-                        '[class*="popup" i],' +
-                        '[id*="modal" i],' +
-                        '[class*="modal" i],' +
-                        '[id*="lightbox" i],' +
-                        '[class*="lightbox" i],' +
-                        '[id*="overlay" i],' +
-                        '[class*="overlay" i]'
-                      );
-
-                    Array.prototype.forEach.call(
-                      descendants,
-                      hideNativeMflPopup
-                    );
-                  }
-                }
-              );
-            }
-          );
-
-          suppressNativeMflPopups();
-        }
+        killPopup
       );
 
-    nativeMflPopupObserver.observe(
+
+    observer.observe(
       document.documentElement,
       {
         childList: true,
-        subtree: true
+        subtree: true,
+        attributes: true,
+        attributeFilter: [
+          "style",
+          "class"
+        ]
       }
     );
 
-    nativeMflPopupStopTimer =
-      window.setTimeout(
-        function () {
 
-          if (nativeMflPopupObserver) {
-            nativeMflPopupObserver.disconnect();
-            nativeMflPopupObserver = null;
-          }
+    window.setTimeout(
+      function () {
 
-          nativeMflPopupStopTimer = null;
+        observer.disconnect();
 
-        },
-        12000
-      );
+        killPopup();
+
+      },
+      15000
+    );
   }
 
 
@@ -2854,22 +3253,25 @@ return items;
 
   function bootAnnouncement() {
 
-    if (!isHomepage()) {
+    if (
+      !isHomepage()
+    ) {
       return;
     }
 
+
     /*
-     * Do NOT suppress generic MFL popups here.
-     *
-     * The old watcher treated any dialog/popup/modal/overlay as the
-     * once-a-day MFL notification and could hide legitimate player
-     * cards and player-news popups while leaving the page overlay.
-     *
-     * Native automatic notifications are disabled in the header, so
-     * no broad DOM popup suppression is needed.
+     * Block MFL's original League Notifications popup
+     * before LSFFL decides whether its own announcement
+     * should automatically open.
      */
 
-    if (!shouldAutoOpenAnnouncement()) {
+    disableMflNativeNotificationPopup();
+
+
+    if (
+      !shouldAutoOpenAnnouncement()
+    ) {
       return;
     }
 
@@ -2888,9 +3290,15 @@ return items;
           )
         );
 
+      var managerAlertReady =
+        Boolean(
+          nativeNotificationText()
+        );
+
 
       if (
         articleReady ||
+        managerAlertReady ||
         Date.now() -
         started >
         8000
@@ -2916,7 +3324,7 @@ return items;
 
 
   /* ============================================================
-     PUBLIC POP-UP 4.3 API
+     PUBLIC POP-UP 4.4 API
      ============================================================ */
 
   window.lsfflPopup3 = {
@@ -2966,4 +3374,4 @@ return items;
 
   }
 
-})();
+})()
