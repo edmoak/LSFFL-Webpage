@@ -1,6 +1,6 @@
 /*
  * ============================================================
- * LSFFL POPUP MANAGER — POP-UP 4.4
+ * LSFFL POPUP MANAGER — POP-UP 4.5 — MFL CLOSE BUTTONS
  * ============================================================
  * File:
  *   js/lsffl-popup-manager.js
@@ -235,22 +235,22 @@
       "#lsffl-popup41-close{" +
         "-webkit-appearance:none!important;" +
         "appearance:none!important;" +
-        "width:36px!important;" +
-        "min-width:36px!important;" +
-        "max-width:36px!important;" +
-        "height:36px!important;" +
-        "min-height:36px!important;" +
-        "max-height:36px!important;" +
+        "width:23px!important;" +
+        "min-width:23px!important;" +
+        "max-width:23px!important;" +
+        "height:23px!important;" +
+        "min-height:23px!important;" +
+        "max-height:23px!important;" +
         "margin:0!important;" +
         "padding:0!important;" +
         "display:grid!important;" +
         "place-items:center!important;" +
-        "border:1px solid #e1c45a!important;" +
-        "border-radius:50%!important;" +
+        "border:0!important;" +
+        "border-radius:3px!important;" +
         "outline:0!important;" +
-        "background:#061426!important;" +
+        "background:#9a8425!important;" +
         "background-image:none!important;" +
-        "color:#fff!important;" +
+        "color:#777!important;" +
         "box-shadow:none!important;" +
         "cursor:pointer!important;" +
         "overflow:hidden!important;" +
@@ -259,21 +259,20 @@
 
       "#lsffl-popup41-close svg{" +
         "display:block!important;" +
-        "width:18px!important;" +
-        "height:18px!important;" +
+        "width:12px!important;" +
+        "height:12px!important;" +
         "fill:none!important;" +
         "stroke:currentColor!important;" +
-        "stroke-width:2.7!important;" +
-        "stroke-linecap:round!important;" +
+        "stroke-width:3.2!important;" +
+        "stroke-linecap:square!important;" +
         "pointer-events:none!important;" +
       "}",
 
 
       "#lsffl-popup41-close:hover," +
       "#lsffl-popup41-close:focus{" +
-        "border-color:#f2d76e!important;" +
-        "background:#c9a227!important;" +
-        "color:#061426!important;" +
+        "background:#b79b2d!important;" +
+        "color:#555!important;" +
         "outline:none!important;" +
       "}",
 
@@ -2643,22 +2642,22 @@
       "#lsffl-popup41-announcement-close{" +
         "-webkit-appearance:none!important;" +
         "appearance:none!important;" +
-        "width:36px!important;" +
-        "min-width:36px!important;" +
-        "max-width:36px!important;" +
-        "height:36px!important;" +
-        "min-height:36px!important;" +
-        "max-height:36px!important;" +
+        "width:23px!important;" +
+        "min-width:23px!important;" +
+        "max-width:23px!important;" +
+        "height:23px!important;" +
+        "min-height:23px!important;" +
+        "max-height:23px!important;" +
         "margin:0!important;" +
         "padding:0!important;" +
         "display:grid!important;" +
         "place-items:center!important;" +
-        "border:1px solid #e1c45a!important;" +
-        "border-radius:50%!important;" +
+        "border:0!important;" +
+        "border-radius:3px!important;" +
         "outline:0!important;" +
-        "background:#061426!important;" +
+        "background:#9a8425!important;" +
         "background-image:none!important;" +
-        "color:#fff!important;" +
+        "color:#777!important;" +
         "box-shadow:none!important;" +
         "cursor:pointer!important;" +
         "overflow:hidden!important;" +
@@ -2667,21 +2666,20 @@
 
       "#lsffl-popup41-announcement-close svg{" +
         "display:block!important;" +
-        "width:18px!important;" +
-        "height:18px!important;" +
+        "width:12px!important;" +
+        "height:12px!important;" +
         "fill:none!important;" +
         "stroke:currentColor!important;" +
-        "stroke-width:2.7!important;" +
-        "stroke-linecap:round!important;" +
+        "stroke-width:3.2!important;" +
+        "stroke-linecap:square!important;" +
         "pointer-events:none!important;" +
       "}",
 
 
       "#lsffl-popup41-announcement-close:hover," +
       "#lsffl-popup41-announcement-close:focus{" +
-        "border-color:#f2d76e!important;" +
-        "background:#c9a227!important;" +
-        "color:#061426!important;" +
+        "background:#b79b2d!important;" +
+        "color:#555!important;" +
         "outline:none!important;" +
       "}",
 
