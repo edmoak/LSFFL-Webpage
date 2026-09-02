@@ -1,6 +1,6 @@
 /*
  * ============================================================
- * LSFFL POPUP MANAGER — POP-UP 4.5 — MFL CLOSE BUTTONS
+ * LSFFL POPUP MANAGER — POP-UP 4.6 — NATIVE MFL CLOSE BUTTON MATCH
  * ============================================================
  * File:
  *   js/lsffl-popup-manager.js
@@ -235,12 +235,12 @@
       "#lsffl-popup41-close{" +
         "-webkit-appearance:none!important;" +
         "appearance:none!important;" +
-        "width:23px!important;" +
-        "min-width:23px!important;" +
-        "max-width:23px!important;" +
-        "height:23px!important;" +
-        "min-height:23px!important;" +
-        "max-height:23px!important;" +
+        "width:22px!important;" +
+        "min-width:22px!important;" +
+        "max-width:22px!important;" +
+        "height:22px!important;" +
+        "min-height:22px!important;" +
+        "max-height:22px!important;" +
         "margin:0!important;" +
         "padding:0!important;" +
         "display:grid!important;" +
@@ -248,9 +248,9 @@
         "border:0!important;" +
         "border-radius:3px!important;" +
         "outline:0!important;" +
-        "background:#9a8425!important;" +
+        "background:#7c6b2a!important;" +
         "background-image:none!important;" +
-        "color:#777!important;" +
+        "color:#9ca3ac!important;" +
         "box-shadow:none!important;" +
         "cursor:pointer!important;" +
         "overflow:hidden!important;" +
@@ -259,8 +259,8 @@
 
       "#lsffl-popup41-close svg{" +
         "display:block!important;" +
-        "width:12px!important;" +
-        "height:12px!important;" +
+        "width:11px!important;" +
+        "height:11px!important;" +
         "fill:none!important;" +
         "stroke:currentColor!important;" +
         "stroke-width:3.2!important;" +
@@ -271,8 +271,8 @@
 
       "#lsffl-popup41-close:hover," +
       "#lsffl-popup41-close:focus{" +
-        "background:#b79b2d!important;" +
-        "color:#555!important;" +
+        "background:#8c792f!important;" +
+        "color:#b5bbc2!important;" +
         "outline:none!important;" +
       "}",
 
@@ -2642,12 +2642,12 @@
       "#lsffl-popup41-announcement-close{" +
         "-webkit-appearance:none!important;" +
         "appearance:none!important;" +
-        "width:23px!important;" +
-        "min-width:23px!important;" +
-        "max-width:23px!important;" +
-        "height:23px!important;" +
-        "min-height:23px!important;" +
-        "max-height:23px!important;" +
+        "width:22px!important;" +
+        "min-width:22px!important;" +
+        "max-width:22px!important;" +
+        "height:22px!important;" +
+        "min-height:22px!important;" +
+        "max-height:22px!important;" +
         "margin:0!important;" +
         "padding:0!important;" +
         "display:grid!important;" +
@@ -2655,9 +2655,9 @@
         "border:0!important;" +
         "border-radius:3px!important;" +
         "outline:0!important;" +
-        "background:#9a8425!important;" +
+        "background:#7c6b2a!important;" +
         "background-image:none!important;" +
-        "color:#777!important;" +
+        "color:#9ca3ac!important;" +
         "box-shadow:none!important;" +
         "cursor:pointer!important;" +
         "overflow:hidden!important;" +
@@ -2666,8 +2666,8 @@
 
       "#lsffl-popup41-announcement-close svg{" +
         "display:block!important;" +
-        "width:12px!important;" +
-        "height:12px!important;" +
+        "width:11px!important;" +
+        "height:11px!important;" +
         "fill:none!important;" +
         "stroke:currentColor!important;" +
         "stroke-width:3.2!important;" +
@@ -2678,8 +2678,8 @@
 
       "#lsffl-popup41-announcement-close:hover," +
       "#lsffl-popup41-announcement-close:focus{" +
-        "background:#b79b2d!important;" +
-        "color:#555!important;" +
+        "background:#8c792f!important;" +
+        "color:#b5bbc2!important;" +
         "outline:none!important;" +
       "}",
 
