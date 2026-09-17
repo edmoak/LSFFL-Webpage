@@ -2501,7 +2501,129 @@
           "&O=73";
 
 
+    /*
+     * PERSONAL OWNER STATUS IS ALWAYS SLIDE #1.
+     *
+     * MFL remains the source of truth. We translate the logged-in owner's
+     * native MFL notifications into one personal checklist slide.
+     */
+    var ownerAlerts =
+      extractOwnerManagerAlerts();
+
+    var ownerStatusLines = [];
+    var ownerStatusMeta = "";
+    var ownerStatusButtonText = "";
+    var ownerStatusButtonUrl = "";
+
+
+    if (
+      ownerAlerts.length
+    ) {
+
+      ownerAlerts.forEach(
+        function (alert) {
+
+          var line =
+            "• " +
+            cleanText(
+              alert.title
+            );
+
+          if (
+            alert.body
+          ) {
+            line +=
+              " — " +
+              cleanText(
+                alert.body
+              );
+          }
+
+          ownerStatusLines.push(
+            line
+          );
+        }
+      );
+
+
+      ownerStatusMeta =
+        ownerAlerts.length === 1
+          ? "1 OWNER ACTION ITEM"
+          : ownerAlerts.length +
+            " OWNER ACTION ITEMS";
+
+
+      if (
+        ownerAlerts.length === 1
+      ) {
+
+        ownerStatusButtonText =
+          ownerAlerts[0].buttonText ||
+          "Review Issue";
+
+        ownerStatusButtonUrl =
+          ownerAlerts[0].buttonUrl ||
+          "";
+
+      } else {
+
+        ownerStatusButtonText =
+          "Open Roster Manager";
+
+        ownerStatusButtonUrl =
+          MFL_ORIGIN +
+          "/" +
+          YEAR +
+          "/options?L=" +
+          LEAGUE_ID +
+          "&O=07";
+      }
+
+    } else {
+
+      ownerStatusLines.push(
+        "No roster violations, IR issues, invalid starting-lineup warnings, or pending trade offers were reported by MFL for your team."
+      );
+
+      ownerStatusMeta =
+        "YOUR TEAM IS GOOD TO GO";
+    }
+
+
     return [
+
+      {
+        eyebrow:
+          ownerAlerts.length
+            ? "MY TEAM • ACTION REQUIRED"
+            : "MY TEAM • STATUS",
+
+        title:
+          ownerAlerts.length
+            ? "Owner Alerts"
+            : "Your Team Is Good To Go",
+
+        body:
+          ownerStatusLines.join(
+            "\n\n"
+          ),
+
+        meta:
+          ownerStatusMeta,
+
+        imageUrl:
+          "",
+
+        imageAlt:
+          "",
+
+        buttonText:
+          ownerStatusButtonText,
+
+        buttonUrl:
+          ownerStatusButtonUrl
+      },
+
 
       {
         eyebrow:
@@ -2590,6 +2712,7 @@
 
     ];
   }
+
 
   /* ============================================================
      ANNOUNCEMENT STYLES
@@ -2731,6 +2854,11 @@
         "font-family:Arial,sans-serif;" +
         "font-size:17px;" +
         "line-height:1.58;" +
+      "}",
+
+
+      "#lsffl-popup41-announcement-text{" +
+        "white-space:pre-line;" +
       "}",
 
 
