@@ -1,6 +1,6 @@
 /*
  * ============================================================
- * LSFFL POPUP MANAGER — POP-UP 4.6 — NATIVE MFL CLOSE BUTTON MATCH
+ * LSFFL POPUP MANAGER — POP-UP 4.7 — WEEK 2 ANNOUNCEMENT UPDATE
  * ============================================================
  * File:
  *   js/lsffl-popup-manager.js
@@ -13,7 +13,7 @@
  * *   - Franchise popups
  *   - Homepage Announcement Center
  *   - Owner manager alerts harvested from MFL's hidden native notifications
- *   - Week 1 lineup reminder
+ *   - Week 2 announcement center
  *
  * DOES NOT own:
  *   - Standings page
@@ -46,10 +46,10 @@
   var previousFocus = null;
 
   var ANNOUNCEMENT_SESSION_KEY =
-    "lsffl-popup41-week1-auto-shown-2026-23135";
+    "lsffl-popup46-week2-auto-shown-2026-23135";
 
   var ANNOUNCEMENT_DISMISS_KEY =
-    "lsffl-popup41-week1-dismissed-until";
+    "lsffl-popup46-week2-dismissed-until";
 
 
   /* ============================================================
@@ -2484,71 +2484,112 @@
 
   function loadAnnouncementItems() {
 
-    var items = [
-
-      {
-
-        eyebrow:
-          "COMMISSIONER'S DESK",
-
-
-        title:
-          "Week 1 Is Here — Set Your Lineup",
-
-
-        body:
-          "NFL regular-season games begin Wednesday, September 9. Make sure your starting lineup is submitted before your players lock. Reminder: LSFFL now starts TWO FLEX players instead of one. Your weekly lineup should have 9 starters total: 1 QB, 1 RB, 2 WR, 1 TE, 2 FLEX, 1 K, and 1 Defense.",
-
-
-        meta:
-          "9 STARTERS • 2 FLEX • GET YOUR LINEUP IN",
-
-
-        buttonText:
-          "Submit Lineup",
-
-
-        buttonUrl:
-          "https://www48.myfantasyleague.com/2026/options?L=23135&O=02"
-
-      }
-
-    ];
-
-
-    var ownerAlerts =
-      extractOwnerManagerAlerts();
-
-    ownerAlerts.forEach(
-      function (alert) {
-        items.push(
-          alert
-        );
-      }
-    );
-
-
     var article =
       extractArticleAnnouncement();
 
-
-    if (
-      article &&
-      !/draft/i.test(
-        article.title || ""
+    var articleUrl =
+      (
+        article &&
+        article.buttonUrl
       )
-    ) {
+        ? article.buttonUrl
+        : MFL_ORIGIN +
+          "/" +
+          YEAR +
+          "/options?L=" +
+          LEAGUE_ID +
+          "&O=73";
 
-      items.push(
-        article
-      );
 
-    }
+    return [
+
+      {
+        eyebrow:
+          "WEEK 1 RECAP",
+
+        title:
+          "Week 1: Studs, Duds & Crutches",
+
+        body:
+          "Week 1 is in the books, and it already gave us everything fantasy football does best: monster scores, painful busts, surprise heroes, injuries, and enough bench points to make a few owners question every decision they made. Check out the new LSFFL Week 1 recap for the good, the bad, and the completely ridiculous.",
+
+        meta:
+          "LSFFL WEEK 1 RECAP",
+
+        imageUrl:
+          "https://github.com/edmoak/LSFFL-Webpage/blob/main/images/wordmarks/Week%201%20recap.png?raw=true",
+
+        imageAlt:
+          "LSFFL Week 1 Studs, Duds and Crutches recap",
+
+        buttonText:
+          "Read the Week 1 Recap",
+
+        buttonUrl:
+          articleUrl
+      },
 
 
-    return items;
+      {
+        eyebrow:
+          "WEEK 2",
+
+        title:
+          "Set Those Week 2 Lineups",
+
+        body:
+          "Week 1 is over, so get those Week 2 starting lineups submitted. Take another look at the waiver wire, see who somebody else gave up on too early, and start kicking the tires on a few trades. One week does not make a season, but standing still while everybody else improves their roster is a pretty good way to make it a long one.",
+
+        meta:
+          "SET YOUR LINEUP • CHECK WAIVERS • TALK TRADES",
+
+        imageUrl:
+          "",
+
+        imageAlt:
+          "",
+
+        buttonText:
+          "Submit Week 2 Lineup",
+
+        buttonUrl:
+          MFL_ORIGIN +
+          "/" +
+          YEAR +
+          "/options?L=" +
+          LEAGUE_ID +
+          "&O=02"
+      },
+
+
+      {
+        eyebrow:
+          "SURVIVOR POOL",
+
+        title:
+          "Apparently Nobody Wanted My Money",
+
+        body:
+          "Nobody signed up for the $25 LSFFL Survivor Pool contest, so there will be no prize pool this season. The Survivor game can still be played for bragging rights if you want to keep making picks — just do not start planning how to spend the winnings, because there aren't any.",
+
+        meta:
+          "NO ENTRIES • NO PRIZE POOL • BRAGGING RIGHTS ONLY",
+
+        imageUrl:
+          "",
+
+        imageAlt:
+          "",
+
+        buttonText:
+          "",
+
+        buttonUrl:
+          ""
+      }
+
+    ];
   }
-
 
   /* ============================================================
      ANNOUNCEMENT STYLES
@@ -2690,6 +2731,20 @@
         "font-family:Arial,sans-serif;" +
         "font-size:17px;" +
         "line-height:1.58;" +
+      "}",
+
+
+      "#lsffl-popup41-announcement-image{" +
+        "display:none;" +
+        "width:auto;" +
+        "max-width:min(340px,100%);" +
+        "height:auto;" +
+        "max-height:225px;" +
+        "margin:2px auto 14px;" +
+        "object-fit:contain;" +
+        "border:1px solid rgba(201,162,39,.38);" +
+        "border-radius:10px;" +
+        "box-shadow:0 8px 24px rgba(0,0,0,.28);" +
       "}",
 
 
@@ -2862,6 +2917,11 @@
 
 
         '<div id="lsffl-popup41-announcement-body">' +
+
+          '<img ' +
+            'id="lsffl-popup41-announcement-image" ' +
+            'src="" ' +
+            'alt="">' +
 
           '<div id="lsffl-popup41-announcement-text"></div>' +
 
@@ -3095,6 +3155,44 @@
     ).textContent =
       item.title ||
       "League Update";
+
+
+    var announcementImage =
+      document.getElementById(
+        "lsffl-popup41-announcement-image"
+      );
+
+
+    if (
+      announcementImage &&
+      item.imageUrl
+    ) {
+
+      announcementImage.src =
+        item.imageUrl;
+
+      announcementImage.alt =
+        item.imageAlt ||
+        "";
+
+      announcementImage.style.display =
+        "block";
+
+    } else if (
+      announcementImage
+    ) {
+
+      announcementImage.removeAttribute(
+        "src"
+      );
+
+      announcementImage.alt =
+        "";
+
+      announcementImage.style.display =
+        "none";
+
+    }
 
 
     document.getElementById(
