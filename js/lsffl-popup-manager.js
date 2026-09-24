@@ -71,8 +71,12 @@ var ownerDataSnapshot={
   ready:false,
   irTaxi:[],
   pendingTrades:0,
-  rosterViolation:false
+  rosterViolation:false,
+  positionViolations:[],
+  lineupViolation:false,
+  lineupStarterCount:0
 };
+var POPUP_LSFFL_POSITION_LIMITS={QB:2,RB:4,WR:5,TE:3,K:2,DEF:2};
 
 function popupAsArray(value){
   if(value===undefined||value===null){return[];}
@@ -185,6 +189,99 @@ function popupCountPendingTrades(data,franchiseId){
   walk(data);
   return found.length;
 }
+function popupNormalizeLimitPosition(value){
+  var position=cleanText(value).toUpperCase();
+  if(position==="PK"){return "K";}
+  if(position==="DST"||position==="D/ST"||position==="TMDEF"){return "DEF";}
+  return position;
+}
+function popupCalculatePositionViolations(roster,players){
+  var counts={QB:0,RB:0,WR:0,TE:0,K:0,DEF:0};
+  popupAsArray(roster&&roster.player).forEach(function(rosterPlayer){
+    var location=popupNormalizeRosterStatus(
+      rosterPlayer.status||rosterPlayer.rosterStatus||rosterPlayer.roster_status
+    );
+    if(location){return;} /* IR and Taxi are exempt. */
+    var id=String(rosterPlayer.id||"");
+    var player=players[id]||{};
+    var position=popupNormalizeLimitPosition(player.position||player.pos||"");
+    if(Object.prototype.hasOwnProperty.call(counts,position)){counts[position]+=1;}
+  });
+  var violations=[];
+  Object.keys(POPUP_LSFFL_POSITION_LIMITS).forEach(function(position){
+    var count=counts[position]||0;
+    var limit=POPUP_LSFFL_POSITION_LIMITS[position];
+    if(count>limit){violations.push({position:position,count:count,limit:limit});}
+  });
+  return violations;
+}
+function popupFindLiveFranchise(data,franchiseId){
+  var root=data&&data.liveScoring?data.liveScoring:data;
+  var found=null;
+  popupAsArray(root&&root.matchup).some(function(matchup){
+    return popupAsArray(matchup&&matchup.franchise).some(function(team){
+      if(normalizeFranchiseId(team&&team.id)===franchiseId){
+        found=team;
+        return true;
+      }
+      return false;
+    });
+  });
+  return found;
+}
+function popupStarterStatus(player){
+  return cleanText(
+    player&&(player.status||player.lineupStatus||player.lineup_status||player.rosterStatus)
+  ).toUpperCase();
+}
+function popupCalculateLineupViolation(liveData,franchiseId,players){
+  var team=popupFindLiveFranchise(liveData,franchiseId);
+  if(!team){return {known:false,invalid:false,count:0};}
+  var container=team.players||team.lineup||{};
+  var livePlayers=popupAsArray(container.player||container);
+  if(!livePlayers.length){return {known:false,invalid:false,count:0};}
+
+  var starters=livePlayers.filter(function(item){
+    var status=popupStarterStatus(item);
+    return status==="STARTER"||status==="START"||status==="S";
+  });
+
+  /* Some MFL live-scoring payloads only contain submitted starters. */
+  if(!starters.length&&livePlayers.length<=12){
+    var hasExplicitBench=livePlayers.some(function(item){
+      var status=popupStarterStatus(item);
+      return status==="BENCH"||status==="RESERVE"||status==="B";
+    });
+    if(!hasExplicitBench){starters=livePlayers.slice();}
+  }
+
+  if(!starters.length){return {known:false,invalid:false,count:0};}
+
+  var counts={QB:0,RB:0,WR:0,TE:0,K:0,DEF:0,OTHER:0};
+  starters.forEach(function(item){
+    var id=String(item.id||"");
+    var meta=players[id]||{};
+    var position=popupNormalizeLimitPosition(
+      meta.position||meta.pos||item.position||item.pos||""
+    );
+    if(Object.prototype.hasOwnProperty.call(counts,position)){counts[position]+=1;}
+    else{counts.OTHER+=1;}
+  });
+
+  var skill=counts.RB+counts.WR+counts.TE;
+  var invalid=
+    starters.length!==9 ||
+    counts.QB!==1 ||
+    counts.K!==1 ||
+    counts.DEF!==1 ||
+    counts.RB<1 ||
+    counts.WR<2 ||
+    counts.TE<1 ||
+    skill!==6 ||
+    counts.OTHER>0;
+
+  return {known:true,invalid:invalid,count:starters.length,counts:counts};
+}
 function popupLoadOwnerData(){
   var franchiseId=popupCurrentFranchiseId();
   if(!franchiseId){
@@ -212,6 +309,10 @@ function popupLoadOwnerData(){
     var nativeIr=popupNativeIrWarningForOwner();
 
     ownerDataSnapshot.irTaxi=[];
+    ownerDataSnapshot.positionViolations=popupCalculatePositionViolations(roster,players);
+    var lineupCheck=popupCalculateLineupViolation(liveData,franchiseId,players);
+    ownerDataSnapshot.lineupViolation=lineupCheck.known&&lineupCheck.invalid;
+    ownerDataSnapshot.lineupStarterCount=lineupCheck.count||0;
     popupAsArray(roster&&roster.player).forEach(function(rosterPlayer){
       var location=popupNormalizeRosterStatus(
         rosterPlayer.status||rosterPlayer.rosterStatus||rosterPlayer.roster_status
@@ -259,6 +360,13 @@ function popupOwnerRosterLines(){
   });
   return lines;
 }
+function popupOwnerPositionViolationLines(){
+  return ownerDataSnapshot.positionViolations.map(function(item){
+    return "⚠ ROSTER ACTION REQUIRED — "+item.position+": "+item.count+
+      " / Maximum "+item.limit+
+      ". Your active roster exceeds the LSFFL position limit. IR and Taxi players are exempt.";
+  });
+}
 function loadAnnouncementItems(){
   var article=extractArticleAnnouncement();
   var articleUrl=(article&&article.buttonUrl)?article.buttonUrl:MFL_ORIGIN+"/"+YEAR+"/options?L="+LEAGUE_ID+"&O=73";
@@ -268,41 +376,48 @@ function loadAnnouncementItems(){
   var ownerStatusButtonText="";
   var ownerStatusButtonUrl="";
 
-  var lineupBad=ownerAlerts.some(function(item){return item.title==="Starting Lineup Incomplete";});
+  var lineupBad=ownerDataSnapshot.lineupViolation||
+    ownerAlerts.some(function(item){return item.title==="Starting Lineup Incomplete";});
   var nativeTradeAlert=ownerAlerts.some(function(item){return item.title==="Trade Offer Pending";});
   var rosterBad=ownerDataSnapshot.rosterViolation||ownerAlerts.some(function(item){
     return item.title==="Roster Violation"||item.title==="IR Violation"||item.title==="Taxi Squad Violation";
   });
   var irTaxiAction=ownerDataSnapshot.irTaxi.some(function(item){return item.actionRequired;});
+  var positionBad=ownerDataSnapshot.positionViolations.length>0;
   var tradeCount=Math.max(ownerDataSnapshot.pendingTrades,nativeTradeAlert?1:0);
 
   if(lineupBad){
-    ownerStatusLines.push("⚠ LINEUP ACTION REQUIRED — Your starting lineup is invalid or incomplete.");
+    ownerStatusLines.push("⚠ LINEUP ACTION REQUIRED — Your submitted starting lineup does not meet LSFFL starting-lineup requirements. Fix your lineup before the applicable game locks.");
   }
   if(rosterBad){
     ownerStatusLines.push("⚠ ROSTER REVIEW — MFL is reporting a possible roster/IR/Taxi rule issue. Review your roster.");
   }
 
+  popupOwnerPositionViolationLines().forEach(function(line){ownerStatusLines.push(line);});
   popupOwnerRosterLines().forEach(function(line){ownerStatusLines.push(line);});
 
   if(tradeCount>0){
     ownerStatusLines.push("⚠ PENDING TRADE"+(tradeCount===1?"":"S")+": "+tradeCount+" trade request"+(tradeCount===1?" is":"s are")+" waiting for review.");
   }
 
-  var needsAction=lineupBad||rosterBad||irTaxiAction||tradeCount>0;
+  var needsAction=lineupBad||rosterBad||positionBad||irTaxiAction||tradeCount>0;
 
   if(!ownerStatusLines.length){
-    ownerStatusLines.push("No lineup errors, roster violations, IR/Taxi players requiring review, or pending trade requests were detected for your team.");
+    ownerStatusLines.push("No lineup errors, active-roster position violations, IR/Taxi players requiring review, or pending trade requests were detected for your team.");
   }
 
   if(needsAction){
     var actionCount=(lineupBad?1:0)+(rosterBad?1:0)+
+      ownerDataSnapshot.positionViolations.length+
       ownerDataSnapshot.irTaxi.filter(function(item){return item.actionRequired;}).length+
       (tradeCount>0?1:0);
     ownerStatusMeta=actionCount===1?"1 OWNER ACTION ITEM":actionCount+" OWNER ACTION ITEMS";
     if(lineupBad){
       ownerStatusButtonText="Fix Lineup";
       ownerStatusButtonUrl=MFL_ORIGIN+"/"+YEAR+"/options?L="+LEAGUE_ID+"&O=02";
+    }else if(positionBad||rosterBad||irTaxiAction){
+      ownerStatusButtonText="Review Roster";
+      ownerStatusButtonUrl=MFL_ORIGIN+"/"+YEAR+"/options?L="+LEAGUE_ID+"&O=07";
     }else if(tradeCount>0){
       ownerStatusButtonText="Review Trades";
       ownerStatusButtonUrl=MFL_ORIGIN+"/"+YEAR+"/options?L="+LEAGUE_ID+"&O=05";
@@ -348,4 +463,4 @@ function loadAnnouncementItems(){
       buttonUrl:MFL_ORIGIN+"/"+YEAR+"/options?L="+LEAGUE_ID+"&O=02"
     }
   ];
-}function injectAnnouncementStyles(){if(document.getElementById("lsffl-popup47-announcement-styles")){return;}var style=document.createElement("style");style.id="lsffl-popup47-announcement-styles";style.textContent=["#lsffl-popup47-announcement[hidden]{"+"display:none!important;"+"}","#lsffl-popup47-announcement{"+"position:fixed;"+"inset:0;"+"z-index:2147483100;"+"display:flex;"+"align-items:center;"+"justify-content:center;"+"padding:18px;"+"background:rgba(0,7,18,.88);"+"backdrop-filter:blur(5px);"+"-webkit-backdrop-filter:blur(5px);"+"}","#lsffl-popup47-announcement-card{"+"width:min(760px,96vw);"+"max-height:94vh;"+"overflow:auto;"+"border:2px solid #c9a227;"+"border-radius:14px;"+"background:linear-gradient(180deg,#0c2846 0%,#061426 52%,#02091a 100%);"+"color:#fff;"+"box-shadow:0 24px 90px rgba(0,0,0,.78);"+"}","#lsffl-popup47-announcement-head{"+"display:flex;"+"justify-content:space-between;"+"gap:16px;"+"padding:22px 22px 8px;"+"border-top:6px solid #c9a227;"+"}","#lsffl-popup47-announcement-eyebrow{"+"margin-bottom:5px;"+"color:#e1c45a;"+"font-family:'Barlow Condensed',Arial,sans-serif;"+"font-size:13px;"+"font-weight:900;"+"letter-spacing:1.7px;"+"text-transform:uppercase;"+"}","#lsffl-popup47-announcement-title{"+"margin:0;"+"color:#fff;"+"font-family:'Oswald','Barlow Condensed',Arial,sans-serif;"+"font-size:clamp(25px,4vw,36px);"+"line-height:1.03;"+"font-weight:900;"+"text-transform:uppercase;"+"}","#lsffl-popup47-announcement-close{"+"-webkit-appearance:none!important;"+"appearance:none!important;"+"width:22px!important;"+"min-width:22px!important;"+"max-width:22px!important;"+"height:22px!important;"+"min-height:22px!important;"+"max-height:22px!important;"+"margin:0!important;"+"padding:0!important;"+"display:grid!important;"+"place-items:center!important;"+"border:0!important;"+"border-radius:3px!important;"+"outline:0!important;"+"background:#7c6b2a!important;"+"background-image:none!important;"+"color:#9ca3ac!important;"+"box-shadow:none!important;"+"cursor:pointer!important;"+"overflow:hidden!important;"+"}","#lsffl-popup47-announcement-close svg{"+"display:block!important;"+"width:11px!important;"+"height:11px!important;"+"fill:none!important;"+"stroke:currentColor!important;"+"stroke-width:3.2!important;"+"stroke-linecap:square!important;"+"pointer-events:none!important;"+"}","#lsffl-popup47-announcement-close:hover,"+"#lsffl-popup47-announcement-close:focus{"+"background:#8c792f!important;"+"color:#b5bbc2!important;"+"outline:none!important;"+"}","#lsffl-popup47-announcement-body{"+"padding:12px 22px 8px;"+"color:#eef4fb;"+"font-family:Arial,sans-serif;"+"font-size:17px;"+"line-height:1.58;"+"}","#lsffl-popup47-announcement-text{"+"white-space:pre-line;"+"}","#lsffl-popup47-announcement-image{"+"display:none;"+"width:auto;"+"max-width:min(340px,100%);"+"height:auto;"+"max-height:225px;"+"margin:2px auto 14px;"+"object-fit:contain;"+"border:1px solid rgba(201,162,39,.38);"+"border-radius:10px;"+"box-shadow:0 8px 24px rgba(0,0,0,.28);"+"}","#lsffl-popup47-announcement-meta{"+"margin-top:12px;"+"color:#aebdcd;"+"font-size:13px;"+"font-weight:700;"+"}","#lsffl-popup47-announcement-actions{"+"display:flex;"+"padding:14px 22px 12px;"+"}","#lsffl-popup47-announcement-open{"+"display:none;"+"align-items:center;"+"justify-content:center;"+"min-height:42px;"+"padding:9px 18px;"+"border:1px solid #e1c45a;"+"border-radius:8px;"+"background:#c9a227;"+"color:#061426!important;"+"text-decoration:none!important;"+"font-family:'Barlow Condensed',Arial,sans-serif;"+"font-size:16px;"+"font-weight:900;"+"text-transform:uppercase;"+"}","#lsffl-popup47-announcement-nav{"+"display:flex;"+"align-items:center;"+"justify-content:space-between;"+"gap:12px;"+"padding:12px 22px;"+"border-top:1px solid rgba(201,162,39,.3);"+"background:rgba(0,0,0,.18);"+"}",".lsffl-popup47-announcement-navbtn{"+"min-width:86px!important;"+"min-height:36px!important;"+"padding:7px 12px!important;"+"border:1px solid #c9a227!important;"+"border-radius:7px!important;"+"background:#071a2f!important;"+"color:#fff!important;"+"font-family:'Barlow Condensed',Arial,sans-serif!important;"+"font-size:14px!important;"+"font-weight:900!important;"+"text-transform:uppercase!important;"+"cursor:pointer!important;"+"}",".lsffl-popup47-announcement-navbtn:disabled{"+"opacity:.35;"+"cursor:default!important;"+"}","#lsffl-popup47-announcement-counter{"+"color:#e1c45a;"+"font-family:'Barlow Condensed',Arial,sans-serif;"+"font-size:14px;"+"font-weight:900;"+"}","#lsffl-popup47-announcement-footer{"+"display:flex;"+"align-items:center;"+"justify-content:space-between;"+"gap:12px;"+"padding:11px 22px 14px;"+"color:#aebdcd;"+"font-family:Arial,sans-serif;"+"font-size:12px;"+"}","#lsffl-popup47-announcement-footer label{"+"display:flex;"+"align-items:center;"+"gap:7px;"+"}","#lsffl-popup47-announcement-footer input{"+"width:16px;"+"height:16px;"+"accent-color:#c9a227;"+"}"].join("");document.head.appendChild(style);}function createAnnouncementModal(){if(announcementModal){return;}injectAnnouncementStyles();announcementModal=document.createElement("div");announcementModal.id="lsffl-popup47-announcement";announcementModal.hidden=true;announcementModal.innerHTML='<div id="lsffl-popup47-announcement-card">'+'<div id="lsffl-popup47-announcement-head">'+'<div>'+'<div id="lsffl-popup47-announcement-eyebrow">'+'LSFFL'+'</div>'+'<h2 id="lsffl-popup47-announcement-title">'+'League Update'+'</h2>'+'</div>'+'<button '+'id="lsffl-popup47-announcement-close" '+'type="button" '+'aria-label="Close announcement">'+'<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">'+'<path d="M6 6L18 18M18 6L6 18"></path>'+'</svg>'+'</button>'+'</div>'+'<div id="lsffl-popup47-announcement-body">'+'<img '+'id="lsffl-popup47-announcement-image" '+'src="" '+'alt="">'+'<div id="lsffl-popup47-announcement-text"></div>'+'<div id="lsffl-popup47-announcement-meta"></div>'+'</div>'+'<div id="lsffl-popup47-announcement-actions">'+'<a '+'id="lsffl-popup47-announcement-open" '+'href="#">'+'Read More'+'</a>'+'</div>'+'<div id="lsffl-popup47-announcement-nav">'+'<button '+'class="lsffl-popup47-announcement-navbtn" '+'id="lsffl-popup47-announcement-prev" '+'type="button">'+'Previous'+'</button>'+'<span id="lsffl-popup47-announcement-counter">'+'1 / 1'+'</span>'+'<button '+'class="lsffl-popup47-announcement-navbtn" '+'id="lsffl-popup47-announcement-next" '+'type="button">'+'Next'+'</button>'+'</div>'+'<div id="lsffl-popup47-announcement-footer">'+'<label>'+'<input '+'id="lsffl-popup47-announcement-dontshow" '+'type="checkbox">'+' Don\'t show announcements again for 24 hours'+'</label>'+'<span>'+'LSFFL • 2026 SEASON'+'</span>'+'</div>'+'</div>';document.body.appendChild(announcementModal);document.getElementById("lsffl-popup47-announcement-close").addEventListener("click",closeAnnouncement);document.getElementById("lsffl-popup47-announcement-prev").addEventListener("click",function(){showAnnouncement(announcementIndex-1);});document.getElementById("lsffl-popup47-announcement-next").addEventListener("click",function(){showAnnouncement(announcementIndex+1);});document.getElementById("lsffl-popup47-announcement-open").addEventListener("click",function(event){var item=announcementItems[announcementIndex];if(!item||!item.buttonUrl){return;}var match=classifyMflUrl(item.buttonUrl);if(!match){closeAnnouncement();return;}event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();closeAnnouncement();openModal(match.url,match.type,match.title);});announcementModal.addEventListener("click",function(event){if(event.target===announcementModal){closeAnnouncement();}});}function showAnnouncement(index){if(!announcementItems.length){return;}announcementIndex=Math.max(0,Math.min(index,announcementItems.length-1));var item=announcementItems[announcementIndex];document.getElementById("lsffl-popup47-announcement-eyebrow").textContent=item.eyebrow||"LSFFL";document.getElementById("lsffl-popup47-announcement-title").textContent=item.title||"League Update";var announcementImage=document.getElementById("lsffl-popup47-announcement-image");if(announcementImage&&item.imageUrl){announcementImage.src=item.imageUrl;announcementImage.alt=item.imageAlt||"";announcementImage.style.display="block";}else if(announcementImage){announcementImage.removeAttribute("src");announcementImage.alt="";announcementImage.style.display="none";}document.getElementById("lsffl-popup47-announcement-text").textContent=item.body||"";document.getElementById("lsffl-popup47-announcement-meta").textContent=item.meta||"";var open=document.getElementById("lsffl-popup47-announcement-open");if(item.buttonUrl){open.href=item.buttonUrl;open.textContent=item.buttonText||"Read More";open.style.display="inline-flex";}else{open.removeAttribute("href");open.style.display="none";}document.getElementById("lsffl-popup47-announcement-counter").textContent=(announcementIndex+1)+" / "+announcementItems.length;document.getElementById("lsffl-popup47-announcement-prev").disabled=announcementIndex===0;document.getElementById("lsffl-popup47-announcement-next").disabled=announcementIndex===announcementItems.length-1;}function openAnnouncement(){createAnnouncementModal();announcementItems=loadAnnouncementItems();if(!announcementItems.length){return false;}document.getElementById("lsffl-popup47-announcement-dontshow").checked=false;announcementModal.hidden=false;showAnnouncement(0);try{sessionStorage.setItem(ANNOUNCEMENT_SESSION_KEY,"1");}catch(error){}return true;}function closeAnnouncement(){if(!announcementModal||announcementModal.hidden){return;}var dontShow=document.getElementById("lsffl-popup47-announcement-dontshow");if(dontShow&&dontShow.checked){try{localStorage.setItem(ANNOUNCEMENT_DISMISS_KEY,String(Date.now()+24*60*60*1000));}catch(error){}}announcementModal.hidden=true;}function shouldAutoOpenAnnouncement(){try{var dismissedUntil=Number(localStorage.getItem(ANNOUNCEMENT_DISMISS_KEY)||0);if(dismissedUntil&&Date.now()<dismissedUntil){return false;}}catch(error){}try{if(sessionStorage.getItem(ANNOUNCEMENT_SESSION_KEY)==="1"){return false;}}catch(error){}return true;}function bootAnnouncement(){if(!isHomepage()){return;}if(!shouldAutoOpenAnnouncement()){return;}ensurePopupLineupChecker();var started=Date.now();var ownerPromise=popupLoadOwnerData();var ownerFinished=false;ownerPromise.then(function(){ownerFinished=true;});(function waitForSources(){var managerAlertReady=Boolean(nativeNotificationText());var lineupReady=popupLineupCheckerReady();if((lineupReady&&ownerFinished)||Date.now()-started>12000){window.setTimeout(openAnnouncement,350);return;}window.setTimeout(waitForSources,200);})();}window.lsfflPopup47={openAnnouncement:openAnnouncement,closeAnnouncement:closeAnnouncement,openFranchise:openFranchise,openContent:window.lsfflOpenContentPopup};window.lsfflPopup3=window.lsfflPopup47;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",bootAnnouncement,{once:true});}else{bootAnnouncement();}})()
+}function injectAnnouncementStyles(){if(document.getElementById("lsffl-popup47-announcement-styles")){return;}var style=document.createElement("style");style.id="lsffl-popup47-announcement-styles";style.textContent=["#lsffl-popup47-announcement[hidden]{"+"display:none!important;"+"}","#lsffl-popup47-announcement{"+"position:fixed;"+"inset:0;"+"z-index:2147483100;"+"display:flex;"+"align-items:center;"+"justify-content:center;"+"padding:18px;"+"background:rgba(0,7,18,.88);"+"backdrop-filter:blur(5px);"+"-webkit-backdrop-filter:blur(5px);"+"}","#lsffl-popup47-announcement-card{"+"width:min(760px,96vw);"+"max-height:94vh;"+"overflow:auto;"+"border:2px solid #c9a227;"+"border-radius:14px;"+"background:linear-gradient(180deg,#0c2846 0%,#061426 52%,#02091a 100%);"+"color:#fff;"+"box-shadow:0 24px 90px rgba(0,0,0,.78);"+"}","#lsffl-popup47-announcement-head{"+"display:flex;"+"justify-content:space-between;"+"gap:16px;"+"padding:22px 22px 8px;"+"border-top:6px solid #c9a227;"+"}","#lsffl-popup47-announcement-eyebrow{"+"margin-bottom:5px;"+"color:#e1c45a;"+"font-family:'Barlow Condensed',Arial,sans-serif;"+"font-size:13px;"+"font-weight:900;"+"letter-spacing:1.7px;"+"text-transform:uppercase;"+"}","#lsffl-popup47-announcement-title{"+"margin:0;"+"color:#fff;"+"font-family:'Oswald','Barlow Condensed',Arial,sans-serif;"+"font-size:clamp(25px,4vw,36px);"+"line-height:1.03;"+"font-weight:900;"+"text-transform:uppercase;"+"}","#lsffl-popup47-announcement-close{"+"-webkit-appearance:none!important;"+"appearance:none!important;"+"width:22px!important;"+"min-width:22px!important;"+"max-width:22px!important;"+"height:22px!important;"+"min-height:22px!important;"+"max-height:22px!important;"+"margin:0!important;"+"padding:0!important;"+"display:grid!important;"+"place-items:center!important;"+"border:0!important;"+"border-radius:3px!important;"+"outline:0!important;"+"background:#7c6b2a!important;"+"background-image:none!important;"+"color:#9ca3ac!important;"+"box-shadow:none!important;"+"cursor:pointer!important;"+"overflow:hidden!important;"+"}","#lsffl-popup47-announcement-close svg{"+"display:block!important;"+"width:11px!important;"+"height:11px!important;"+"fill:none!important;"+"stroke:currentColor!important;"+"stroke-width:3.2!important;"+"stroke-linecap:square!important;"+"pointer-events:none!important;"+"}","#lsffl-popup47-announcement-close:hover,"+"#lsffl-popup47-announcement-close:focus{"+"background:#8c792f!important;"+"color:#b5bbc2!important;"+"outline:none!important;"+"}","#lsffl-popup47-announcement-body{"+"padding:12px 22px 8px;"+"color:#eef4fb;"+"font-family:Arial,sans-serif;"+"font-size:17px;"+"line-height:1.58;"+"}","#lsffl-popup47-announcement-text{"+"white-space:pre-line;"+"}","#lsffl-popup47-announcement-image{"+"display:none;"+"width:auto;"+"max-width:min(340px,100%);"+"height:auto;"+"max-height:225px;"+"margin:2px auto 14px;"+"object-fit:contain;"+"border:1px solid rgba(201,162,39,.38);"+"border-radius:10px;"+"box-shadow:0 8px 24px rgba(0,0,0,.28);"+"}","#lsffl-popup47-announcement-meta{"+"margin-top:12px;"+"color:#aebdcd;"+"font-size:13px;"+"font-weight:700;"+"}","#lsffl-popup47-announcement-actions{"+"display:flex;"+"padding:14px 22px 12px;"+"}","#lsffl-popup47-announcement-open{"+"display:none;"+"align-items:center;"+"justify-content:center;"+"min-height:42px;"+"padding:9px 18px;"+"border:1px solid #e1c45a;"+"border-radius:8px;"+"background:#c9a227;"+"color:#061426!important;"+"text-decoration:none!important;"+"font-family:'Barlow Condensed',Arial,sans-serif;"+"font-size:16px;"+"font-weight:900;"+"text-transform:uppercase;"+"}","#lsffl-popup47-announcement-nav{"+"display:flex;"+"align-items:center;"+"justify-content:space-between;"+"gap:12px;"+"padding:12px 22px;"+"border-top:1px solid rgba(201,162,39,.3);"+"background:rgba(0,0,0,.18);"+"}",".lsffl-popup47-announcement-navbtn{"+"min-width:86px!important;"+"min-height:36px!important;"+"padding:7px 12px!important;"+"border:1px solid #c9a227!important;"+"border-radius:7px!important;"+"background:#071a2f!important;"+"color:#fff!important;"+"font-family:'Barlow Condensed',Arial,sans-serif!important;"+"font-size:14px!important;"+"font-weight:900!important;"+"text-transform:uppercase!important;"+"cursor:pointer!important;"+"}",".lsffl-popup47-announcement-navbtn:disabled{"+"opacity:.35;"+"cursor:default!important;"+"}","#lsffl-popup47-announcement-counter{"+"color:#e1c45a;"+"font-family:'Barlow Condensed',Arial,sans-serif;"+"font-size:14px;"+"font-weight:900;"+"}","#lsffl-popup47-announcement-footer{"+"display:flex;"+"align-items:center;"+"justify-content:space-between;"+"gap:12px;"+"padding:11px 22px 14px;"+"color:#aebdcd;"+"font-family:Arial,sans-serif;"+"font-size:12px;"+"}","#lsffl-popup47-announcement-footer label{"+"display:flex;"+"align-items:center;"+"gap:7px;"+"}","#lsffl-popup47-announcement-footer input{"+"width:16px;"+"height:16px;"+"accent-color:#c9a227;"+"}"].join("");document.head.appendChild(style);}function createAnnouncementModal(){if(announcementModal){return;}injectAnnouncementStyles();announcementModal=document.createElement("div");announcementModal.id="lsffl-popup47-announcement";announcementModal.hidden=true;announcementModal.innerHTML='<div id="lsffl-popup47-announcement-card">'+'<div id="lsffl-popup47-announcement-head">'+'<div>'+'<div id="lsffl-popup47-announcement-eyebrow">'+'LSFFL'+'</div>'+'<h2 id="lsffl-popup47-announcement-title">'+'League Update'+'</h2>'+'</div>'+'<button '+'id="lsffl-popup47-announcement-close" '+'type="button" '+'aria-label="Close announcement">'+'<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">'+'<path d="M6 6L18 18M18 6L6 18"></path>'+'</svg>'+'</button>'+'</div>'+'<div id="lsffl-popup47-announcement-body">'+'<img '+'id="lsffl-popup47-announcement-image" '+'src="" '+'alt="">'+'<div id="lsffl-popup47-announcement-text"></div>'+'<div id="lsffl-popup47-announcement-meta"></div>'+'</div>'+'<div id="lsffl-popup47-announcement-actions">'+'<a '+'id="lsffl-popup47-announcement-open" '+'href="#">'+'Read More'+'</a>'+'</div>'+'<div id="lsffl-popup47-announcement-nav">'+'<button '+'class="lsffl-popup47-announcement-navbtn" '+'id="lsffl-popup47-announcement-prev" '+'type="button">'+'Previous'+'</button>'+'<span id="lsffl-popup47-announcement-counter">'+'1 / 1'+'</span>'+'<button '+'class="lsffl-popup47-announcement-navbtn" '+'id="lsffl-popup47-announcement-next" '+'type="button">'+'Next'+'</button>'+'</div>'+'<div id="lsffl-popup47-announcement-footer">'+'<label>'+'<input '+'id="lsffl-popup47-announcement-dontshow" '+'type="checkbox">'+' Don\'t show announcements again for 24 hours'+'</label>'+'<span>'+'LSFFL • 2026 SEASON'+'</span>'+'</div>'+'</div>';document.body.appendChild(announcementModal);document.getElementById("lsffl-popup47-announcement-close").addEventListener("click",closeAnnouncement);document.getElementById("lsffl-popup47-announcement-prev").addEventListener("click",function(){showAnnouncement(announcementIndex-1);});document.getElementById("lsffl-popup47-announcement-next").addEventListener("click",function(){showAnnouncement(announcementIndex+1);});document.getElementById("lsffl-popup47-announcement-open").addEventListener("click",function(event){var item=announcementItems[announcementIndex];if(!item||!item.buttonUrl){return;}var match=classifyMflUrl(item.buttonUrl);if(!match){closeAnnouncement();return;}event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();closeAnnouncement();openModal(match.url,match.type,match.title);});announcementModal.addEventListener("click",function(event){if(event.target===announcementModal){closeAnnouncement();}});}function showAnnouncement(index){if(!announcementItems.length){return;}announcementIndex=Math.max(0,Math.min(index,announcementItems.length-1));var item=announcementItems[announcementIndex];document.getElementById("lsffl-popup47-announcement-eyebrow").textContent=item.eyebrow||"LSFFL";document.getElementById("lsffl-popup47-announcement-title").textContent=item.title||"League Update";var announcementImage=document.getElementById("lsffl-popup47-announcement-image");if(announcementImage&&item.imageUrl){announcementImage.src=item.imageUrl;announcementImage.alt=item.imageAlt||"";announcementImage.style.display="block";}else if(announcementImage){announcementImage.removeAttribute("src");announcementImage.alt="";announcementImage.style.display="none";}document.getElementById("lsffl-popup47-announcement-text").textContent=item.body||"";document.getElementById("lsffl-popup47-announcement-meta").textContent=item.meta||"";var open=document.getElementById("lsffl-popup47-announcement-open");if(item.buttonUrl){open.href=item.buttonUrl;open.textContent=item.buttonText||"Read More";open.style.display="inline-flex";}else{open.removeAttribute("href");open.style.display="none";}document.getElementById("lsffl-popup47-announcement-counter").textContent=(announcementIndex+1)+" / "+announcementItems.length;document.getElementById("lsffl-popup47-announcement-prev").disabled=announcementIndex===0;document.getElementById("lsffl-popup47-announcement-next").disabled=announcementIndex===announcementItems.length-1;}function openAnnouncement(){createAnnouncementModal();announcementItems=loadAnnouncementItems();if(!announcementItems.length){return false;}document.getElementById("lsffl-popup47-announcement-dontshow").checked=false;announcementModal.hidden=false;showAnnouncement(0);try{sessionStorage.setItem(ANNOUNCEMENT_SESSION_KEY,"1");}catch(error){}return true;}function closeAnnouncement(){if(!announcementModal||announcementModal.hidden){return;}var dontShow=document.getElementById("lsffl-popup47-announcement-dontshow");if(dontShow&&dontShow.checked){try{localStorage.setItem(ANNOUNCEMENT_DISMISS_KEY,String(Date.now()+24*60*60*1000));}catch(error){}}announcementModal.hidden=true;}function shouldAutoOpenAnnouncement(){try{var dismissedUntil=Number(localStorage.getItem(ANNOUNCEMENT_DISMISS_KEY)||0);if(dismissedUntil&&Date.now()<dismissedUntil){return false;}}catch(error){}try{if(sessionStorage.getItem(ANNOUNCEMENT_SESSION_KEY)==="1"){return false;}}catch(error){}return true;}function bootAnnouncement(){if(!isHomepage()){return;}if(!shouldAutoOpenAnnouncement()){return;}ensurePopupLineupChecker();var started=Date.now();var ownerPromise=popupLoadOwnerData();var ownerFinished=false;ownerPromise.then(function(){ownerFinished=true;});(function waitForSources(){var managerAlertReady=Boolean(nativeNotificationText());var lineupReady=popupLineupCheckerReady();if(ownerFinished||Date.now()-started>12000){window.setTimeout(openAnnouncement,350);return;}window.setTimeout(waitForSources,200);})();}window.lsfflPopup47={openAnnouncement:openAnnouncement,closeAnnouncement:closeAnnouncement,openFranchise:openFranchise,openContent:window.lsfflOpenContentPopup};window.lsfflPopup3=window.lsfflPopup47;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",bootAnnouncement,{once:true});}else{bootAnnouncement();}})()
