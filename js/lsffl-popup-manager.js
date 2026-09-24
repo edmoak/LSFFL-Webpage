@@ -1,6 +1,6 @@
 /*
  * ============================================================
- * LSFFL POPUP MANAGER — POP-UP 4.7 — WEEK 2 ANNOUNCEMENT UPDATE
+ * LSFFL POPUP MANAGER — POP-UP 4.7 — WEEK 3 ANNOUNCEMENT UPDATE
  * ============================================================
  * File:
  *   js/lsffl-popup-manager.js
@@ -13,7 +13,7 @@
  * *   - Franchise popups
  *   - Homepage Announcement Center
  *   - Owner manager alerts harvested from MFL's hidden native notifications
- *   - Week 2 announcement center
+ *   - Week 3 announcement center
  *
  * DOES NOT own:
  *   - Standings page
@@ -65,10 +65,10 @@
   var previousFocus = null;
 
   var ANNOUNCEMENT_SESSION_KEY =
-    "lsffl-popup47-week2-auto-shown-2026-23135";
+    "lsffl-popup47-week3-auto-shown-2026-23135";
 
   var ANNOUNCEMENT_DISMISS_KEY =
-    "lsffl-popup47-week2-dismissed-until";
+    "lsffl-popup47-week3-dismissed-until";
 
 
   /* ============================================================
@@ -970,9 +970,7 @@
       style
     );
   }
-
-
-  /* ============================================================
+    /* ============================================================
      FRANCHISE NAME
      ============================================================ */
 
@@ -1897,6 +1895,7 @@
   /* ============================================================
      ESCAPE KEY
      ============================================================ */
+      ============================================================ */
 
   document.addEventListener(
 
@@ -2646,25 +2645,25 @@
 
       {
         eyebrow:
-          "WEEK 1 RECAP",
+          "WEEK 2 RECAP",
 
         title:
-          "Week 1: Studs, Duds & Crutches",
+          "One Week Was a Fluke. Two Weeks Is a Problem.",
 
         body:
-          "Week 1 is in the books, and it already gave us everything fantasy football does best: monster scores, painful busts, surprise heroes, injuries, and enough bench points to make a few owners question every decision they made. Check out the new LSFFL Week 1 recap for the good, the bad, and the completely ridiculous.",
+          "The Lamad Ledger is back for Week 2. Hawky Bears dropped 185.35, Tiny but Mighty somehow managed 49, the Mad Hatters lost by a quarter of a point, and the defending champs got punched in the mouth. There were blowouts, bench disasters, bad beats, and enough terrible decisions to fill another edition of the LSFFL weekly recap.",
 
         meta:
-          "LSFFL WEEK 1 RECAP",
+          "THE LAMAD LEDGER • LSFFL WEEK 2 RECAP",
 
         imageUrl:
-          "https://github.com/edmoak/LSFFL-Webpage/blob/main/images/wordmarks/Week%201%20recap.png?raw=true",
+          "https://github.com/edmoak/LSFFL-Webpage/blob/main/images/wordmarks/Week%202%20Popup.png?raw=true",
 
         imageAlt:
-          "LSFFL Week 1 Studs, Duds and Crutches recap",
+          "LSFFL Week 2 Lamad Ledger recap",
 
         buttonText:
-          "Read the Week 1 Recap",
+          "Read the Week 2 Article",
 
         buttonUrl:
           articleUrl
@@ -2673,16 +2672,16 @@
 
       {
         eyebrow:
-          "WEEK 2",
+          "WEEK 3",
 
         title:
-          "Set Those Week 2 Lineups",
+          "Get Your Week 3 Lineup In",
 
         body:
-          "Week 1 is over, so get those Week 2 starting lineups submitted. Take another look at the waiver wire, see who somebody else gave up on too early, and start kicking the tires on a few trades. One week does not make a season, but standing still while everybody else improves their roster is a pretty good way to make it a long one.",
+          "Week 3 is here. Get your starting lineup submitted and take one last look at injuries, questionable players, and late-week news before kickoff. Check the waiver wire while you're at it, because after two weeks we are starting to find out which players are real and which ones fooled us in Week 1.",
 
         meta:
-          "SET YOUR LINEUP • CHECK WAIVERS • TALK TRADES",
+          "SET YOUR LINEUP • CHECK INJURIES • WEEK 3",
 
         imageUrl:
           "",
@@ -2691,7 +2690,7 @@
           "",
 
         buttonText:
-          "Submit Week 2 Lineup",
+          "Submit Week 3 Lineup",
 
         buttonUrl:
           MFL_ORIGIN +
@@ -2700,33 +2699,6 @@
           "/options?L=" +
           LEAGUE_ID +
           "&O=02"
-      },
-
-
-      {
-        eyebrow:
-          "SURVIVOR POOL",
-
-        title:
-          "Apparently Nobody Wanted My Money",
-
-        body:
-          "Nobody signed up for the $25 LSFFL Survivor Pool contest, so there will be no prize pool this season. The Survivor game can still be played for bragging rights if you want to keep making picks — just do not start planning how to spend the winnings, because there aren't any.",
-
-        meta:
-          "NO ENTRIES • NO PRIZE POOL • BRAGGING RIGHTS ONLY",
-
-        imageUrl:
-          "",
-
-        imageAlt:
-          "",
-
-        buttonText:
-          "",
-
-        buttonUrl:
-          ""
       }
 
     ];
@@ -3075,9 +3047,7 @@
           '<div id="lsffl-popup47-announcement-meta"></div>' +
 
         '</div>' +
-
-
-        '<div id="lsffl-popup47-announcement-actions">' +
+              '<div id="lsffl-popup47-announcement-actions">' +
 
           '<a ' +
             'id="lsffl-popup47-announcement-open" ' +
@@ -3255,33 +3225,43 @@
 
 
   /* ============================================================
-     SHOW ANNOUNCEMENT CARD
+     RENDER ANNOUNCEMENT
      ============================================================ */
 
   function showAnnouncement(index) {
 
     if (
+      !announcementModal ||
       !announcementItems.length
     ) {
       return;
     }
 
 
+    if (
+      index < 0
+    ) {
+
+      index =
+        announcementItems.length -
+        1;
+
+    }
+
+
+    if (
+      index >=
+      announcementItems.length
+    ) {
+
+      index =
+        0;
+
+    }
+
+
     announcementIndex =
-      Math.max(
-
-        0,
-
-        Math.min(
-
-          index,
-
-          announcementItems.length -
-          1
-
-        )
-
-      );
+      index;
 
 
     var item =
@@ -3290,70 +3270,34 @@
       ];
 
 
-    document.getElementById(
-      "lsffl-popup47-announcement-eyebrow"
-    ).textContent =
-      item.eyebrow ||
-      "LSFFL";
+    var eyebrow =
+      document.getElementById(
+        "lsffl-popup47-announcement-eyebrow"
+      );
 
 
-    document.getElementById(
-      "lsffl-popup47-announcement-title"
-    ).textContent =
-      item.title ||
-      "League Update";
+    var title =
+      document.getElementById(
+        "lsffl-popup47-announcement-title"
+      );
 
 
-    var announcementImage =
+    var text =
+      document.getElementById(
+        "lsffl-popup47-announcement-text"
+      );
+
+
+    var image =
       document.getElementById(
         "lsffl-popup47-announcement-image"
       );
 
 
-    if (
-      announcementImage &&
-      item.imageUrl
-    ) {
-
-      announcementImage.src =
-        item.imageUrl;
-
-      announcementImage.alt =
-        item.imageAlt ||
-        "";
-
-      announcementImage.style.display =
-        "block";
-
-    } else if (
-      announcementImage
-    ) {
-
-      announcementImage.removeAttribute(
-        "src"
+    var meta =
+      document.getElementById(
+        "lsffl-popup47-announcement-meta"
       );
-
-      announcementImage.alt =
-        "";
-
-      announcementImage.style.display =
-        "none";
-
-    }
-
-
-    document.getElementById(
-      "lsffl-popup47-announcement-text"
-    ).textContent =
-      item.body ||
-      "";
-
-
-    document.getElementById(
-      "lsffl-popup47-announcement-meta"
-    ).textContent =
-      item.meta ||
-      "";
 
 
     var open =
@@ -3362,21 +3306,92 @@
       );
 
 
+    var previous =
+      document.getElementById(
+        "lsffl-popup47-announcement-prev"
+      );
+
+
+    var next =
+      document.getElementById(
+        "lsffl-popup47-announcement-next"
+      );
+
+
+    var counter =
+      document.getElementById(
+        "lsffl-popup47-announcement-counter"
+      );
+
+
+    eyebrow.textContent =
+      item.eyebrow ||
+      "LSFFL";
+
+
+    title.textContent =
+      item.title ||
+      "League Update";
+
+
+    text.textContent =
+      item.body ||
+      "";
+
+
     if (
+      item.imageUrl
+    ) {
+
+      image.src =
+        item.imageUrl;
+
+      image.alt =
+        item.imageAlt ||
+        item.title ||
+        "LSFFL announcement";
+
+      image.style.display =
+        "block";
+
+    } else {
+
+      image.removeAttribute(
+        "src"
+      );
+
+      image.alt =
+        "";
+
+      image.style.display =
+        "none";
+
+    }
+
+
+    meta.textContent =
+      item.meta ||
+      "";
+
+
+    if (
+      item.buttonText &&
       item.buttonUrl
     ) {
 
+      open.textContent =
+        item.buttonText;
+
       open.href =
         item.buttonUrl;
-
-      open.textContent =
-        item.buttonText ||
-        "Read More";
 
       open.style.display =
         "inline-flex";
 
     } else {
+
+      open.textContent =
+        "";
 
       open.removeAttribute(
         "href"
@@ -3388,9 +3403,7 @@
     }
 
 
-    document.getElementById(
-      "lsffl-popup47-announcement-counter"
-    ).textContent =
+    counter.textContent =
       (
         announcementIndex +
         1
@@ -3399,27 +3412,36 @@
       announcementItems.length;
 
 
-    document.getElementById(
-      "lsffl-popup47-announcement-prev"
-    ).disabled =
-      announcementIndex ===
-      0;
+    if (
+      announcementItems.length <=
+      1
+    ) {
 
+      previous.disabled =
+        true;
 
-    document.getElementById(
-      "lsffl-popup47-announcement-next"
-    ).disabled =
-      announcementIndex ===
-      announcementItems.length -
-      1;
+      next.disabled =
+        true;
+
+    } else {
+
+      previous.disabled =
+        false;
+
+      next.disabled =
+        false;
+
+    }
   }
 
 
   /* ============================================================
-     OPEN / CLOSE ANNOUNCEMENT CENTER
+     OPEN ANNOUNCEMENT CENTER
      ============================================================ */
 
-  function openAnnouncement() {
+  function openAnnouncementCenter(
+    startIndex
+  ) {
 
     createAnnouncementModal();
 
@@ -3435,41 +3457,73 @@
     }
 
 
-    document.getElementById(
-      "lsffl-popup47-announcement-dontshow"
-    ).checked =
-      false;
+    var index =
+      Number(
+        startIndex
+      );
+
+
+    if (
+      !Number.isFinite(
+        index
+      )
+    ) {
+      index =
+        0;
+    }
+
+
+    if (
+      index < 0 ||
+      index >=
+        announcementItems.length
+    ) {
+      index =
+        0;
+    }
+
+
+    showAnnouncement(
+      index
+    );
 
 
     announcementModal.hidden =
       false;
 
 
-    showAnnouncement(
-      0
+    document.body.classList.add(
+      "lsffl-popup47-open"
     );
 
 
-    /*
-     * Only mark this session as shown AFTER
-     * the popup has actually opened.
-     */
-
-    try {
-
-      sessionStorage.setItem(
-        ANNOUNCEMENT_SESSION_KEY,
-        "1"
+    var close =
+      document.getElementById(
+        "lsffl-popup47-announcement-close"
       );
 
-    } catch (error) {
-      /* Storage unavailable. */
+
+    if (
+      close
+    ) {
+
+      window.setTimeout(
+        function () {
+          close.focus();
+        },
+        0
+      );
+
     }
 
 
     return true;
   }
 
+
+  /* ============================================================
+     CLOSE ANNOUNCEMENT CENTER
+     ============================================================ */
 
   function closeAnnouncement() {
 
@@ -3500,48 +3554,41 @@
 
           String(
             Date.now() +
-            24 *
-            60 *
-            60 *
-            1000
+            (
+              24 *
+              60 *
+              60 *
+              1000
+            )
           )
 
         );
 
-      } catch (error) {
-        /* Storage unavailable. */
-      }
+      } catch (error) {}
+
     }
 
 
     announcementModal.hidden =
       true;
+
+
+    document.body.classList.remove(
+      "lsffl-popup47-open"
+    );
   }
 
 
-  function shouldAutoOpenAnnouncement() {
+  /* ============================================================
+     SHOULD AUTO SHOW ANNOUNCEMENT
+     ============================================================ */
 
-    try {
+  function shouldAutoShowAnnouncement() {
 
-      var dismissedUntil =
-        Number(
-          localStorage.getItem(
-            ANNOUNCEMENT_DISMISS_KEY
-          ) ||
-          0
-        );
-
-
-      if (
-        dismissedUntil &&
-        Date.now() <
-        dismissedUntil
-      ) {
-        return false;
-      }
-
-    } catch (error) {
-      /* Storage unavailable. */
+    if (
+      !isHomepage()
+    ) {
+      return false;
     }
 
 
@@ -3556,9 +3603,28 @@
         return false;
       }
 
-    } catch (error) {
-      /* Storage unavailable. */
-    }
+    } catch (error) {}
+
+
+    try {
+
+      var dismissedUntil =
+        Number(
+          localStorage.getItem(
+            ANNOUNCEMENT_DISMISS_KEY
+          ) ||
+          0
+        );
+
+
+      if (
+        dismissedUntil >
+        Date.now()
+      ) {
+        return false;
+      }
+
+    } catch (error) {}
 
 
     return true;
@@ -3566,137 +3632,249 @@
 
 
   /* ============================================================
-     ANNOUNCEMENT BOOT
+     MARK ANNOUNCEMENT SHOWN
      ============================================================ */
 
-  function bootAnnouncement() {
+  function markAnnouncementShown() {
 
-    if (
-      !isHomepage()
-    ) {
-      return;
-    }
+    try {
 
+      sessionStorage.setItem(
+        ANNOUNCEMENT_SESSION_KEY,
+        "1"
+      );
 
-    /*
-     * IMPORTANT:
-     * Do not suppress MFL's popup container here.
-     *
-     * MFL reuses MFLPlayerPopupContainer for legitimate player/news
-     * popups. Hiding that container causes the page to dim while the
-     * player popup itself never appears.
-     *
-     * The notification-only guard at the top of this file prevents the
-     * legacy automatic notice from flashing without breaking player popups.
-     */
+    } catch (error) {}
+  }
 
 
-    if (
-      !shouldAutoOpenAnnouncement()
-    ) {
-      return;
-    }
+  /* ============================================================
+     WAIT FOR MFL OWNER NOTIFICATION
 
+     MFL can populate its native notification shortly after the page
+     becomes ready. Give it a short window so slide #1 reflects the
+     logged-in owner's actual status.
+     ============================================================ */
+
+  function waitForOwnerNotification(
+    callback
+  ) {
 
     var started =
       Date.now();
 
+    var maxWait =
+      1800;
 
-    (function waitForSources() {
 
-      var articleReady =
-        Boolean(
-          findSourceTable(
-            "article_summary",
-            ".lsffl-article-module"
-          )
-        );
+    function finish() {
 
-      var managerAlertReady =
-        Boolean(
-          nativeNotificationText()
-        );
+      callback();
+
+    }
+
+
+    function check() {
+
+      if (
+        nativeNotificationText()
+      ) {
+
+        finish();
+        return;
+      }
 
 
       if (
-        articleReady ||
-        managerAlertReady ||
         Date.now() -
-        started >
-        8000
+        started >=
+        maxWait
       ) {
 
-        window.setTimeout(
-          openAnnouncement,
-          500
-        );
-
-
+        finish();
         return;
       }
 
 
       window.setTimeout(
-        waitForSources,
-        200
+        check,
+        120
       );
+    }
 
-    })();
+
+    check();
   }
 
 
   /* ============================================================
-     PUBLIC POP-UP 4.7 API
+     AUTO OPEN ANNOUNCEMENT CENTER
+     ============================================================ */
+
+  function autoOpenAnnouncementCenter() {
+
+    if (
+      !shouldAutoShowAnnouncement()
+    ) {
+      return;
+    }
+
+
+    markAnnouncementShown();
+
+
+    waitForOwnerNotification(
+      function () {
+
+        openAnnouncementCenter(
+          0
+        );
+
+      }
+    );
+  }
+
+
+  /* ============================================================
+     ANNOUNCEMENT ESCAPE KEY
+     ============================================================ */
+
+  document.addEventListener(
+
+    "keydown",
+
+    function (event) {
+
+      if (
+        event.key !==
+        "Escape"
+      ) {
+        return;
+      }
+
+
+      if (
+        announcementModal &&
+        !announcementModal.hidden
+      ) {
+
+        closeAnnouncement();
+
+      }
+
+    }
+  );
+
+
+  /* ============================================================
+     PUBLIC ANNOUNCEMENT FUNCTIONS
+     ============================================================ */
+
+  window.lsfflOpenAnnouncementCenter =
+    function (
+      index
+    ) {
+
+      return openAnnouncementCenter(
+        index
+      );
+
+    };
+
+
+  window.lsfflCloseAnnouncementCenter =
+    closeAnnouncement;
+
+
+  /* ============================================================
+     LEGACY / BACKWARD-COMPATIBLE API
      ============================================================ */
 
   window.lsfflPopup47 = {
 
-    openAnnouncement:
-      openAnnouncement,
+    open:
+      function (
+        url,
+        title
+      ) {
 
+        return window
+          .lsfflOpenContentPopup(
+            url,
+            title
+          );
 
-    closeAnnouncement:
-      closeAnnouncement,
+      },
 
 
     openFranchise:
       openFranchise,
 
 
-    openContent:
-      window.lsfflOpenContentPopup
+    close:
+      closeModal,
+
+
+    openAnnouncements:
+      openAnnouncementCenter,
+
+
+    closeAnnouncements:
+      closeAnnouncement
 
   };
 
-  /* Backward-compatible alias for any older page code still calling it. */
-  window.lsfflPopup3 = window.lsfflPopup47;
+
+  /*
+   * Keep the older alias alive because other LSFFL page code may still
+   * reference it.
+   */
+
+  window.lsfflPopup3 =
+    window.lsfflPopup47;
 
 
   /* ============================================================
-     START
+     INITIALIZE
      ============================================================ */
+
+  function initialize() {
+
+    createModal();
+
+    createAnnouncementModal();
+
+
+    if (
+      isHomepage()
+    ) {
+
+      window.setTimeout(
+        autoOpenAnnouncementCenter,
+        250
+      );
+
+    }
+  }
+
 
   if (
     document.readyState ===
-    "loading"
+      "loading"
   ) {
 
     document.addEventListener(
-
       "DOMContentLoaded",
-
-      bootAnnouncement,
-
+      initialize,
       {
-        once: true
+        once:true
       }
-
     );
 
   } else {
 
-    bootAnnouncement();
+    initialize();
 
   }
 
-})()
+})();
